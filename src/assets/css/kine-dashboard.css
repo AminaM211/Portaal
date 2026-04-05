@@ -1,0 +1,536 @@
+.kineDash {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #000000;
+  display: grid;
+  grid-template-columns: 298px minmax(0, 1fr);
+}
+
+.kineSidebar {
+  border-right: 1px solid #d9d9d9;
+  padding: 48px 24px 36px 32px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.kineSidebarBrand img {
+  width: 180px;
+  height: auto;
+  display: block;
+}
+
+.kineSidebarNav {
+  margin-top: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.kineSidebarLink {
+  width: 100%;
+  min-height: 60px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 22px;
+  text-align: left;
+  color: #000000;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.kineSidebarLink img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.kineSidebarLink span {
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+.kineSidebarLink.is-active {
+  background: #f6f6f6;
+}
+
+.kineSidebarLogout {
+  margin-top: auto;
+  width: 52px;
+  height: 52px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.kineSidebarLogout img {
+  width: 34px;
+  height: 34px;
+}
+
+.kineDashMain {
+  padding: 52px 44px 44px 86px;
+}
+
+.kineDashTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.kineDashHeading h1 {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 56px;
+  line-height: 61px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.kineDashHeading p {
+  margin: 8px 0 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.kineDashProfile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-right: 24px;
+}
+
+.kineDashProfileAvatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 999px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.kineDashProfileAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.kineDashProfileInfo h2 {
+  margin: 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.kineDashProfileInfo p {
+  margin: 6px 0 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #444444;
+}
+
+.kineDashStats {
+  display: flex;
+  align-items: center;
+  gap: 74px;
+  margin-top: 54px;
+}
+
+.kineStat {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.kineStat img {
+  width: 28px;
+  height: 28px;
+  margin-top: 2px;
+}
+
+.kineStat strong {
+  display: block;
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.kineStat span {
+  display: block;
+  margin-top: 4px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #333333;
+}
+
+.kinePatientsSection {
+  margin-top: 60px;
+}
+
+.kinePatientsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.kinePatientsHeader h3 {
+  margin: 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 24px;
+  line-height: 31px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.kinePatientsActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kineSearch {
+  width: 248px;
+  height: 38px;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: #ffffff;
+}
+
+.kineSearch img {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.kineSearch input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #000000;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.kineSearch input::placeholder {
+  color: #8f8f8f;
+}
+
+.btn-primary-small,
+.btn-outline-small {
+  min-height: 38px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-primary-small {
+  background: #2bb39b;
+  color: #ffffff;
+  border: 2px solid #2bb39b;
+  box-shadow: 0 2px 0 #1e7a6a;
+}
+
+.btn-primary-small:hover {
+  background: #189881;
+  border-color: #189881;
+}
+
+.btn-outline-small {
+  background: #ffffff;
+  color: #2bb39b;
+  border: 2px solid #2bb39b;
+  box-shadow: 0 2px 0 #1e7a6a;
+}
+
+.btn-outline-small img {
+  width: 18px;
+  height: 18px;
+}
+
+.kineAddPatientForm {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1.4fr auto;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.kineAddPatientForm input {
+  height: 44px;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  color: #000000;
+  background: #ffffff;
+  outline: none;
+}
+
+.kineError {
+  margin: 0 0 16px;
+  color: #c62828;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.kinePatientsTable {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.kinePatientsHead,
+.kinePatientRow {
+  display: grid;
+  grid-template-columns: minmax(270px, 1.4fr) 120px minmax(280px, 1.7fr) 48px;
+  align-items: center;
+}
+
+.kinePatientsHead {
+  min-height: 54px;
+  border-bottom: 1px solid #dddddd;
+  padding: 0 24px;
+  background: #ffffff;
+}
+
+.kinePatientsHead div {
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.kinePatientRow {
+  width: 100%;
+  min-height: 74px;
+  border: none;
+  border-bottom: 1px solid #dddddd;
+  background: #ffffff;
+  padding: 0 24px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.kinePatientRow:last-child {
+  border-bottom: none;
+}
+
+.kinePatientNameCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.kinePatientAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-family: "Nunito", sans-serif;
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.kinePatientName {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.kinePatientAge,
+.kinePatientGoal,
+.kinePatientMore {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #333333;
+}
+
+.kinePatientMore {
+  justify-self: end;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: #000000;
+}
+
+.kinePatientsEmpty {
+  padding: 24px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #444444;
+}
+
+.kineDashLoading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+}
+
+.kineDashLoading p {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  color: #000000;
+}
+
+@media (max-width: 1280px) {
+  .kineDash {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .kineDashMain {
+    padding: 40px 28px 32px 40px;
+  }
+
+  .kineDashStats {
+    gap: 40px;
+  }
+
+  .kinePatientsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kinePatientsActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .kineAddPatientForm {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kinePatientsHead,
+  .kinePatientRow {
+    grid-template-columns: minmax(240px, 1.4fr) 110px minmax(220px, 1.6fr) 40px;
+  }
+}
+
+@media (max-width: 960px) {
+  .kineDash {
+    grid-template-columns: 1fr;
+  }
+
+  .kineSidebar {
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid #d9d9d9;
+    padding: 20px;
+  }
+
+  .kineSidebarNav {
+    margin-top: 24px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .kineSidebarLink {
+    width: auto;
+    min-height: 48px;
+  }
+
+  .kineSidebarLogout {
+    margin-top: 24px;
+  }
+
+  .kineDashMain {
+    padding: 24px 20px 28px;
+  }
+
+  .kineDashTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kineDashHeading h1 {
+    font-size: 40px;
+    line-height: 44px;
+  }
+
+  .kineDashProfile {
+    margin-right: 0;
+  }
+
+  .kineDashStats {
+    flex-wrap: wrap;
+    gap: 24px 40px;
+    margin-top: 32px;
+  }
+
+  .kinePatientsActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kineSearch {
+    width: 100%;
+  }
+
+  .btn-primary-small,
+  .btn-outline-small {
+    width: 100%;
+  }
+
+  .kineAddPatientForm {
+    grid-template-columns: 1fr;
+  }
+
+  .kinePatientsTable {
+    overflow-x: auto;
+  }
+
+  .kinePatientsHead,
+  .kinePatientRow {
+    min-width: 760px;
+  }
+}

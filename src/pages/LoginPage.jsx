@@ -1,10 +1,35 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useEffect, useState } from "react";
 import "../assets/css/login.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  useEffect(() => {
+    async function checkExistingSession() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+  
+      if (!user) return;
+  
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+  
+      if (profile?.role === "kinesist") {
+        navigate("/kinesist/dashboard");
+      }
+  
+      if (profile?.role === "ouder") {
+        navigate("/ouder/dashboard");
+      }
+    }
+  
+    checkExistingSession();
+  }, [navigate]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
