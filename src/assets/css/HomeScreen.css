@@ -1,0 +1,215 @@
+:root{
+    --text:#111;
+    --muted:#6b6b6b;
+    --line:#dfe5ec;
+    --bg:#ffffff;
+    --btn:#55b49a;
+    --btn-dark:#44a88d;
+    --font: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  
+        /* Buttons */
+        --btn: 18px;     /* Nunito Black */
+        --btn-m: 14px;
+        --btn-shadow: #1E7A6A 0px 4px 0px;
+      
+        /* Colors (pas aan naar je Figma colors als je wil) */
+        --ink: #3A3A3A;
+        --bg: #ffffff;
+        --brand: #2BB39B;
+        --brand-hover: #0F8F71;
+        --stroke: rgba(11,27,24,0.12);
+        --soft: rgba(11,27,24,0.06);
+        --muted: rgba(11,27,24,0.60);
+        --surface: #F7F4EF;
+  }
+  
+  *{ box-sizing:border-box; }
+  
+  body{
+    margin:0;
+    font-family: 'Cabinet Grotesk', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  h1{ 
+    font-weight: 800; 
+    font-size: 36px; 
+    line-height: 1.15; 
+    margin: 0 0 16px; 
+    font-family: var(--font); 
+}
+  
+  .page{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  .shell{
+    flex:1;
+    display:grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 80px;
+    padding: 110px 90px 40px;
+    align-items:center;
+  }
+  
+  .left{
+    max-width: 520px;
+  }
+  
+  h1{
+    font-size: 44px;
+    margin: 0 0 10px;
+    letter-spacing: -0.5px;
+  }
+  
+  .subtitle{
+    margin: 0 0 26px;
+    color: var(--muted);
+    line-height: 1.4;
+    font-size: 16px;
+  }
+  
+  .form{
+    display:flex;
+    flex-direction:column;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  
+  input[type="email"],
+  input[type="password"]{
+    width:100%;
+    padding: 16px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    font-size: 16px;
+    outline: none;
+  }
+  
+  input[type="email"]:focus,
+  input[type="password"]:focus{
+    border-color: #b9c7d6;
+    box-shadow: 0 0 0 3px rgba(85,180,154,0.18);
+  }
+  
+  .remember{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-size: 14px;
+    color:#333;
+    margin-top: 2px;
+  }
+  
+  .remember input{
+    width: 16px;
+    height: 16px;
+    accent-color: var(--btn);
+  }
+  
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 40px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+  
+    font-weight: 700; 
+    font-size: var(--btn);
+    line-height: 1;
+    color: black;
+    text-wrap: nowrap;
+    box-shadow: var(--btn-shadow);
+    font-family: var(--font);
+  }
+  
+  .btn-primary{
+    background: var(--brand);
+    color: #fff;
+  }
+  .btn-primary:hover{ background: var(--brand-hover); }
+  
+  .btn-secondary{
+    background: #fff;
+    color: var(--brand);
+    border: 1px solid var(--brand-hover);
+  }
+
+  .btn-secondary:hover{ background: var(--brand-hover); color: white;}
+
+  
+  .link{
+    margin-top: 6px;
+    font-size: 14px;
+    color: #111;
+    text-decoration: underline;
+    width: fit-content;
+  }
+  
+  .right{
+    display:flex;
+    justify-content:center;
+  }
+  
+  .img-placeholder{
+    width: 520px;
+    height: 560px;
+    background: #d7d7d7;
+    border: 4px solid #111;
+    position: relative;
+  }
+  
+  .x{
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    width: 720px;
+    height: 4px;
+    background:#111;
+    transform-origin:center;
+  }
+  
+  .x1{ transform: translate(-50%,-50%) rotate(45deg); }
+  .x2{ transform: translate(-50%,-50%) rotate(-45deg); }
+  
+  .footer{
+    display:flex;
+    gap: 28px;
+    justify-content:center;
+    padding: 18px 0 22px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  
+  .footer a{
+    color: var(--muted);
+    text-decoration: none;
+  }
+  
+  .footer a:hover{
+    text-decoration: underline;
+  }
+
+  .right img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  @media (max-width: 1100px){
+    .shell{
+      grid-template-columns: 1fr;
+      gap: 40px;
+      padding: 70px 24px 20px;
+    }
+    .right{ justify-content:flex-start; }
+    .img-placeholder{ width: 100%; height: 360px; }
+    .x{ width: 120%; }
+  }
+  

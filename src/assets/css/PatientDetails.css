@@ -1,0 +1,411 @@
+/* ✅ nieuw bestand: src/assets/css/PatientDetailsScreen.css */
+.pd{
+    width: 100%;
+    padding: 24px 70px;
+  }
+  
+  .pdTopBar{
+    margin-bottom: 14px;
+  }
+  
+  .pdBack{
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(11,27,24,0.75);
+    font-weight: 700;
+    padding: 0;
+  }
+   
+  .pdHeaderCard{
+    border: 1px solid #e6e6e6;
+    border-radius: 16px;
+    background: #fff;
+    padding: 18px;
+  }
+  
+  .pdHeaderLeft{
+    display:flex;
+    align-items:flex-start;
+    gap: 16px;
+  }
+  
+  .pdAvatar{
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: #d9dde2;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+  }
+
+  
+  .pdHeadText{
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .pdNameRow{
+    display:flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  
+  .pdName{
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+  }
+  
+  .pdAge{
+    color: rgba(11,27,24,0.60);
+    font-weight: 700;
+  }
+  
+  .pdMeta{
+    margin-top: 4px;
+    color: rgba(11,27,24,0.55);
+    font-size: 13px;
+  }
+  
+  .pdGoal{
+    margin-top: 10px;
+    color: rgba(11,27,24,0.85);
+  }
+  
+  .pdQr{
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    background: #d9dde2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  
+  .pdQr img{
+    width: 28px;
+    height: 28px;
+    opacity: 0.9;
+  }
+  
+  .pdDivider{
+    margin: 16px 0;
+    height: 1px;
+    background: #eee;
+  }
+  
+  .pdContactRow{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 18px;
+  }
+  
+  .pdContactName{
+    font-weight: 800;
+  }
+  
+  .pdContactRole{
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgba(11,27,24,0.55);
+  }
+  
+  .pdContactRight{
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  
+  .pdContactItem{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    color: rgba(11,27,24,0.70);
+    font-size: 13px;
+  }
+  
+  .pdContactItem img{
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+  }
+  
+  .pdAddBtn{
+    margin: 16px 0;
+    width: fit-content;
+  }
+  
+  .pdTabs{
+    background: #f1f1f1;
+    border-radius: 12px;
+    padding: 8px;
+    display:flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  
+  .pdTab{
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    color: rgba(11,27,24,0.60);
+    cursor: pointer;
+  }
+
+  .pdContactRight {
+    align-items: flex-start;
+  }
+  
+  .pdTab.active{
+    background: #8bbbe6;
+    color: #fff;
+  }
+  
+  .pdChartCard{
+    margin-top: 18px;
+    border-radius: 16px;
+    background: #fff;
+    padding: 18px;
+  }
+  
+  .pdChartHeader{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-bottom: 10px;
+  }
+  
+  .pdChartHeader h3{
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .pdChartHeader span{
+    color: rgba(11,27,24,0.45);
+    font-size: 13px;
+  }
+  
+  .pdChart{
+    width: 100%;
+    height: 260px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .pdChart svg{
+    width: 100%;
+    height: 220px;
+    display: block;
+  }
+  
+  .pdAxis{
+    display:flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    color: rgba(11,27,24,0.45);
+    font-size: 12px;
+  }
+  
+
+  .flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+  }
+
+  /* ---------------------------
+   OEFENINGEN (cards)
+---------------------------- */
+
+.pdExercises { margin-top: 18px; }
+
+.pdExercisesHeader { margin: 14px 0 18px; }
+
+.pdH2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.pdSub {
+  margin: 6px 0 0;
+  color: rgba(11,27,24,0.60);
+  font-size: 16px;
+}
+
+.pdEmptyCard{
+  margin-top: 18px;
+  border: 1px solid rgba(11,27,24,0.12);
+  border-radius: 14px;
+  padding: 18px;
+  background: #fff;
+}
+
+.pdExerciseList{
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.pdExerciseCard{
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(11,27,24,0.12);
+  background: #fff;
+}
+
+.pdExerciseIcon{
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: #17202b;
+  display: grid;
+  place-items: center;
+}
+
+.pdExerciseIcon span{
+  font-size: 28px;
+  line-height: 1;
+}
+
+.pdExerciseBody{ min-width: 0; }
+
+.pdExerciseTopRow{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.pdExerciseTitleWrap{ min-width: 0; }
+
+.pdExerciseTitle{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.pdExerciseMetaRow{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.pdPill{
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.pdPill.green{
+  background: #D9F7D8;
+  color: #166A24;
+  border-color: rgba(22,106,36,0.15);
+}
+
+.pdDot{ color: rgba(11,27,24,0.40); }
+
+.pdMetaText{
+  color: rgba(11,27,24,0.70);
+  font-weight: 700;
+}
+
+.pdKebab{
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: rgba(11,27,24,0.50);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+.pdKebab:hover{ background: rgba(11,27,24,0.06); }
+
+.pdExerciseInfoGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 22px;
+  margin-top: 14px;
+  margin-bottom: 10px;
+}
+
+.pdInfoLabel{
+  color: rgba(11,27,24,0.55);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pdInfoValue{
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: rgba(11,27,24,0.90);
+}
+
+.pdCompletion{ margin-top: 10px; }
+
+.pdCompletionLabel{
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.pdProgressRow{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.pdProgressBar{
+  width: 100%;
+  height: 10px;
+  background: rgba(11,27,24,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pdProgressFill{
+  height: 100%;
+  width: 0%;
+  background: #E6B64E;
+  border-radius: 999px;
+}
+
+.pdPct{
+  font-weight: 900;
+  color: rgba(11,27,24,0.85);
+}
+
+.pdLastDone{
+  margin-top: 10px;
+  color: rgba(11,27,24,0.55);
+  font-weight: 700;
+}
+
+/* responsive */
+@media (max-width: 900px){
+  .pdExerciseCard{ grid-template-columns: 72px 1fr; }
+  .pdExerciseInfoGrid{ grid-template-columns: 1fr; gap: 10px; }
+}
