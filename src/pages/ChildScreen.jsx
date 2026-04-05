@@ -1,6 +1,6 @@
 // src/ChildScreen.jsx
 import "./assets/css/ChildScreen.css"
-import Sidebar from "./components/ChildSidebar"
+import Sidebar from "../components/ChildSidebar"
 
 export default function ChildScreen() {
   const stats = [
