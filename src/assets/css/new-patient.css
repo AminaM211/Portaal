@@ -1,0 +1,177 @@
+.flowMain {
+    padding: 52px 44px 44px 86px;
+    background: #ffffff;
+    min-height: 100vh;
+  }
+  
+  /* BACK BUTTON */
+  
+  .backBtn {
+    background: transparent;
+    border: none;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    font-weight: 600px !important;
+    cursor: pointer;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .backBtn img {
+    width: 18px;
+  }
+
+  label {
+    font-size: 18px;
+    font-weight: 500;
+    /* margin-bottom: 8px !important; */
+  }
+  
+  /* STEP BAR */
+  
+  .stepBar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .step {
+    height: 8px;
+    width: 120px;
+    background: #e5e5e5;
+    border-radius: 999px;
+  }
+  
+  .step.active {
+    background: #7fa9d6;
+  }
+  
+  /* CONTENT */
+  
+  .flowContent {
+    max-width: 520px;
+  }
+  
+  .flowContent h1 {
+    font-family: "Nunito", sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 40px !important;
+  }
+  
+  .flowContent h3 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  
+  /* INPUTS */
+  
+  .flowContent input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    padding: 0 12px;
+    margin-bottom: 16px;
+    margin-top: 8px;
+  
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .flowContent input::placeholder {
+    color: #8f8f8f;
+  }
+  
+  /* BUTTON */
+  
+  .btn-primary {
+    margin-top: 16px;
+    padding: 8px 24px;
+    height: 44px;
+  
+    background: #2bb39b;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+  
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+  
+    cursor: pointer;
+    box-shadow: 0 2px 0 #1e7a6a;
+  }
+  
+  .btn-primary:hover {
+    background: #189881;
+  }
+  
+  /* REVIEW CARD */
+  
+  .reviewCard {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  
+  .reviewCard h2 {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  
+  .reviewCard p {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* CODE BOX */
+  
+  .codeBox {
+    background: #7fa9d6;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+  
+    font-family: "Nunito", sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+  
+    width: fit-content;
+    margin-bottom: 24px;
+  }
+  
+  /* SUCCESS */
+  
+  .flowContent h1 {
+    margin-bottom: 16px;
+  }
+  
+  /* RESPONSIVE */
+  
+  @media (max-width: 960px) {
+    .flowMain {
+      padding: 24px;
+    }
+  
+    .step {
+      width: 100%;
+    }
+  
+    .stepBar {
+      gap: 8px;
+    }
+  }
+
+h4 {
+    margin: 0;
+}

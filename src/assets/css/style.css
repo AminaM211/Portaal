@@ -5,7 +5,7 @@
     font-family: 'Cabinet Grotesk Regular';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Regular'), url('CabinetGrotesk-Regular.woff') format('woff');
+    src: local('Cabinet Grotesk Regular'), url('CabinetGrotesk-Regular.woff2') format('woff2');
     }
     
   
@@ -13,7 +13,7 @@
     font-family: 'Cabinet Grotesk Thin';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Thin'), url('CabinetGrotesk-Thin.woff') format('woff');
+    src: local('Cabinet Grotesk Thin'), url('CabinetGrotesk-Thin.woff2') format('woff2');
     }
     
   
@@ -21,7 +21,7 @@
     font-family: 'Cabinet Grotesk Extralight';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Extralight'), url('CabinetGrotesk-Extralight.woff') format('woff');
+    src: local('Cabinet Grotesk Extralight'), url('CabinetGrotesk-Extralight.woff2') format('woff2');
     }
     
   
@@ -29,7 +29,7 @@
     font-family: 'Cabinet Grotesk Light';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Light'), url('CabinetGrotesk-Light.woff') format('woff');
+    src: local('Cabinet Grotesk Light'), url('CabinetGrotesk-Light.woff2') format('woff2');
     }
     
   
@@ -37,7 +37,7 @@
     font-family: 'Cabinet Grotesk Medium';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Medium'), url('CabinetGrotesk-Medium.woff') format('woff');
+    src: local('Cabinet Grotesk Medium'), url('CabinetGrotesk-Medium.woff2') format('woff2');
     }
     
   
@@ -45,7 +45,7 @@
     font-family: 'Cabinet Grotesk Bold';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Bold'), url('CabinetGrotesk-Bold.woff') format('woff');
+    src: local('Cabinet Grotesk Bold'), url('CabinetGrotesk-Bold.woff2') format('woff2');
     }
     
   
@@ -53,7 +53,7 @@
     font-family: 'Cabinet Grotesk Extrabold';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Extrabold'), url('CabinetGrotesk-Extrabold.woff') format('woff');
+    src: local('Cabinet Grotesk Extrabold'), url('CabinetGrotesk-Extrabold.woff2') format('woff2');
     }
     
   
@@ -61,7 +61,7 @@
     font-family: 'Cabinet Grotesk Black';
     font-style: normal;
     font-weight: normal;
-    src: local('Cabinet Grotesk Black'), url('CabinetGrotesk-Black.woff') format('woff');
+    src: local('Cabinet Grotesk Black'), url('CabinetGrotesk-Black.woff2') format('woff2');
     }
   
   :root{

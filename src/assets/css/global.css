@@ -16,6 +16,18 @@
     font-weight: 700;
   }
 
+  @font-face {
+    font-family: "Cabinet Grotesk";
+    src: url("../fonts/CabinetGrotesk-ExtraBold.woff2") format("woff2");
+    font-weight: 800;
+  }
+
+  @font-face {
+    font-family: "Cabinet Grotesk";
+    src: url("../fonts/CabinetGrotesk-Black.woff2") format("woff2");
+    font-weight: 900;
+  }
+
 :root {
     --brand: #2bb39b;
     --brand-dark: #189881;
