@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import "../assets/css/new-patient.css";
 
+
 export default function NewPatientFlow() {
   const navigate = useNavigate();
 
@@ -37,29 +38,43 @@ export default function NewPatientFlow() {
       .join("");
   }
 
-  async function handleCreatePatient() {
+async function handleCreatePatient() {
+  try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (!user) {
+      console.log("geen user");
+      return;
+    }
+
     const code = generateCode();
 
-    const { error } = await supabase.from("patients").insert({
+    console.log("Saving patient for user:", user.id);
+    console.log("Form data:", form);
+
+    const { data, error } = await supabase.from("patients").insert({
       kinesist_id: user.id,
       name: `${form.firstName} ${form.lastName}`,
       birth_date: form.birthDate,
       goal: form.goal,
       activation_code: code,
-    });
+    }).select();
 
     if (error) {
-      console.error(error);
+      console.error("Insert error:", error);
       return;
     }
 
+    console.log("Inserted patient:", data);
+
     setActivationCode(code);
-    nextStep();
+    setStep(3); 
+  } catch (err) {
+    console.error("Unexpected error:", err);
   }
+}
 
   return (
     <div className="kineDash">
@@ -143,7 +158,7 @@ export default function NewPatientFlow() {
             <h4>Wat gebeurt er nu?</h4>
             <p>Na het bevestigen van alle gegevens wordt automatisch een 6-cijferige activatiecode gegenereerd. Met deze code kunnen ouders het kinderprofiel veilig activeren in het portaal.</p>
 
-            <button className="btn-primary" onClick={nextStep}>
+            <button className="btn-primary" onClick={handleCreatePatient}>
             Patiënt toevoegen
             </button>
           </div>

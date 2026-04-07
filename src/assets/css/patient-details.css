@@ -1,0 +1,842 @@
+.patientDetailsMain {
+  padding: 42px 44px 44px 56px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+.patientDetailsTopbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.patientBack {
+  border: none;
+  background: transparent;
+  color: #000000;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.patientBack img {
+  width: 16px;
+}
+
+.patientTopActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-primary-small {
+height: 35px !important;
+}
+
+.patientArchiveBtn {
+  height: 35px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  border: 2px solid #f3c547;
+  background: #f3c547;
+  color: #000000;
+  box-shadow: 0 2px 0 #b58d22;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.patientHeroCard {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 18px 20px 0;
+  overflow: hidden;
+}
+
+.patientHeroTop {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.patientHeroLeft {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.patientAvatarBig {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: #8bb8e8;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Nunito", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.patientHeroInfo {
+  flex: 1;
+}
+
+.patientHeroNameRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.patientHeroNameRow h1 {
+  margin: 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.patientHeroNameRow span {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  color: #8b8b8b;
+}
+
+.patientHeroInfo p {
+  margin: 6px 0 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  color: #333333;
+}
+
+.patientHeroQr {
+  display: flex;
+  align-items: flex-start;
+}
+
+.patientQrBox {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: #8bb8e8;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.patientHeroBottom {
+  margin-top: 18px;
+  padding: 18px 0;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.patientHeroBottom strong {
+  display: block;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.patientHeroBottom span {
+  display: block;
+  margin-top: 4px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #8b8b8b;
+}
+
+.patientContactInfo {
+  text-align: right;
+}
+
+.patientAddExerciseBtn {
+  margin-top: 16px;
+  padding: 8px 24px;
+  border: 2px solid #2bb39b;
+  border-radius: 4px;
+  background: #2bb39b;
+  color: #ffffff;
+  box-shadow: 0 2px 0 #1e7a6a;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.patientStatsSection {
+  margin-top: 44px;
+}
+
+.patientStatsHeader,
+.patientSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+
+.patientStatsHeader h2,
+.patientSectionHeader h3 {
+  margin: 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.patientFilterBtn {
+  border: none;
+  background: transparent;
+  color: #444444;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.patientStatsGrid {
+  display: flex;
+  gap: 80px;
+  margin-top: 20px;
+}
+
+.patientStatItem strong {
+  display: block;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 800;
+  color: #000000;
+  margin-top: 3px;
+}
+
+.statFlex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-items: center;
+}
+
+.patientStatItem span {
+  display: block;
+  margin-top: 4px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+}
+
+.patientTabs {
+  margin-top: 44px;
+  display: flex;
+  gap: 40px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.patientTabs button {
+  height: 42px;
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+}
+
+.patientTabs button.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #2bb39b;
+}
+
+.patientProgressSection,
+.patientExercisesSection {
+  padding-top: 32px;
+  padding-bottom: 32px;
+  max-width: 470px;
+}
+
+.patientProgressList {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.patientProgressTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.patientProgressTop span,
+.patientProgressTop strong {
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000000;
+}
+
+.progressBar {
+  height: 12px;
+  border-radius: 999px;
+  background: #ececec;
+  overflow: hidden;
+}
+
+.progressBar > div {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.progressBlue > div {
+  background: #8bb8e8;
+}
+
+.progressGreen > div {
+  background: #97d5a3;
+}
+
+.progressYellow > div {
+  background: #f1c24a;
+}
+
+.progressPink > div {
+  background: #eda5df;
+}
+
+.exerciseCardList {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.exerciseCard {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: start;
+}
+
+.exerciseCard img {
+  width: 75px;
+  height: 75px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.exerciseCard strong {
+  display: block;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.exerciseCard span {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f3c547;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000000;
+}
+
+.exerciseCard p {
+  margin: 8px 0 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #8b8b8b;
+}
+
+@media (max-width: 960px) {
+  .patientDetailsMain {
+    padding: 24px 20px 28px;
+  }
+
+  .patientDetailsTopbar,
+  .patientHeroBottom,
+  .patientStatsGrid,
+  .patientStatsHeader,
+  .patientSectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .patientTopActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .patientAddExerciseBtn,
+  .patientArchiveBtn,
+  .btn-primary-small {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .patientTabs {
+    gap: 24px;
+    overflow-x: auto;
+  }
+
+  .patientProgressSection,
+  .patientExercisesSection {
+    max-width: 100%;
+  }
+}
+
+.patientProgressMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patientProgressMeta small {
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+.patientProgressMeta .is-positive {
+  color: #2dbf4f;
+}
+
+.patientProgressMeta .is-negative {
+  color: #ef5350;
+}
+
+.patientProgramSection,
+.patientLogbookSection {
+  margin-top: 30px;
+  max-width: 820px;
+}
+
+.patientProgramHeader,
+.patientLogbookTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.patientProgramHeader h3,
+.patientLogbookTop h3 {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.patientProgramMonth {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #4f4f4f;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.patientProgramMonth img {
+  width: 20px;
+  height: 20px;
+}
+
+.patientProgramGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.programCalendarCard {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px 20px 18px;
+  box-shadow: 0 3px 0 #d7d7d7;
+}
+
+.programCalendarTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.programCalendarTop button {
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-size: 34px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.programCalendarTop h4 {
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.programCalendarWeekdays,
+.programCalendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.programCalendarWeekdays {
+  margin-bottom: 12px;
+}
+
+.programCalendarWeekdays span {
+  text-align: center;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #7d7d7d;
+}
+
+.calendarDay {
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 6px;
+  position: relative;
+  border: none;
+  background: transparent;
+}
+
+.calendarDay span {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000000;
+}
+
+.calendarDay.is-active span {
+  background: #2bb39b;
+  color: #ffffff;
+}
+
+.is-today {
+  color: red;
+}
+
+.calendarDots {
+  display: flex;
+  margin-top: 10px;
+  margin-left: 6px;
+}
+
+.calendarDots i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #2bb39b;
+  border: 2px solid #fff;
+  margin-left: -6px;
+}
+
+.programExerciseList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.programExerciseCard {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.programExerciseCard img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.programExerciseInfo strong {
+  display: block;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.programExerciseTagRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.exerciseTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000000;
+}
+
+.exerciseTag--yellow {
+  background: #f3c547;
+}
+
+.exerciseTag--pink {
+  background: #eda5df;
+}
+
+.exerciseTag--blue {
+  background: #8bb8e8;
+}
+
+.programBars {
+  color: #8bd9a0;
+  font-size: 16px;
+  letter-spacing: -1px;
+}
+
+.programExerciseInfo p {
+  margin: 8px 0 0;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9a9a9a;
+}
+
+.programExerciseActions {
+  color: #000000;
+  font-size: 20px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.patientLogbookTop p {
+  margin: 10px 0 0;
+  max-width: 430px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #444444;
+}
+
+.patientNewNoteBtn {
+  min-height: 38px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  border: 2px solid #2bb39b;
+  background: #ffffff;
+  color: #2bb39b;
+  box-shadow: 0 2px 0 #1e7a6a;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.logbookList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.logbookCard {
+  position: relative;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 22px 22px 18px;
+  box-shadow: 0 3px 0 #d7d7d7;
+}
+
+.logbookCard small {
+  display: block;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9a9a9a;
+}
+
+.logbookCard strong {
+  display: block;
+  margin-top: 8px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.logbookCard p {
+  margin: 14px 0 18px;
+  max-width: 640px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 26px;
+  color: #333333;
+}
+
+.logbookFooter {
+  padding-top: 14px;
+  border-top: 1px solid #ececec;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #9a9a9a;
+}
+
+.logbookEdit {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #f5bfd7;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+}
+
+@media (max-width: 960px) {
+  .patientProgramHeader,
+  .patientLogbookTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .patientProgramGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kineModal--addExercise {
+  max-width: 620px;
+}
+
+.kineSelect {
+  width: 100%;
+  height: 52px;
+  border: 1px solid #8f8f8f;
+  border-radius: 4px;
+  padding: 0 16px;
+  background: #ffffff;
+  color: #000000;
+  font-family: "Cabinet Grotesk", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  outline: none;
+}
+
+.calendarDay.is-today span {
+  color: #2bb39b;
+  font-weight: 700;
+}
+
+.calendarDay.is-active span {
+  background: #000;
+  color: #ffffff;
+}
+
+.calendarDay.is-active.is-today span {
+  background: #2bb39b;
+  color: #ffffff;
+}
+
+.programExerciseActionBtn, .programExerciseActionBtn img {
+  border: none;
+  background: transparent;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.programExerciseActions {
+  display: flex;
+  gap: 8px;
+}
