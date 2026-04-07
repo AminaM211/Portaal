@@ -1,36 +1,32 @@
-import { NavLink } from "react-router-dom"
-import "../assets/css/style.css"
+import { NavLink } from "react-router-dom";
 
-export default function KineSidebar() {
+export default function ChildSidebar({ onLogout }) {
   return (
-    <aside className="kineSidebar">
-      <div className="brand">
-        <img className="brandLogo" src="/images/logo.png" alt="Nimbli" />
+    <aside className="ChildSidebar">
+      <div className="ChildSidebarBrand">
+        <img src="/images/Child-logo-full.png" alt="Nimbli Childscreen" />
       </div>
 
-      <nav className="sideNav">
-        <NavLink to="/kind" className="sideLink">
-          <span className="icon">
-            <img src="/images/kindoef-icon.svg" alt="" />
-          </span>
-          Oefeningen
+      <nav className="ChildSidebarNav">
+        <NavLink to="/Childscreen/oefeningen" className="ChildSidebarLink is-active">
+          <img src="/images/sidebar-oefeningen.svg" alt="" />
+          <span>Dashboard</span>
         </NavLink>
 
-        <NavLink to="/kinesist/missions" className="sideLink">
-          <span className="icon">
-            <img src="/images/mission-icon.svg" alt="" />
-          </span>
-          Daily missions
-        </NavLink>
+        <button type="button" className="ChildSidebarLink">
+          <img src="/images/sidebar-missions.svg" alt="" />
+          <span>Oefeningen</span>
+        </button>
 
-        <NavLink to="/kinesist/profiel" className="sideLink">
-          <span className="icon">
-            <img src="/images/profile-icon.svg" alt="" />
-          </span>
-          Profiel
-        </NavLink>
+        <button type="button" className="ChildSidebarLink">
+          <img src="/images/sidebar-profile.svg" alt="" />
+          <span>Instellingen</span>
+        </button>
       </nav>
-    </aside>
-  )
-}
 
+      <button type="button" className="ChildSidebarLogout" onClick={onLogout}>
+        <img src="/images/sidebar-logout.svg" alt="" />
+      </button>
+    </aside>
+  );
+}

@@ -241,9 +241,8 @@ export default function KineDashboard() {
               </button>
 
               <button
-                type="button"
                 className="btn-primary-small"
-                onClick={() => setShowForm((prev) => !prev)}
+                onClick={() => navigate("/kinesist/patient/new")}
               >
                 Patiënt toevoegen
               </button>

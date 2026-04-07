@@ -4,6 +4,7 @@ import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
+import NewPatientFlow from "./pages/NewPatientFlow";
 
 export default function App() {
   return (
@@ -33,6 +34,15 @@ export default function App() {
         element={
           <ProtectedRoute allowedRole="kinesist">
             <PatientDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/kinesist/patient/new"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <NewPatientFlow />
           </ProtectedRoute>
         }
       />
