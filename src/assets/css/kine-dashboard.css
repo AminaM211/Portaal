@@ -76,7 +76,7 @@
 }
 
 .kineDashMain {
-  padding: 52px 44px 44px 86px;
+  padding: 48px 40px 48px 24px !important;
 }
 
 .kineDashTop {
@@ -322,7 +322,7 @@
 .kinePatientsTable {
   border: 1px solid #dddddd;
   border-radius: 8px;
-  overflow: hidden;
+  /* overflow: hidden; */
   background: #ffffff;
 }
 
@@ -357,6 +357,10 @@
   padding: 0 24px;
   text-align: left;
   cursor: pointer;
+}
+
+.kinePatientRow:hover {
+  background: linear-gradient(to right, #f6f4f4, #fff);
 }
 
 .kinePatientRow:last-child {
@@ -601,7 +605,7 @@
   border-radius: 8px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
   padding: 8px;
-  z-index: 30;
+  z-index: 999;
   display: flex;
   flex-direction: column;
   gap: 4px;

@@ -1,5 +1,5 @@
 .patientDetailsMain {
-  padding: 42px 44px 44px 56px;
+  padding: 48px 40px 48px 24px;
   background: #ffffff;
   min-height: 100vh;
 }
@@ -779,6 +779,18 @@ height: 35px !important;
   display: grid;
   place-items: center;
   font-size: 16px;
+}
+
+.kineModal--note {
+  min-width: 55vw;
+  margin-left: 15vw;
+}
+
+@media (max-width: 960px) {
+  .kineModal--note {
+    min-width: 70vw;
+    margin-left: 0vw;
+  }
 }
 
 @media (max-width: 960px) {

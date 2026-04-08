@@ -68,12 +68,67 @@ function calculateAge(birthDate) {
   return age;
 }
 
+function formatDisplayDate(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString("nl-BE", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatDateTime(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString("nl-BE", {
+    day: "2-digit",
+    month: "short",
+  }) +
+    " · " +
+    date.toLocaleTimeString("nl-BE", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+}
+
+function getCategoryClass(category) {
+  if (category === "Mobiliteit") return "exerciseTag--yellow";
+  if (category === "Flexibiliteit") return "exerciseTag--pink";
+  if (category === "Kracht") return "exerciseTag--blue";
+  if (category === "Balans") return "exerciseTag--green";
+  return "exerciseTag--blue";
+}
+
+function startOfToday() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+function startOfWeekMonday(date = new Date()) {
+  const d = new Date(date);
+  const weekday = (d.getDay() + 6) % 7;
+  d.setDate(d.getDate() - weekday);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 export default function PatientDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
+  const [userId, setUserId] = useState(null);
+  const [profile, setProfile] = useState(null);
+
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pageRefreshing, setPageRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const [activeTab, setActiveTab] = useState("overzicht");
@@ -96,6 +151,17 @@ export default function PatientDetails() {
   const [scheduledDate, setScheduledDate] = useState("");
   const [savingExercise, setSavingExercise] = useState(false);
 
+  const [scheduledExercises, setScheduledExercises] = useState([]);
+  const [exerciseActionLoadingId, setExerciseActionLoadingId] = useState(null);
+
+  const [notesEnabled, setNotesEnabled] = useState(true);
+  const [notes, setNotes] = useState([]);
+  const [showNoteModal, setShowNoteModal] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
+  const [noteText, setNoteText] = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+  const [deletingNoteId, setDeletingNoteId] = useState(null);
+
   const today = new Date();
 
   const [currentMonth, setCurrentMonth] = useState(
@@ -103,85 +169,59 @@ export default function PatientDetails() {
   );
 
   const [selectedDate, setSelectedDate] = useState(formatDateKey(today));
-  const [scheduledExercises, setScheduledExercises] = useState([]);
 
   const calendarDays = useMemo(() => getCalendarDays(currentMonth), [currentMonth]);
 
-  const exerciseSchedule = useMemo(() => {
-    const grouped = {};
-
-    for (const item of scheduledExercises) {
-      const dateKey = item.scheduled_date;
-
-      if (!grouped[dateKey]) {
-        grouped[dateKey] = [];
-      }
-
-      grouped[dateKey].push({
-        id: item.id,
-        title: item.exercise?.title || "",
-        category: item.exercise?.category || "",
-        duration: item.exercise?.duration_minutes
-          ? `${item.exercise.duration_minutes} min`
-          : "-",
-        reps: item.exercise?.repetitions
-          ? `${item.exercise.repetitions} herhalingen`
-          : "-",
-        image: item.exercise?.image_url || "/images/exercise-1.png",
-        tagClass:
-          item.exercise?.category === "Mobiliteit"
-            ? "exerciseTag--yellow"
-            : item.exercise?.category === "Flexibiliteit"
-            ? "exerciseTag--pink"
-            : "exerciseTag--blue",
-      });
-    }
-
-    return grouped;
-  }, [scheduledExercises]);
-
-  const selectedExercises = useMemo(() => {
-    return exerciseSchedule[selectedDate] || [];
-  }, [exerciseSchedule, selectedDate]);
-
-  const visibleMonthLabel = useMemo(() => getMonthLabel(currentMonth), [currentMonth]);
-
   useEffect(() => {
-    loadPatient();
-    loadPatientExercises();
-    loadExerciseLibrary();
+    initializePage();
   }, [id]);
+  
+  useEffect(() => {
+    if (userId) {
+      loadNotesSafe(userId);
+    }
+  }, [profile, userId]);
 
-  async function loadPatient() {
+  async function initializePage() {
     try {
       setLoading(true);
       setErrorMessage("");
 
       const {
         data: { user },
+        error: authError,
       } = await supabase.auth.getUser();
+
+      if (authError) throw authError;
 
       if (!user) {
         navigate("/");
         return;
       }
 
-      const { data, error } = await supabase
-        .from("patients")
-        .select("*")
-        .eq("id", id)
-        .eq("kinesist_id", user.id)
+      setUserId(user.id);
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, full_name, role")
+        .eq("id", user.id)
         .single();
 
-      if (error) throw error;
+      if (profileError) throw profileError;
 
-      if (!data) {
-        setErrorMessage("Patiënt niet gevonden.");
-        setLoading(false);
+      if (!profileData || profileData.role !== "kinesist") {
+        navigate("/");
         return;
       }
 
-      setPatient(data);
+      setProfile(profileData);
+
+      await Promise.all([
+        loadPatient(user.id),
+        loadPatientExercises(),
+        loadExerciseLibrary(),
+        loadNotesSafe(user.id),
+      ]);
     } catch (error) {
       console.error(error);
       setErrorMessage("Patiënt kon niet geladen worden.");
@@ -190,48 +230,110 @@ export default function PatientDetails() {
     }
   }
 
-  async function loadPatientExercises() {
+  async function refreshData() {
     try {
-      const { data, error } = await supabase
-        .from("patient_exercises")
-        .select(`
-          id,
-          scheduled_date,
-          is_completed,
-          exercise:exercises (
-            id,
-            title,
-            category,
-            duration_minutes,
-            repetitions,
-            image_url
-          )
-        `)
-        .eq("patient_id", id)
-        .order("scheduled_date", { ascending: true });
-
-      if (error) throw error;
-
-      setScheduledExercises(data || []);
+      setPageRefreshing(true);
+      setErrorMessage("");
+      await Promise.all([
+        loadPatient(userId),
+        loadPatientExercises(),
+        loadExerciseLibrary(),
+        loadNotesSafe(userId),
+      ]);
     } catch (error) {
       console.error(error);
-      setErrorMessage("Oefeningen konden niet geladen worden.");
+      setErrorMessage("Gegevens vernieuwen is mislukt.");
+    } finally {
+      setPageRefreshing(false);
     }
   }
 
+  async function loadPatient(currentUserId) {
+    const authUserId = currentUserId || userId;
+
+    const { data, error } = await supabase
+      .from("patients")
+      .select("*")
+      .eq("id", id)
+      .eq("kinesist_id", authUserId)
+      .single();
+
+    if (error) throw error;
+
+    setPatient(data || null);
+  }
+
+  async function loadPatientExercises() {
+    const { data, error } = await supabase
+      .from("patient_exercises")
+      .select(`
+        id,
+        patient_id,
+        exercise_id,
+        scheduled_date,
+        is_completed,
+        created_at,
+        exercise:exercises (
+          id,
+          title,
+          category,
+          duration_minutes,
+          repetitions,
+          image_url
+        )
+      `)
+      .eq("patient_id", id)
+      .order("scheduled_date", { ascending: true });
+
+    if (error) throw error;
+
+    setScheduledExercises(data || []);
+  }
+
   async function loadExerciseLibrary() {
+    const { data, error } = await supabase
+      .from("exercises")
+      .select("*")
+      .order("title", { ascending: true });
+
+    if (error) throw error;
+
+    setExerciseLibrary(data || []);
+  }
+
+  async function loadNotesSafe(currentUserId) {
+    const authUserId = currentUserId || userId;
+  
     try {
       const { data, error } = await supabase
-        .from("exercises")
-        .select("*")
-        .order("title", { ascending: true });
-
-      if (error) throw error;
-
-      setExerciseLibrary(data || []);
+        .from("patient_notes")
+        .select("id, patient_id, author_id, note, created_at")
+        .eq("patient_id", id)
+        .order("created_at", { ascending: false });
+  
+      if (error) {
+        console.error("patient_notes load error:", error);
+        throw error;
+      }
+  
+      setNotesEnabled(true);
+  
+      const notesWithAuthor = (data || []).map((item) => ({
+        ...item,
+        author: {
+          full_name:
+            item.author_id === authUserId
+              ? profile?.full_name || "Jij"
+              : "Kinesist",
+        },
+      }));
+  
+      setNotes(notesWithAuthor);
     } catch (error) {
-      console.error(error);
-      setErrorMessage("Oefenbibliotheek kon niet geladen worden.");
+      console.error("loadNotesSafe unexpected error:", error);
+      setNotesEnabled(true);
+      setNotes([]);
+      setErrorMessage("Logboek kon niet geladen worden.");
     }
   }
 
@@ -264,7 +366,7 @@ export default function PatientDetails() {
 
   function openAddExerciseModal() {
     setSelectedExerciseId("");
-    setScheduledDate("");
+    setScheduledDate(selectedDate || formatDateKey(new Date()));
     setShowAddExerciseModal(true);
   }
 
@@ -272,6 +374,18 @@ export default function PatientDetails() {
     setShowAddExerciseModal(false);
     setSelectedExerciseId("");
     setScheduledDate("");
+  }
+
+  function openNoteModal(note = null) {
+    setEditingNote(note);
+    setNoteText(note?.note || "");
+    setShowNoteModal(true);
+  }
+
+  function closeNoteModal() {
+    setEditingNote(null);
+    setNoteText("");
+    setShowNoteModal(false);
   }
 
   async function handleAddExercise(e) {
@@ -304,6 +418,53 @@ export default function PatientDetails() {
       setErrorMessage("Oefening toevoegen is mislukt.");
     } finally {
       setSavingExercise(false);
+    }
+  }
+
+  async function handleToggleExerciseComplete(item) {
+    try {
+      setExerciseActionLoadingId(item.id);
+      setErrorMessage("");
+
+      const { error } = await supabase
+        .from("patient_exercises")
+        .update({ is_completed: !item.is_completed })
+        .eq("id", item.id);
+
+      if (error) throw error;
+
+      await loadPatientExercises();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Status van oefening wijzigen is mislukt.");
+    } finally {
+      setExerciseActionLoadingId(null);
+    }
+  }
+
+  async function handleDeleteExercise(itemId) {
+    const confirmed = window.confirm(
+      "Wil je deze oefening verwijderen uit het programma?"
+    );
+    if (!confirmed) return;
+
+    try {
+      setExerciseActionLoadingId(itemId);
+      setErrorMessage("");
+
+      const { error } = await supabase
+        .from("patient_exercises")
+        .delete()
+        .eq("id", itemId);
+
+      if (error) throw error;
+
+      await loadPatientExercises();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Oefening verwijderen is mislukt.");
+    } finally {
+      setExerciseActionLoadingId(null);
     }
   }
 
@@ -342,7 +503,7 @@ export default function PatientDetails() {
 
       if (error) throw error;
 
-      await loadPatient();
+      await loadPatient(userId);
       closeEditModal();
     } catch (error) {
       console.error(error);
@@ -374,6 +535,224 @@ export default function PatientDetails() {
       setArchiving(false);
     }
   }
+
+  async function handleSaveNote(e) {
+    e.preventDefault();
+
+    const trimmed = noteText.trim();
+    if (!trimmed) {
+      setErrorMessage("Een notitie mag niet leeg zijn.");
+      return;
+    }
+
+    if (!notesEnabled) {
+      setErrorMessage("De tabel patient_notes bestaat nog niet.");
+      return;
+    }
+
+    try {
+      setSavingNote(true);
+      setErrorMessage("");
+
+      if (editingNote) {
+        const { error } = await supabase
+          .from("patient_notes")
+          .update({
+            note: trimmed,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", editingNote.id);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("patient_notes").insert({
+          patient_id: id,
+          author_id: userId,
+          note: trimmed,
+        });
+
+        if (error) throw error;
+      }
+
+      await loadNotesSafe(userId);
+      closeNoteModal();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Notitie opslaan is mislukt.");
+    } finally {
+      setSavingNote(false);
+    }
+  }
+
+  async function handleDeleteNote(noteId) {
+    const confirmed = window.confirm("Wil je deze notitie verwijderen?");
+    if (!confirmed) return;
+
+    try {
+      setDeletingNoteId(noteId);
+      setErrorMessage("");
+
+      const { error } = await supabase
+        .from("patient_notes")
+        .delete()
+        .eq("id", noteId);
+
+      if (error) throw error;
+
+      await loadNotesSafe(userId);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Notitie verwijderen is mislukt.");
+    } finally {
+      setDeletingNoteId(null);
+    }
+  }
+
+  const exerciseSchedule = useMemo(() => {
+    const grouped = {};
+
+    for (const item of scheduledExercises) {
+      const dateKey = item.scheduled_date;
+
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+
+      grouped[dateKey].push({
+        id: item.id,
+        title: item.exercise?.title || "",
+        category: item.exercise?.category || "",
+        duration: item.exercise?.duration_minutes
+          ? `${item.exercise.duration_minutes} min`
+          : "-",
+        reps: item.exercise?.repetitions
+          ? `${item.exercise.repetitions} herhalingen`
+          : "-",
+        image: item.exercise?.image_url || "/images/exercise-1.png",
+        tagClass: getCategoryClass(item.exercise?.category),
+        is_completed: !!item.is_completed,
+      });
+    }
+
+    return grouped;
+  }, [scheduledExercises]);
+
+  const selectedExercises = useMemo(() => {
+    return exerciseSchedule[selectedDate] || [];
+  }, [exerciseSchedule, selectedDate]);
+
+  const visibleMonthLabel = useMemo(
+    () => getMonthLabel(currentMonth),
+    [currentMonth]
+  );
+
+  const stats = useMemo(() => {
+    const todayKey = formatDateKey(new Date());
+    const weekStart = startOfWeekMonday();
+    const weekStartKey = formatDateKey(weekStart);
+
+    const todayItems = scheduledExercises.filter(
+      (item) => item.scheduled_date === todayKey
+    );
+    const todayCompleted = todayItems.filter((item) => item.is_completed).length;
+
+    const totalAssigned = scheduledExercises.length;
+    const totalCompleted = scheduledExercises.filter(
+      (item) => item.is_completed
+    ).length;
+
+    const thisWeekItems = scheduledExercises.filter(
+      (item) => item.scheduled_date >= weekStartKey && item.scheduled_date <= todayKey
+    );
+
+    const completedDates = Array.from(
+      new Set(
+        scheduledExercises
+          .filter((item) => item.is_completed)
+          .map((item) => item.scheduled_date)
+      )
+    ).sort((a, b) => new Date(b) - new Date(a));
+
+    let streak = 0;
+    let cursor = startOfToday();
+
+    while (true) {
+      const key = formatDateKey(cursor);
+      if (completedDates.includes(key)) {
+        streak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    const weeklyCompletion =
+      thisWeekItems.length > 0
+        ? Math.round(
+            (thisWeekItems.filter((item) => item.is_completed).length /
+              thisWeekItems.length) *
+              100
+          )
+        : 0;
+
+    return {
+      todayCompleted,
+      todayTotal: todayItems.length,
+      totalAssigned,
+      totalCompleted,
+      streak,
+      weeklyCompletion,
+    };
+  }, [scheduledExercises]);
+
+  const categoryProgress = useMemo(() => {
+    const map = {};
+
+    for (const item of scheduledExercises) {
+      const category = item.exercise?.category || "Overig";
+
+      if (!map[category]) {
+        map[category] = {
+          category,
+          total: 0,
+          completed: 0,
+        };
+      }
+
+      map[category].total += 1;
+
+      if (item.is_completed) {
+        map[category].completed += 1;
+      }
+    }
+
+    return Object.values(map)
+      .map((entry) => ({
+        ...entry,
+        percentage:
+          entry.total > 0
+            ? Math.round((entry.completed / entry.total) * 100)
+            : 0,
+        progressClass:
+          entry.category === "Balans"
+            ? "progressBlue"
+            : entry.category === "Kracht"
+            ? "progressGreen"
+            : entry.category === "Motoriek"
+            ? "progressYellow"
+            : entry.category === "Flexibiliteit"
+            ? "progressPink"
+            : "progressBlue",
+      }))
+      .sort((a, b) => b.percentage - a.percentage);
+  }, [scheduledExercises]);
+
+  const recentCompletedExercises = useMemo(() => {
+    return [...scheduledExercises]
+      .filter((item) => item.is_completed)
+      .sort((a, b) => new Date(b.scheduled_date) - new Date(a.scheduled_date))
+      .slice(0, 6);
+  }, [scheduledExercises]);
 
   if (loading) {
     return (
@@ -407,7 +786,11 @@ export default function PatientDetails() {
           </button>
 
           <div className="patientTopActions">
-            <button type="button" className="btn-primary-small" onClick={openEditModal}>
+            <button
+              type="button"
+              className="btn-primary-small"
+              onClick={openEditModal}
+            >
               <img src="/images/edit.svg" alt="" />
               <span>Bewerken</span>
             </button>
@@ -436,13 +819,15 @@ export default function PatientDetails() {
                   <span>{calculateAge(patient.birth_date)} jaar</span>
                 </div>
 
-                <p>Startdatum: {patient.created_at?.slice(0, 10) || "-"}</p>
+                <p>Startdatum: {formatDisplayDate(patient.created_at)}</p>
                 <p>{patient.goal || "-"}</p>
               </div>
             </div>
 
             <div className="patientHeroQr">
-              <div className="patientQrBox">⌘</div>
+              <div className="patientQrBox">
+                {patient.activation_code || "—"}
+              </div>
             </div>
           </div>
 
@@ -477,7 +862,7 @@ export default function PatientDetails() {
             <div className="patientStatItem">
               <div className="statFlex">
                 <img src="/images/streak.svg" alt="" />
-                <strong>2</strong>
+                <strong>{stats.streak}</strong>
               </div>
               <span>Streak</span>
             </div>
@@ -485,7 +870,9 @@ export default function PatientDetails() {
             <div className="patientStatItem">
               <div className="statFlex">
                 <img src="/images/task.svg" alt="" />
-                <strong>1/3</strong>
+                <strong>
+                  {stats.todayCompleted}/{stats.todayTotal}
+                </strong>
               </div>
               <span>Vandaag voltooid</span>
             </div>
@@ -493,7 +880,9 @@ export default function PatientDetails() {
             <div className="patientStatItem">
               <div className="statFlex">
                 <img src="/images/progress.svg" alt="" />
-                <strong>12/35</strong>
+                <strong>
+                  {stats.totalCompleted}/{stats.totalAssigned}
+                </strong>
               </div>
               <span>Totaal voltooid</span>
             </div>
@@ -527,100 +916,77 @@ export default function PatientDetails() {
               <div className="patientSectionHeader">
                 <h3>Voortgang per categorie</h3>
                 <button type="button" className="patientFilterBtn">
-                  deze maand ˅
+                  live data
                 </button>
               </div>
 
               <div className="patientProgressList">
-                <div className="patientProgressItem">
-                  <div className="patientProgressTop">
-                    <span>Balans</span>
-                    <div className="patientProgressMeta">
-                      <small className="is-positive">↗ +23%</small>
-                      <strong>78%</strong>
+                {categoryProgress.length === 0 ? (
+                  <div className="programEmptyState">
+                    <strong>Nog geen categoriegegevens</strong>
+                    <p>Koppel eerst oefeningen aan deze patiënt.</p>
+                  </div>
+                ) : (
+                  categoryProgress.map((item) => (
+                    <div key={item.category} className="patientProgressItem">
+                      <div className="patientProgressTop">
+                        <span>{item.category}</span>
+                        <div className="patientProgressMeta">
+                          <small>
+                            {item.completed}/{item.total} voltooid
+                          </small>
+                          <strong>{item.percentage}%</strong>
+                        </div>
+                      </div>
+                      <div className={`progressBar ${item.progressClass}`}>
+                        <div style={{ width: `${item.percentage}%` }} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="progressBar progressBlue">
-                    <div style={{ width: "78%" }} />
-                  </div>
-                </div>
-
-                <div className="patientProgressItem">
-                  <div className="patientProgressTop">
-                    <span>Kracht</span>
-                    <div className="patientProgressMeta">
-                      <small className="is-positive">↗ +3%</small>
-                      <strong>88%</strong>
-                    </div>
-                  </div>
-                  <div className="progressBar progressGreen">
-                    <div style={{ width: "88%" }} />
-                  </div>
-                </div>
-
-                <div className="patientProgressItem">
-                  <div className="patientProgressTop">
-                    <span>Motoriek</span>
-                    <div className="patientProgressMeta">
-                      <small className="is-negative">↘ -12%</small>
-                      <strong>65%</strong>
-                    </div>
-                  </div>
-                  <div className="progressBar progressYellow">
-                    <div style={{ width: "65%" }} />
-                  </div>
-                </div>
-
-                <div className="patientProgressItem">
-                  <div className="patientProgressTop">
-                    <span>Flexibiliteit</span>
-                    <div className="patientProgressMeta">
-                      <small className="is-positive">↗ +14%</small>
-                      <strong>98%</strong>
-                    </div>
-                  </div>
-                  <div className="progressBar progressPink">
-                    <div style={{ width: "98%" }} />
-                  </div>
-                </div>
+                  ))
+                )}
               </div>
             </section>
 
             <section className="patientExercisesSection">
               <div className="patientSectionHeader">
-                <h3>Voltooide oefeningen</h3>
+                <h3>Recent voltooide oefeningen</h3>
                 <button type="button" className="patientFilterBtn">
-                  deze maand ˅
+                  laatste 6
                 </button>
               </div>
 
               <div className="exerciseCardList">
-                <div className="exerciseCard">
-                  <img src="/images/exercise-1.png" alt="" />
-                  <div>
-                    <strong>Op één been staan</strong>
-                    <span>Mobiliteit</span>
-                    <p>3 min · 10 herhalingen</p>
+                {recentCompletedExercises.length === 0 ? (
+                  <div className="programEmptyState">
+                    <strong>Nog geen voltooide oefeningen</strong>
+                    <p>
+                      Zodra oefeningen voltooid worden, verschijnen ze hier.
+                    </p>
                   </div>
-                </div>
-
-                <div className="exerciseCard">
-                  <img src="/images/exercise-2.png" alt="" />
-                  <div>
-                    <strong>Stretch naar de Sterren</strong>
-                    <span>Mobiliteit</span>
-                    <p>2 min · 10 herhalingen</p>
-                  </div>
-                </div>
-
-                <div className="exerciseCard">
-                  <img src="/images/exercise-3.png" alt="" />
-                  <div>
-                    <strong>Boomstam Omhelzing</strong>
-                    <span>Flexibiliteit</span>
-                    <p>2 min · 10 herhalingen</p>
-                  </div>
-                </div>
+                ) : (
+                  recentCompletedExercises.map((item) => (
+                    <div key={item.id} className="exerciseCard">
+                      <img
+                        src={item.exercise?.image_url || "/images/exercise-1.png"}
+                        alt=""
+                      />
+                      <div>
+                        <strong>{item.exercise?.title || "Oefening"}</strong>
+                        <span>{item.exercise?.category || "Overig"}</span>
+                        <p>
+                          {item.exercise?.duration_minutes
+                            ? `${item.exercise.duration_minutes} min`
+                            : "-"}{" "}
+                          ·{" "}
+                          {item.exercise?.repetitions
+                            ? `${item.exercise.repetitions} herhalingen`
+                            : "-"}
+                        </p>
+                        <small>Voltooid op {formatDisplayDate(item.scheduled_date)}</small>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </section>
           </>
@@ -698,19 +1064,24 @@ export default function PatientDetails() {
                     const isSelected = selectedDate === dateKey;
                     const isToday = dateKey === formatDateKey(today);
                     const dayExercises = exerciseSchedule[dateKey] || [];
+                    const completedCount = dayExercises.filter(
+                      (item) => item.is_completed
+                    ).length;
 
                     return (
                       <button
                         key={dateKey}
                         type="button"
-                        className={`calendarDay ${isSelected ? "is-active" : ""} ${isToday ? "is-today" : ""}`}
+                        className={`calendarDay ${isSelected ? "is-active" : ""} ${
+                          isToday ? "is-today" : ""
+                        }`}
                         onClick={() => setSelectedDate(dateKey)}
                       >
                         <span>{date.getDate()}</span>
 
                         {dayExercises.length > 0 && (
                           <div className="calendarDots">
-                            {dayExercises.slice(0, 3).map((_, i) => (
+                            {dayExercises.map((_, i) => (
                               <i key={i}></i>
                             ))}
                           </div>
@@ -739,7 +1110,9 @@ export default function PatientDetails() {
                           <span className={`exerciseTag ${exercise.tagClass}`}>
                             {exercise.category}
                           </span>
-                          <span className="programBars">▮▮▮</span>
+                          <span className="programBars">
+                            {exercise.is_completed ? "Voltooid" : ""}
+                          </span>
                         </div>
 
                         <p>
@@ -748,12 +1121,34 @@ export default function PatientDetails() {
                       </div>
 
                       <div className="programExerciseActions">
-                          <button type="button" className="programExerciseActionBtn">
-                            <img src="/images/favorite.svg" alt="Favorite" />
-                          </button>
-                          <button type="button" className="programExerciseActionBtn">
-                            <img src="/images/dots.svg" alt="Options" />
-                          </button>
+                        <button
+                          type="button"
+                          className="programExerciseActionBtn"
+                          onClick={() =>
+                            handleToggleExerciseComplete({
+                              id: exercise.id,
+                              is_completed: exercise.is_completed,
+                            })
+                          }
+                          disabled={exerciseActionLoadingId === exercise.id}
+                          title={
+                            exercise.is_completed
+                              ? "Markeer als niet voltooid"
+                              : "Markeer als voltooid"
+                          }
+                        >
+                          {/* {exercise.is_completed ? "↺" : "✓"} */}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="programExerciseActionBtn"
+                          onClick={() => handleDeleteExercise(exercise.id)}
+                          disabled={exerciseActionLoadingId === exercise.id}
+                          title="Verwijderen"
+                        >
+                          ×
+                        </button>
                       </div>
                     </div>
                   ))
@@ -769,40 +1164,80 @@ export default function PatientDetails() {
               <div>
                 <h3>Notities & observaties</h3>
                 <p>
-                  Deze notities zijn uitsluitend bedoeld voor intern gebruik en zijn
-                  niet zichtbaar voor patiënten.
+                  Deze notities zijn uitsluitend bedoeld voor intern gebruik en
+                  zijn niet zichtbaar voor patiënten.
                 </p>
               </div>
 
-              <button type="button" className="patientNewNoteBtn">
-                Nieuwe notitie +
-              </button>
+              {notesEnabled && (
+                <button
+                  type="button"
+                  className="patientNewNoteBtn"
+                  onClick={() => openNoteModal()}
+                >
+                  Nieuwe notitie +
+                </button>
+              )}
             </div>
 
-            <div className="logbookList">
-              <div className="logbookCard">
-                <div className="logbookEdit">✎</div>
-                <small>17 dec · 09:30</small>
-                <strong>Sessie evaluatie</strong>
+            {!notesEnabled ? (
+              <div className="programEmptyState">
+                <strong>Logboek nog niet geactiveerd</strong>
                 <p>
-                  Liam toont significante verbetering in balans oefeningen. Ouders
-                  melden dat hij thuis ook meer zelfvertrouwen toont bij bewegen.
-                  Volgende sessie focus op fijnmotoriek.
+                  Maak eerst een tabel <code>patient_notes</code> in Supabase.
                 </p>
-                <div className="logbookFooter">Dr. Janssens</div>
               </div>
+            ) : notes.length === 0 ? (
+              <div className="programEmptyState">
+                <strong>Nog geen notities</strong>
+                <p>Voeg een eerste observatie toe voor deze patiënt.</p>
+              </div>
+            ) : (
+              <div className="logbookList">
+                {notes.map((note) => (
+                  <div key={note.id} className="logbookCard">
+                    <div
+                      className="logbookEdit"
+                      style={{ display: "flex", gap: 8, alignItems: "center" }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => openNoteModal(note)}
+                        style={{
+                          border: "none",
+                          background: "transparent",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✎
+                      </button>
 
-              <div className="logbookCard">
-                <div className="logbookEdit">✎</div>
-                <small>17 dec · 19:30</small>
-                <strong>Voortgangsnotitie</strong>
-                <p>
-                  Goede sessie met focus op looptraining. Liam laat vooruitgang zien in
-                  zijn looppatroon. Blijven werken aan coördinatie.
-                </p>
-                <div className="logbookFooter">Dr. Janssens</div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteNote(note.id)}
+                        disabled={deletingNoteId === note.id}
+                        style={{
+                          border: "none",
+                          background: "transparent",
+                          cursor: "pointer",
+                        }}
+                      >
+                        🗑
+                      </button>
+                    </div>
+
+                    <small>{formatDateTime(note.updated_at || note.created_at)}</small>
+                    <strong>
+                      {note.updated_at ? "Bijgewerkte notitie" : "Notitie"}
+                    </strong>
+                    <p>{note.note}</p>
+                    <div className="logbookFooter">
+                      {note.author?.full_name || profile?.full_name || "Kinesist"}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
           </section>
         )}
       </main>
@@ -1016,6 +1451,65 @@ export default function PatientDetails() {
                     disabled={savingExercise}
                   >
                     {savingExercise ? "Opslaan..." : "Toevoegen"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNoteModal && (
+        <div className="kineModalOverlay" onClick={closeNoteModal}>
+          <div
+            className="kineModal kineModal--note"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="kineModalHeader">
+              <h3>{editingNote ? "Notitie bewerken" : "Nieuwe notitie"}</h3>
+              <button
+                type="button"
+                className="kineModalClose"
+                onClick={closeNoteModal}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="kineModalBody">
+              <form className="kineEditForm" onSubmit={handleSaveNote}>
+                <div className="kineField">
+                  <label>Notitie</label>
+                  <textarea
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    rows={7}
+                    style={{
+                      width: "100%",
+                      borderRadius: 12,
+                      padding: 14,
+                      border: "1px solid #d8d8d8",
+                      resize: "vertical",
+                    }}
+                    placeholder="Schrijf hier je observatie of sessienotitie..."
+                  />
+                </div>
+
+                <div className="kineModalFooter">
+                  <button
+                    type="button"
+                    className="kineTextAction"
+                    onClick={closeNoteModal}
+                  >
+                    Annuleren
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn-primary-large"
+                    disabled={savingNote}
+                  >
+                    {savingNote ? "Opslaan..." : "Opslaan"}
                   </button>
                 </div>
               </form>
