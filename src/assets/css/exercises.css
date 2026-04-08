@@ -1,0 +1,334 @@
+.exercisesMain {
+    min-height: 100vh;
+    background: #ffffff;
+    padding: 48px 40px 48px 24px;
+}
+  
+  .exercisesHeader h1 {
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    font-size: 28px;
+    line-height: 34px;
+    font-weight: 800;
+    color: #000000;
+  }
+  
+  .exercisesHeader p {
+    margin: 8px 0 0;
+    max-width: 650px;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    color: #444444;
+  }
+  
+  .exerciseSearchBar {
+    margin-top: 18px;
+    max-width: 780px;
+    height: 48px;
+    border: 1px solid #8f8f8f;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+  }
+  
+  .exerciseSearchBar img {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .exerciseSearchBar input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    color: #000000;
+  }
+  
+  .exerciseCategoryFilters {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .exerciseCategoryBtn {
+    min-height: 32px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
+    color: #444444;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .exerciseCategoryBtn.is-active {
+    background: #2bb39b;
+    color: #ffffff;
+    border-color: #2bb39b;
+  }
+  
+  .exerciseTabsRow {
+    margin-top: 48px;
+    max-width: 780px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .exerciseTabs {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  
+  .exerciseTabs button {
+    border: none;
+    background: transparent;
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #000000;
+  }
+  
+  .exerciseTabs button.is-active {
+    background: #8bb8e8;
+    color: #ffffff;
+  }
+  
+  .exerciseLibraryGrid {
+    margin-top: 46px;
+    max-width: 780px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 26px 24px;
+  }
+  
+  .exerciseLibraryCard {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 14px;
+    text-align: left;
+    cursor: pointer;
+    width: 380px;
+  }
+  
+  .exerciseLibraryCard img {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  
+  .exerciseLibraryInfo strong {
+    display: block;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 15px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #000000;
+  }
+  
+  .exerciseCardMetaRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  .exerciseTag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #000000;
+  }
+  
+  .exerciseTag--yellow {
+    background: #f3c547;
+  }
+  
+  .exerciseTag--pink {
+    background: #eda5df;
+  }
+  
+  .exerciseTag--blue {
+    background: #8bb8e8;
+  }
+  
+  .exerciseTag--green {
+    background: #b8ef7d;
+  }
+  
+  .exerciseBars {
+    color: #8bd9a0;
+    font-size: 16px;
+    letter-spacing: -1px;
+  }
+  
+  .exerciseLibraryInfo p,
+  .myExerciseCard p {
+    margin: 12px 0 0;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #9a9a9a;
+  }
+  
+  .exerciseCreateBtn {
+    margin-top: 34px;
+    min-height: 42px;
+    padding: 8px 24px;
+    border: 2px solid #2bb39b;
+    border-radius: 4px;
+    background: #2bb39b;
+    color: #ffffff;
+    box-shadow: 0 2px 0 #1e7a6a;
+    font-family: "Nunito", sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  
+  .myExercisesGrid {
+    margin-top: 42px;
+    max-width: 780px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+  
+  .myExerciseCard {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 18px;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .myExerciseCardTop {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: start;
+    min-height: 42px;
+  }
+  
+  .myExerciseCardTop strong {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #000000;
+  }
+  
+  .favIcon {
+    font-size: 28px;
+    line-height: 1;
+    color: #000000;
+  }
+  
+  .myExerciseCard img {
+    width: 100%;
+    height: 188px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 14px;
+  }
+  
+  .exerciseSchemesIntro {
+    margin: 28px 0 0;
+    max-width: 520px;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    line-height: 26px;
+    color: #444444;
+  }
+  
+  .exerciseSchemesGrid {
+    margin-top: 42px;
+    display: flex;
+  }
+  
+  .exerciseSchemeCard {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .exerciseSchemeStack {
+    position: absolute;
+    width: 248px;
+    height: 282px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+  
+  .stack-1 {
+    left: 12px;
+    top: 8px;
+  }
+  
+  .stack-2 {
+    left: 6px;
+    top: 4px;
+  }
+  
+  .exerciseSchemeInner {
+    position: relative;
+    width: 248px;
+    min-height: 282px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 18px;
+    z-index: 3;
+  }
+  
+  .exerciseSchemeInner strong {
+    display: block;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 500;
+    color: #000000;
+  }
+  
+  .exerciseSchemeInner img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 18px;
+  }
+  
+  .exerciseSchemeInner p {
+    margin: 16px 0 0;
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #444444;
+  }

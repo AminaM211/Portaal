@@ -5,6 +5,10 @@ import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NewPatientFlow from "./pages/NewPatientFlow";
+import SettingsPage from "./pages/SettingsPage";
+import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
+import ExercisesPage from "./pages/ExercisesPage";
+import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 
 export default function App() {
   return (
@@ -19,6 +23,35 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/kinesist/settings"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <SettingsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/kinesist/oefeningen"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <ExercisesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/kinesist/oefeningen/:id"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <ExerciseDetailPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="/kinesist/settings/team-upgrade" element={<TeamUpgradeFlow />} />
 
       <Route
         path="/ouder/dashboard"

@@ -8,15 +8,25 @@ export default function KineSidebar({ onLogout }) {
       </div>
 
       <nav className="kineSidebarNav">
-        <NavLink to="/kinesist/dashboard" className="kineSidebarLink is-active">
+        <NavLink
+          to="/kinesist/dashboard"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
           <img src="/images/sidebar-dashboard.svg" alt="" />
           <span>Dashboard</span>
         </NavLink>
 
-        <button type="button" className="kineSidebarLink">
+        <NavLink
+          to="/kinesist/oefeningen"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
           <img src="/images/sidebar-oefeningen.svg" alt="" />
           <span>Oefeningen</span>
-        </button>
+        </NavLink>
 
         <button type="button" className="kineSidebarLink">
           <img src="/images/sidebar-settings.svg" alt="" />
