@@ -267,15 +267,18 @@ export default function PatientDetails() {
 
   const [archivePatient, setArchivePatient] = useState(null);
   const [archiving, setArchiving] = useState(false);
-
+  
   const [showAddExerciseModal, setShowAddExerciseModal] = useState(false);
   const [exerciseLibrary, setExerciseLibrary] = useState([]);
   const [selectedExerciseId, setSelectedExerciseId] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [savingExercise, setSavingExercise] = useState(false);
+  const [programToDelete, setProgramToDelete] = useState(null);
 
   const [scheduledExercises, setScheduledExercises] = useState([]);
   const [exerciseActionLoadingId, setExerciseActionLoadingId] = useState(null);
+  const [exerciseToDelete, setExerciseToDelete] = useState(null);
+  const [deletingExercise, setDeletingExercise] = useState(false);
 
   const [openProgramMenuId, setOpenProgramMenuId] = useState(null);
   const [editingProgramExercise, setEditingProgramExercise] = useState(null);
@@ -755,58 +758,75 @@ export default function PatientDetails() {
     }
   }
 
-  async function handleRemoveExerciseFromProgram(exerciseItem) {
-    const confirmed = window.confirm(
-      "Wil je deze oefening verwijderen uit het programma?"
-    );
-    if (!confirmed) return;
-
+  async function handleConfirmDeleteExercise() {
+    if (!exerciseToDelete) return;
+  
     try {
-      setExerciseActionLoadingId(exerciseItem.id);
+      setDeletingExercise(true);
       setErrorMessage("");
-      setOpenProgramMenuId(null);
+  
+      const { error } = await supabase
+        .from("patient_exercises")
+        .delete()
+        .eq("id", exerciseToDelete.id);
+  
+      if (error) throw error;
+  
+      await loadPatientExercises();
+  
+      setExerciseToDelete(null);
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Oefening verwijderen is mislukt.");
+    } finally {
+      setDeletingExercise(false);
+    }
+  }
 
+  async function handleRemoveExerciseFromProgram(exerciseItem) {
+    try {
+      setDeletingExercise(true);
+      setErrorMessage("");
+  
       const { error } = await supabase
         .from("patient_exercises")
         .delete()
         .eq("patient_id", id)
-        .eq("exercise_id", exerciseItem.exercise_id)
-        .gte("scheduled_date", exerciseItem.originalScheduledDate);
-
+        .eq("exercise_id", exerciseItem.exercise_id);
+  
       if (error) throw error;
-
+  
       await loadPatientExercises();
+      setProgramToDelete(null);
+      setOpenProgramMenuId(null);
     } catch (error) {
       console.error(error);
-      setErrorMessage("Oefening verwijderen is mislukt.");
+      setErrorMessage("Volledig programma verwijderen is mislukt.");
     } finally {
-      setExerciseActionLoadingId(null);
+      setDeletingExercise(false);
     }
   }
 
   async function handleDeleteExercise(itemId) {
-    const confirmed = window.confirm(
-      "Wil je deze oefening verwijderen uit het programma?"
-    );
-    if (!confirmed) return;
-
     try {
-      setExerciseActionLoadingId(itemId);
+      setDeletingExercise(true);
       setErrorMessage("");
-
+  
       const { error } = await supabase
         .from("patient_exercises")
         .delete()
         .eq("id", itemId);
-
+  
       if (error) throw error;
-
+  
       await loadPatientExercises();
+      setExerciseToDelete(null);
+      setOpenProgramMenuId(null);
     } catch (error) {
       console.error(error);
       setErrorMessage("Oefening verwijderen is mislukt.");
     } finally {
-      setExerciseActionLoadingId(null);
+      setDeletingExercise(false);
     }
   }
 
@@ -1379,7 +1399,7 @@ export default function PatientDetails() {
                       )
                     }
                   >
-                    ‹
+                    <img src="/images/arrowSL.svg" alt="" />
                   </button>
 
                   <h4>{visibleMonthLabel}</h4>
@@ -1396,8 +1416,8 @@ export default function PatientDetails() {
                       )
                     }
                   >
-                    ›
-                  </button>
+                    <img src="/images/arrowSR.svg" alt="" />
+                    </button>
                 </div>
 
                 <div className="programCalendarWeekdays">
@@ -1540,14 +1560,14 @@ export default function PatientDetails() {
 
                                   <button
                                     type="button"
-                                    onClick={() => handleDeleteExercise(exercise.id)}
+                                    onClick={() => setExerciseToDelete(exercise)}
                                   >
                                     <span>🗑️</span>
                                     <span> Oefening verwijderen</span>
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => handleRemoveExerciseFromProgram(exercise)}
+                                    onClick={() => setProgramToDelete(exercise)}
                                   >
                                     <span>❌</span>
                                     <span> Volledig programma verwijderen</span>
@@ -2067,6 +2087,100 @@ export default function PatientDetails() {
             {deletingNoteId === noteToDelete.id
               ? "Verwijderen..."
               : "Verwijderen"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+{exerciseToDelete && (
+  <div
+    className="kineModalOverlay"
+    onClick={() => setExerciseToDelete(null)}
+  >
+    <div
+      className="kineModal kineModal--confirm"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="kineModalHeader">
+        <h3>Oefening verwijderen</h3>
+        <button
+          type="button"
+          className="kineModalClose"
+          onClick={() => setExerciseToDelete(null)}
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="kineModalBody">
+        <p style={{ marginBottom: 24 }}>
+          Ben je zeker dat je deze oefening wil verwijderen?
+        </p>
+
+        <div className="kineModalFooter">
+          <button
+            type="button"
+            className="kineTextAction"
+            onClick={() => setExerciseToDelete(null)}
+          >
+            Annuleren
+          </button>
+
+          <button
+            type="button"
+            className="btn-danger"
+            onClick={() => handleDeleteExercise(exerciseToDelete.id)}
+            disabled={deletingExercise}
+          >
+            {deletingExercise ? "Verwijderen..." : "Verwijderen"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+{programToDelete && (
+  <div
+    className="kineModalOverlay"
+    onClick={() => setProgramToDelete(null)}
+  >
+    <div
+      className="kineModal kineModal--confirm"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="kineModalHeader">
+        <h3>Volledig programma verwijderen</h3>
+        <button
+          type="button"
+          className="kineModalClose"
+          onClick={() => setProgramToDelete(null)}
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="kineModalBody">
+        <p style={{ marginBottom: 24 }}>
+          Ben je zeker dat je alle ingeplande momenten van deze oefening wil verwijderen?
+        </p>
+
+        <div className="kineModalFooter">
+          <button
+            type="button"
+            className="kineTextAction"
+            onClick={() => setProgramToDelete(null)}
+          >
+            Annuleren
+          </button>
+
+          <button
+            type="button"
+            className="btn-danger"
+            onClick={() => handleRemoveExerciseFromProgram(programToDelete)}
+            disabled={deletingExercise}
+          >
+            {deletingExercise ? "Verwijderen..." : "Verwijderen"}
           </button>
         </div>
       </div>
