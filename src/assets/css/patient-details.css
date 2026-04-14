@@ -37,8 +37,22 @@
   gap: 10px;
 }
 
-.btn-primary-small {
-height: 35px !important;
+.btn-edit {
+  height: 35px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  border: none;
+  background: #2bb39b;
+  color: white;
+  box-shadow: 0 2px 0 #1f826f;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
 .patientArchiveBtn {
@@ -134,15 +148,19 @@ height: 35px !important;
 }
 
 .patientQrBox {
-  width: 44px;
-  height: 44px;
-  border-radius: 4px;
-  background: #8bb8e8;
-  color: #ffffff;
-  display: grid;
-  place-items: center;
-  font-size: 20px;
-  font-weight: 700;
+    min-width: 80px;
+    min-height: 80px;
+    border-radius: 4px;
+    border: 1px dashed #d7dfdb;
+    background: #f9fbfa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0da68b;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 12px;
+    box-sizing: border-box;  
 }
 
 .patientHeroBottom {
@@ -363,6 +381,7 @@ height: 35px !important;
   flex-direction: row;
   gap: 16px;
   align-items: start;
+  position: relative;
 }
 
 .exerciseCard img {
@@ -381,6 +400,12 @@ height: 35px !important;
   color: #000000;
 }
 
+.exerciseCard small {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
 .exerciseCard span {
   display: inline-block;
   margin-top: 6px;
@@ -388,7 +413,7 @@ height: 35px !important;
   border-radius: 999px;
   background: #f3c547;
   font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 18px;
   color: #000000;
 }
@@ -396,9 +421,9 @@ height: 35px !important;
 .exerciseCard p {
   margin: 8px 0 0;
   font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 18px;
-  color: #8b8b8b;
+  color: #757575;
 }
 
 @media (max-width: 960px) {
@@ -462,16 +487,18 @@ height: 35px !important;
 .patientProgramSection,
 .patientLogbookSection {
   margin-top: 30px;
-  max-width: 820px;
 }
 
 .patientProgramHeader,
 .patientLogbookTop {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14vw;
   margin-bottom: 18px;
+}
+
+.patientLogbookTop {
+  justify-content: space-between;
 }
 
 .patientProgramHeader h3,
@@ -501,7 +528,7 @@ height: 35px !important;
 
 .patientProgramGrid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1fr 1fr;
   gap: 22px;
   align-items: start;
 }
@@ -571,8 +598,8 @@ height: 35px !important;
 }
 
 .calendarDay span {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -584,17 +611,23 @@ height: 35px !important;
 }
 
 .calendarDay.is-active span {
-  background: #2bb39b;
-  color: #ffffff;
+  background: black;
+  color: white;
 }
 
-.is-today {
-  color: red;
+.calendarDay.is-today span {
+  color:  #2bb39b;
+  font-weight: 600;
+}
+
+.calendarDay.is-active.is-today span {
+  color: white;
+  background-color: #2bb39b;
+  font-weight: 600;
 }
 
 .calendarDots {
   display: flex;
-  margin-top: 10px;
   margin-left: 6px;
 }
 
@@ -607,118 +640,221 @@ height: 35px !important;
   border: 2px solid #fff;
   margin-left: -6px;
 }
-
 .programExerciseList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .programExerciseCard {
-  border: 1px solid #dddddd;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #dbe5e1;
+  background: #fff;
   border-radius: 8px;
-  background: #ffffff;
-  padding: 12px;
-  display: grid;
-  grid-template-columns: 72px 1fr auto;
-  gap: 14px;
-  align-items: start;
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.18s ease;
 }
 
-.programExerciseCard img {
-  width: 72px;
-  height: 72px;
+.programExerciseThumb {
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
-.programExerciseInfo strong {
+.programExerciseContent {
+  min-width: 0;
+  flex: 1;
+}
+
+.programExerciseTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.programExerciseTopRow strong {
   display: block;
-  font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: 500;
-  color: #000000;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-.programExerciseTagRow {
+.programExerciseTopActions {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 8px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.programFavoriteBtn,
+.programDotsBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.programFavoriteBtn {
+  color: #ef6a6a;
+  font-size: 22px;
+}
+
+.programFavoriteBtn.is-completed {
+  color: #ef6a6a;
+}
+
+.programDotsBtn {
+  color: #111827;
+  font-size: 22px;
+  width: 20px;
+  text-align: center;
+}
+
+.programMenuWrap {
+  position: relative;
+}
+
+.programDropdownMenu {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  min-width: 230px;
+  background: #fff;
+  border: 1px solid #dfe7e3;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(17, 24, 39, 0.14);
+  padding: 8px;
+  z-index: 30;
+}
+
+.programDropdownMenu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.programDropdownMenu button:hover {
+  background: #FAF5EE;
+}
+
+.programExerciseMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .exerciseTag {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
+  height: 24px;
+  padding: 0 10px;
   border-radius: 999px;
-  font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  color: #000000;
+  font-size: 14px;
 }
 
 .exerciseTag--yellow {
-  background: #f3c547;
+  background: #ffe9aa;
+  color: #8c6500;
 }
 
 .exerciseTag--pink {
-  background: #eda5df;
+  background: #ffd5f0;
+  color: #b6338b;
 }
 
 .exerciseTag--blue {
-  background: #8bb8e8;
+  background: #d5efff;
+  color: #2470a8;
+}
+
+.exerciseTag--green {
+  background: #d7f5d9;
+  color: #1c8b52;
+}
+
+.programDifficultyIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.programExerciseContent p {
+  margin: 0;
+  color: #8b949e;
+  font-size: 14px;
 }
 
 .programBars {
-  color: #8bd9a0;
+  color: #18b39a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.programEmptyState {
+  border: 1px dashed #bfbfbf;
+  background: #f9fbfa;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.programEmptyState strong {
+  display: block;
   font-size: 16px;
-  letter-spacing: -1px;
+  margin-bottom: 6px;
 }
 
-.programExerciseInfo p {
-  margin: 8px 0 0;
-  font-family: "Cabinet Grotesk", sans-serif;
+.programEmptyState p {
+  margin: 0;
+  color: #6b7280;
   font-size: 14px;
-  line-height: 20px;
-  color: #9a9a9a;
-}
-
-.programExerciseActions {
-  color: #000000;
-  font-size: 20px;
-  line-height: 1;
-  white-space: nowrap;
 }
 
 .patientLogbookTop p {
-  margin: 10px 0 0;
-  max-width: 430px;
-  font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  color: #444444;
+  margin: 6px 0 0;
+  color: #757575;
+  font-size: 14px;
 }
 
 .patientNewNoteBtn {
   min-height: 38px;
   padding: 8px 24px;
   border-radius: 4px;
-  border: 2px solid #2bb39b;
-  background: #ffffff;
-  color: #2bb39b;
-  box-shadow: 0 2px 0 #1e7a6a;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
-  line-height: 20px;
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   cursor: pointer;
+  white-space: nowrap;
+  background: #2bb39b;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 0 #1e7a6a;
 }
 
 .logbookList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* flex-direction: column; */
   gap: 18px;
 }
 
@@ -738,17 +874,11 @@ height: 35px !important;
   line-height: 20px;
   color: #9a9a9a;
 }
-
 .logbookCard strong {
   display: block;
+  color: #111827;
   margin-top: 8px;
-  font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 500;
-  color: #000000;
 }
-
 .logbookCard p {
   margin: 14px 0 18px;
   max-width: 640px;
@@ -757,7 +887,6 @@ height: 35px !important;
   line-height: 26px;
   color: #333333;
 }
-
 .logbookFooter {
   padding-top: 14px;
   border-top: 1px solid #ececec;
@@ -771,84 +900,426 @@ height: 35px !important;
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 32px;
-  height: 32px;
+}
+
+.kineError {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #fff3f2;
+  color: #c94a43;
+  border: 1px solid #ffd7d3;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.kineDashLoading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+}
+
+.kineModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.34);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 4000;
+}
+
+.kineModal {
+  width: 100%;
+  max-width: 620px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 30px 80px rgba(17, 24, 39, 0.2);
+  overflow: hidden;
+}
+
+.kineModal--large {
+  max-width: 740px;
+}
+
+.kineModal--archive {
+  max-width: 520px;
+}
+
+.kineModal--addExercise,
+.kineModal--note,
+.kineModal--programEdit {
+  max-width: 540px;
+}
+
+.kineModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #edf2f0;
+}
+
+.kineModalHeader h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+}
+
+.kineModalClose {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.kineModalBody {
+  padding: 12px 24px;
+}
+
+.kineEditIntro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px ;
+}
+
+.kineEditAvatar {
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
-  background: #f5bfd7;
-  color: #ffffff;
+  background: linear-gradient(135deg, #0da68b 0%, #43c4a9 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.kineEditIntro span {
+  font-weight: 700;
+}
+
+.kineEditForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.kineEditFormGrid {
   display: grid;
-  place-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.kineField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kineField--half {
+  min-width: 0;
+}
+
+.kineField--full {
+  grid-column: 1 / -1;
+}
+
+.kineField label {
+  color: #111827;
   font-size: 16px;
+  font-weight: 700;
+  margin-top: 16px;
 }
 
-.kineModal--note {
-  min-width: 55vw;
-  margin-left: 15vw;
+.kineField input,
+.kineField textarea,
+.kineSelect {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid #d8e1dd;
+  background: #fff;
+  padding: 0 14px;
+  color: #111827;
+  font-size: 16px;
+  font-family: "cabinet grotesk", sans-serif;
+  outline: none;
 }
 
-@media (max-width: 960px) {
-  .kineModal--note {
-    min-width: 70vw;
-    margin-left: 0vw;
+.kineField textarea {
+  min-height: 100px;
+  height: auto;
+  padding: 14px;
+}
+
+.kineField input:focus,
+.kineField textarea:focus,
+.kineSelect:focus {
+  border: 1px solid black;
+}
+
+.kineModalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.kineTextAction {
+  border: none;
+  background: transparent;
+  color: #18b39a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary-large,
+.btn-primary-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  background: #18b39a;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(24, 179, 154, 0.18);
+}
+
+.btn-primary-large {
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 12px;
+}
+
+.btn-primary-small {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 12px;
+}
+
+.btn-primary-small img {
+  width: 14px;
+  height: 14px;
+}
+
+.btn-archive {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: none;
+  background: #111827;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.kineArchiveText {
+  margin: 0 0 22px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.kineArchiveActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1200px) {
+  .patientProgramGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .exerciseCardList,
+  .logbookList {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 900px) {
+  .patientDetailsMain {
+    padding: 24px 18px 28px;
+  }
+
+  .patientDetailsTopbar,
+  .patientHeroTop,
+  .patientHeroBottom,
+  .patientStatsHeader,
+  .patientSectionHeader,
   .patientProgramHeader,
   .patientLogbookTop {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .patientProgramGrid {
+  .patientStatsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .patientHeroLeft {
+    align-items: flex-start;
+  }
+
+  .patientContactInfo {
+    align-items: flex-start;
+  }
+
+  .kineEditFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .kineField--full {
+    grid-column: auto;
   }
 }
 
-.kineModal--addExercise {
-  max-width: 620px;
+@media (max-width: 640px) {
+  .patientDetailsMain {
+    padding: 18px 14px 24px;
+  }
+
+  .patientHeroCard,
+  .patientStatsSection,
+  .patientProgressSection,
+  .patientExercisesSection,
+  .patientProgramSection,
+  .patientLogbookSection {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .patientHeroNameRow h1 {
+    font-size: 24px;
+  }
+
+  .patientAvatarBig {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+
+  .patientQrBox {
+    min-width: 100px;
+    min-height: 100px;
+    font-size: 16px;
+  }
+
+  .programExerciseCard {
+    align-items: flex-start;
+  }
+
+  .programExerciseThumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .programExerciseTopRow {
+    gap: 8px;
+  }
+
+  .programDropdownMenu {
+    right: -8px;
+    min-width: 210px;
+  }
+
+  .kineModalOverlay {
+    padding: 12px;
+  }
+
+  .kineModal {
+    border-radius: 8px;
+  }
+
+  .kineModalHeader,
+  .kineModalBody {
+    padding: 18px;
+  }
+
+  .kineModalFooter,
+  .kineArchiveActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-primary-large,
+  .btn-archive,
+  .patientNewNoteBtn,
+  .patientAddExerciseBtn {
+    width: 100%;
+  }
 }
 
-.kineSelect {
-  width: 100%;
-  height: 52px;
-  border: 1px solid #8f8f8f;
-  border-radius: 4px;
-  padding: 0 16px;
-  background: #ffffff;
-  color: #000000;
-  font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  outline: none;
+.kineModal--confirm {
+  max-width: 420px;
+  border-radius: 8px;
 }
 
-.calendarDay.is-today span {
-  color: #2bb39b;
-  font-weight: 700;
-}
-
-.calendarDay.is-active span {
-  background: #000;
-  color: #ffffff;
-}
-
-.calendarDay.is-active.is-today span {
-  background: #2bb39b;
-  color: #ffffff;
-}
-
-.programExerciseActionBtn, .programExerciseActionBtn img {
+.btn-danger {
+  background: #e45858;
+  color: white;
   border: none;
-  background: transparent;
-  line-height: 1;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
+  box-shadow: 0 4px 0 #c74646;
+  transition: 0.2s;
 }
 
-.programExerciseActions {
-  display: flex;
-  gap: 8px;
+.btn-danger p {
+  margin: 0;
+}
+
+.btn-danger:hover {
+  background: #d94c4c;
+}
+
+.btn-danger:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.kineModalBody p {
+  margin-bottom: 24px !important;
+  margin-top: 0;
+}
+
+.programExerciseCard.is-disabled {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.programExerciseCard.is-disabled:hover {
+  box-shadow: none;
+  background-color: #00000008;
+}
+
+.programExerciseCard.is-disabled .exerciseIconBtn,
+.programExerciseCard.is-disabled .programDotsBtn {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.programExerciseCard.is-disabled .programExerciseTopRow strong,
+.programExerciseCard.is-disabled .programExerciseContent p {
+  opacity: 0.8;
 }

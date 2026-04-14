@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import "../assets/css/patient-details.css";
@@ -21,6 +21,23 @@ function formatDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+function isPastOrCompleted(dateString, isCompleted) {
+  if (isCompleted) return true;
+
+  const today = startOfToday();
+  const date = new Date(dateString);
+  date.setHours(0, 0, 0, 0);
+
+  return date < today;
+}
+
+function formatDateForInput(dateValue) {
+  if (!dateValue) return "";
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().split("T")[0];
+}
+
 function getMonthLabel(date) {
   return date.toLocaleDateString("nl-BE", {
     month: "long",
@@ -33,7 +50,7 @@ function getCalendarDays(currentMonth) {
   const month = currentMonth.getMonth();
 
   const firstDayOfMonth = new Date(year, month, 1);
-  const startWeekday = (firstDayOfMonth.getDay() + 6) % 7; // maandag = 0
+  const startWeekday = (firstDayOfMonth.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const days = [];
@@ -87,15 +104,17 @@ function formatDateTime(value) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
 
-  return date.toLocaleDateString("nl-BE", {
-    day: "2-digit",
-    month: "short",
-  }) +
+  return (
+    date.toLocaleDateString("nl-BE", {
+      day: "2-digit",
+      month: "short",
+    }) +
     " · " +
     date.toLocaleTimeString("nl-BE", {
       hour: "2-digit",
       minute: "2-digit",
-    });
+    })
+  );
 }
 
 function getCategoryClass(category) {
@@ -104,6 +123,13 @@ function getCategoryClass(category) {
   if (category === "Kracht") return "exerciseTag--blue";
   if (category === "Balans") return "exerciseTag--green";
   return "exerciseTag--blue";
+}
+
+function getDifficultyIcon(difficulty) {
+  if (difficulty === "Makkelijk") return "/images/difficulty-easy.svg";
+  if (difficulty === "Gemiddeld") return "/images/difficulty-medium.svg";
+  if (difficulty === "Moeilijk") return "/images/difficulty-hard.svg";
+  return "/images/difficulty-easy.svg";
 }
 
 function startOfToday() {
@@ -119,17 +145,114 @@ function startOfWeekMonday(date = new Date()) {
   return d;
 }
 
+function getDaysBetween(start, end) {
+  const dates = [];
+  const current = new Date(start);
+
+  while (current <= end) {
+    dates.push(new Date(current));
+    current.setDate(current.getDate() + 1);
+  }
+
+  return dates;
+}
+
+function generateScheduledDates(startDateStr, endDateStr, repeat) {
+  if (!startDateStr) return [];
+
+  const start = new Date(startDateStr);
+  const end = endDateStr ? new Date(endDateStr) : new Date(startDateStr);
+
+  start.setHours(0, 0, 0, 0);
+  end.setHours(0, 0, 0, 0);
+
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return [];
+  if (end < start) return [];
+
+  const allDates = getDaysBetween(start, end);
+
+  // "Nooit" = elke dag tussen start en einde
+  if (repeat === "Nooit") {
+    return allDates.map((date) => formatDateKey(date));
+  }
+
+  // "Wekelijks" = zelfde weekdag als startdatum, elke 7 dagen
+  if (repeat === "Wekelijks") {
+    const dates = [];
+    const current = new Date(start);
+
+    while (current <= end) {
+      dates.push(formatDateKey(current));
+      current.setDate(current.getDate() + 7);
+    }
+
+    return dates.length > 0 ? dates : [formatDateKey(start)];
+  }
+
+  const allowedWeekdaysMap = {
+    "2x per week": [1, 4],
+    "3x per week": [1, 3, 5],
+    "4x per week": [1, 2, 4, 5],
+    "5x per week": [1, 2, 3, 4, 5],
+    "6x per week": [1, 2, 3, 4, 5, 6],
+  };
+
+  const allowedWeekdays = allowedWeekdaysMap[repeat] || [1];
+
+  const matchingDates = allDates
+    .filter((date) => allowedWeekdays.includes(date.getDay()))
+    .map((date) => formatDateKey(date));
+
+  return matchingDates.length > 0
+    ? matchingDates
+    : allDates.map((date) => formatDateKey(date));
+}
+
+function detectRepeatFromDates(dates) {
+  if (!dates || dates.length <= 1) return "Nooit";
+
+  const sortedDates = [...dates]
+    .map((date) => new Date(date))
+    .filter((date) => !Number.isNaN(date.getTime()))
+    .sort((a, b) => a - b);
+
+  if (sortedDates.length <= 1) return "Nooit";
+
+  const weekdayCounts = {};
+
+  for (const date of sortedDates) {
+    const weekday = date.getDay();
+    weekdayCounts[weekday] = (weekdayCounts[weekday] || 0) + 1;
+  }
+
+  const usedWeekdays = Object.keys(weekdayCounts).length;
+
+  if (usedWeekdays === 1) return "Wekelijks";
+  if (usedWeekdays === 2) return "2x per week";
+  if (usedWeekdays === 3) return "3x per week";
+  if (usedWeekdays === 4) return "4x per week";
+  if (usedWeekdays === 5) return "5x per week";
+  if (usedWeekdays >= 6) return "6x per week";
+
+  return "Nooit";
+}
+
 export default function PatientDetails() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
 
   const [userId, setUserId] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [favoriteExerciseIds, setFavoriteExerciseIds] = useState([]);
+  const [favoriteLoadingId, setFavoriteLoadingId] = useState(null);
+
 
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pageRefreshing, setPageRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [noteTitle, setNoteTitle] = useState("");
 
   const [activeTab, setActiveTab] = useState("overzicht");
 
@@ -154,6 +277,13 @@ export default function PatientDetails() {
   const [scheduledExercises, setScheduledExercises] = useState([]);
   const [exerciseActionLoadingId, setExerciseActionLoadingId] = useState(null);
 
+  const [openProgramMenuId, setOpenProgramMenuId] = useState(null);
+  const [editingProgramExercise, setEditingProgramExercise] = useState(null);
+  const [programStartDate, setProgramStartDate] = useState("");
+  const [programEndDate, setProgramEndDate] = useState("");
+  const [programRepeat, setProgramRepeat] = useState("Nooit");
+  const [savingProgramEdit, setSavingProgramEdit] = useState(false);
+
   const [notesEnabled, setNotesEnabled] = useState(true);
   const [notes, setNotes] = useState([]);
   const [showNoteModal, setShowNoteModal] = useState(false);
@@ -161,6 +291,7 @@ export default function PatientDetails() {
   const [noteText, setNoteText] = useState("");
   const [savingNote, setSavingNote] = useState(false);
   const [deletingNoteId, setDeletingNoteId] = useState(null);
+  const [noteToDelete, setNoteToDelete] = useState(null);
 
   const today = new Date();
 
@@ -168,6 +299,7 @@ export default function PatientDetails() {
     new Date(today.getFullYear(), today.getMonth(), 1)
   );
 
+  
   const [selectedDate, setSelectedDate] = useState(formatDateKey(today));
 
   const calendarDays = useMemo(() => getCalendarDays(currentMonth), [currentMonth]);
@@ -175,12 +307,30 @@ export default function PatientDetails() {
   useEffect(() => {
     initializePage();
   }, [id]);
-  
+
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+
+    if (location.state?.selectedDate) {
+      setSelectedDate(location.state.selectedDate);
+      const date = new Date(location.state.selectedDate);
+      if (!Number.isNaN(date.getTime())) {
+        setCurrentMonth(new Date(date.getFullYear(), date.getMonth(), 1));
+      }
+    }
+  }, [location.state]);
+
   useEffect(() => {
     if (userId) {
       loadNotesSafe(userId);
     }
   }, [profile, userId]);
+
+  useEffect(() => {
+    setOpenProgramMenuId(null);
+  }, [selectedDate, activeTab]);
 
   async function initializePage() {
     try {
@@ -221,6 +371,7 @@ export default function PatientDetails() {
         loadPatientExercises(),
         loadExerciseLibrary(),
         loadNotesSafe(user.id),
+        loadFavorites(user.id),
       ]);
     } catch (error) {
       console.error(error);
@@ -239,6 +390,7 @@ export default function PatientDetails() {
         loadPatientExercises(),
         loadExerciseLibrary(),
         loadNotesSafe(userId),
+        loadFavorites(userId),
       ]);
     } catch (error) {
       console.error(error);
@@ -263,6 +415,68 @@ export default function PatientDetails() {
     setPatient(data || null);
   }
 
+  async function toggleFavorite(exerciseId) {
+    if (!userId || !exerciseId) return;
+  
+    try {
+      setFavoriteLoadingId(exerciseId);
+      setErrorMessage("");
+  
+      const { data: existingFavorite, error: checkError } = await supabase
+        .from("favorite_exercises")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("exercise_id", exerciseId)
+        .maybeSingle();
+  
+      if (checkError) throw checkError;
+  
+      if (existingFavorite) {
+        const { error: deleteError } = await supabase
+          .from("favorite_exercises")
+          .delete()
+          .eq("user_id", userId)
+          .eq("exercise_id", exerciseId);
+  
+        if (deleteError) throw deleteError;
+  
+        setFavoriteExerciseIds((prev) =>
+          prev.filter((id) => id !== exerciseId)
+        );
+      } else {
+        const { error: insertError } = await supabase
+          .from("favorite_exercises")
+          .insert({
+            user_id: userId,
+            exercise_id: exerciseId,
+          });
+  
+        if (insertError) throw insertError;
+  
+        setFavoriteExerciseIds((prev) => [...prev, exerciseId]);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Favoriet aanpassen is mislukt.");
+    } finally {
+      setFavoriteLoadingId(null);
+    }
+  }
+
+  async function loadFavorites(currentUserId) {
+    const authUserId = currentUserId || userId;
+    if (!authUserId) return;
+  
+    const { data, error } = await supabase
+      .from("favorite_exercises")
+      .select("exercise_id")
+      .eq("user_id", authUserId);
+  
+    if (error) throw error;
+  
+    setFavoriteExerciseIds((data || []).map((item) => item.exercise_id));
+  }
+
   async function loadPatientExercises() {
     const { data, error } = await supabase
       .from("patient_exercises")
@@ -277,6 +491,7 @@ export default function PatientDetails() {
           id,
           title,
           category,
+          difficulty,
           duration_minutes,
           repetitions,
           image_url
@@ -303,21 +518,21 @@ export default function PatientDetails() {
 
   async function loadNotesSafe(currentUserId) {
     const authUserId = currentUserId || userId;
-  
+
     try {
       const { data, error } = await supabase
         .from("patient_notes")
-        .select("id, patient_id, author_id, note, created_at")
+        .select("id, patient_id, author_id, title, note, created_at")
         .eq("patient_id", id)
         .order("created_at", { ascending: false });
-  
+
       if (error) {
         console.error("patient_notes load error:", error);
         throw error;
       }
-  
+
       setNotesEnabled(true);
-  
+
       const notesWithAuthor = (data || []).map((item) => ({
         ...item,
         author: {
@@ -327,7 +542,7 @@ export default function PatientDetails() {
               : "Kinesist",
         },
       }));
-  
+
       setNotes(notesWithAuthor);
     } catch (error) {
       console.error("loadNotesSafe unexpected error:", error);
@@ -379,13 +594,39 @@ export default function PatientDetails() {
   function openNoteModal(note = null) {
     setEditingNote(note);
     setNoteText(note?.note || "");
+    setNoteTitle(note?.title || "");
     setShowNoteModal(true);
   }
 
   function closeNoteModal() {
     setEditingNote(null);
+    setNoteTitle("");
     setNoteText("");
     setShowNoteModal(false);
+  }
+
+  function openProgramEditModal(item) {
+    const relatedDates = scheduledExercises
+      .filter((exerciseItem) => exerciseItem.exercise_id === item.exercise_id)
+      .map((exerciseItem) => exerciseItem.scheduled_date)
+      .sort();
+
+    const start = relatedDates[0] || item.originalScheduledDate;
+    const end = relatedDates[relatedDates.length - 1] || item.originalScheduledDate;
+    const detectedRepeat = detectRepeatFromDates(relatedDates);
+
+    setEditingProgramExercise(item);
+    setProgramStartDate(formatDateForInput(start));
+    setProgramEndDate(formatDateForInput(end));
+    setProgramRepeat(detectedRepeat);
+    setOpenProgramMenuId(null);
+  }
+
+  function closeProgramEditModal() {
+    setEditingProgramExercise(null);
+    setProgramStartDate("");
+    setProgramEndDate("");
+    setProgramRepeat("Nooit");
   }
 
   async function handleAddExercise(e) {
@@ -421,6 +662,78 @@ export default function PatientDetails() {
     }
   }
 
+  async function handleSaveProgramEdit() {
+    if (!editingProgramExercise) return;
+  
+    try {
+      setSavingProgramEdit(true);
+      setErrorMessage("");
+  
+      if (!programStartDate || !programEndDate) {
+        setErrorMessage("Vul een start- en einddatum in.");
+        return;
+      }
+  
+      if (new Date(programEndDate) < new Date(programStartDate)) {
+        setErrorMessage("De einddatum mag niet voor de startdatum liggen.");
+        return;
+      }
+  
+      const scheduledDates = generateScheduledDates(
+        programStartDate,
+        programEndDate,
+        programRepeat
+      );
+  
+      if (scheduledDates.length === 0) {
+        setErrorMessage("Er konden geen oefendagen gegenereerd worden.");
+        return;
+      }
+  
+      // Eerst volledig bestaand programma van deze oefening verwijderen
+      const { error: deleteError } = await supabase
+        .from("patient_exercises")
+        .delete()
+        .eq("patient_id", id)
+        .eq("exercise_id", editingProgramExercise.exercise_id);
+  
+      if (deleteError) throw deleteError;
+  
+      // Daarna nieuw schema toevoegen
+      const rows = scheduledDates.map((date) => ({
+        patient_id: id,
+        exercise_id: editingProgramExercise.exercise_id,
+        scheduled_date: date,
+        is_completed: false,
+      }));
+  
+      const { error: insertError } = await supabase
+        .from("patient_exercises")
+        .insert(rows);
+  
+      if (insertError) throw insertError;
+  
+      await loadPatientExercises();
+  
+      setSelectedDate(programStartDate);
+      setCurrentMonth(
+        new Date(
+          new Date(programStartDate).getFullYear(),
+          new Date(programStartDate).getMonth(),
+          1
+        )
+      );
+  
+      setActiveTab("programma");
+      closeProgramEditModal();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Programma aanpassen is mislukt.");
+    } finally {
+      setSavingProgramEdit(false);
+    }
+  }
+
   async function handleToggleExerciseComplete(item) {
     try {
       setExerciseActionLoadingId(item.id);
@@ -437,6 +750,35 @@ export default function PatientDetails() {
     } catch (error) {
       console.error(error);
       setErrorMessage("Status van oefening wijzigen is mislukt.");
+    } finally {
+      setExerciseActionLoadingId(null);
+    }
+  }
+
+  async function handleRemoveExerciseFromProgram(exerciseItem) {
+    const confirmed = window.confirm(
+      "Wil je deze oefening verwijderen uit het programma?"
+    );
+    if (!confirmed) return;
+
+    try {
+      setExerciseActionLoadingId(exerciseItem.id);
+      setErrorMessage("");
+      setOpenProgramMenuId(null);
+
+      const { error } = await supabase
+        .from("patient_exercises")
+        .delete()
+        .eq("patient_id", id)
+        .eq("exercise_id", exerciseItem.exercise_id)
+        .gte("scheduled_date", exerciseItem.originalScheduledDate);
+
+      if (error) throw error;
+
+      await loadPatientExercises();
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Oefening verwijderen is mislukt.");
     } finally {
       setExerciseActionLoadingId(null);
     }
@@ -538,68 +880,80 @@ export default function PatientDetails() {
 
   async function handleSaveNote(e) {
     e.preventDefault();
-
-    const trimmed = noteText.trim();
-    if (!trimmed) {
+  
+    const trimmedTitle = noteTitle.trim();
+    const trimmedText = noteText.trim();
+  
+    if (!trimmedTitle) {
+      setErrorMessage("Een titel is verplicht.");
+      return;
+    }
+  
+    if (!trimmedText) {
       setErrorMessage("Een notitie mag niet leeg zijn.");
       return;
     }
-
+  
     if (!notesEnabled) {
       setErrorMessage("De tabel patient_notes bestaat nog niet.");
       return;
     }
-
+  
     try {
       setSavingNote(true);
       setErrorMessage("");
-
+  
       if (editingNote) {
         const { error } = await supabase
           .from("patient_notes")
           .update({
-            note: trimmed,
-            updated_at: new Date().toISOString(),
+            title: trimmedTitle,
+            note: trimmedText,
           })
           .eq("id", editingNote.id);
-
+  
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("patient_notes").insert({
-          patient_id: id,
-          author_id: userId,
-          note: trimmed,
-        });
-
+        const { error } = await supabase
+          .from("patient_notes")
+          .insert({
+            patient_id: id,
+            author_id: userId,
+            title: trimmedTitle,
+            note: trimmedText,
+          });
+  
         if (error) throw error;
       }
-
+  
       await loadNotesSafe(userId);
       closeNoteModal();
     } catch (error) {
-      console.error(error);
-      setErrorMessage("Notitie opslaan is mislukt.");
+      console.error("handleSaveNote error:", error);
+      setErrorMessage(error.message || "Notitie opslaan is mislukt.");
     } finally {
       setSavingNote(false);
     }
   }
 
   async function handleDeleteNote(noteId) {
-    const confirmed = window.confirm("Wil je deze notitie verwijderen?");
-    if (!confirmed) return;
-
     try {
       setDeletingNoteId(noteId);
       setErrorMessage("");
-
+  
       const { error } = await supabase
         .from("patient_notes")
         .delete()
         .eq("id", noteId);
-
+  
       if (error) throw error;
-
+  
       await loadNotesSafe(userId);
+  
+      setNoteToDelete(null);
+      setShowNoteModal(false);
+      setEditingNote(null);
+      setNoteText("");
     } catch (error) {
       console.error(error);
       setErrorMessage("Notitie verwijderen is mislukt.");
@@ -620,8 +974,11 @@ export default function PatientDetails() {
 
       grouped[dateKey].push({
         id: item.id,
+        exercise_id: item.exercise_id,
+        originalScheduledDate: item.scheduled_date,
         title: item.exercise?.title || "",
         category: item.exercise?.category || "",
+        difficulty: item.exercise?.difficulty || "Makkelijk",
         duration: item.exercise?.duration_minutes
           ? `${item.exercise.duration_minutes} min`
           : "-",
@@ -631,6 +988,7 @@ export default function PatientDetails() {
         image: item.exercise?.image_url || "/images/exercise-1.png",
         tagClass: getCategoryClass(item.exercise?.category),
         is_completed: !!item.is_completed,
+        is_locked: isPastOrCompleted(item.scheduled_date, item.is_completed),
       });
     }
 
@@ -788,7 +1146,7 @@ export default function PatientDetails() {
           <div className="patientTopActions">
             <button
               type="button"
-              className="btn-primary-small"
+              className="btn-edit"
               onClick={openEditModal}
             >
               <img src="/images/edit.svg" alt="" />
@@ -855,7 +1213,10 @@ export default function PatientDetails() {
 
         <section className="patientStatsSection">
           <div className="patientStatsHeader">
-            <h2>Weekstatus</h2>
+            <h2>Status</h2>
+            <button type="button" className="patientFilterBtn">
+              deze week
+            </button>
           </div>
 
           <div className="patientStatsGrid">
@@ -1064,9 +1425,6 @@ export default function PatientDetails() {
                     const isSelected = selectedDate === dateKey;
                     const isToday = dateKey === formatDateKey(today);
                     const dayExercises = exerciseSchedule[dateKey] || [];
-                    const completedCount = dayExercises.filter(
-                      (item) => item.is_completed
-                    ).length;
 
                     return (
                       <button
@@ -1100,55 +1458,121 @@ export default function PatientDetails() {
                   </div>
                 ) : (
                   selectedExercises.map((exercise) => (
-                    <div key={exercise.id} className="programExerciseCard">
-                      <img src={exercise.image} alt="" />
+                    <div
+                        key={exercise.id}
+                        className={`programExerciseCard ${exercise.is_locked ? "is-disabled" : ""}`}
+                        onClick={() => {
+                          if (exercise.is_locked) return;
 
-                      <div className="programExerciseInfo">
-                        <strong>{exercise.title}</strong>
+                          navigate(
+                            `/kinesist/oefeningen/${exercise.exercise_id}?patientId=${id}`
+                          );
+                        }}
+                      >
+                      <img
+                        className="programExerciseThumb"
+                        src={exercise.image}
+                        alt={exercise.title}
+                      />
 
-                        <div className="programExerciseTagRow">
+                      <div className="programExerciseContent">
+                        <div className="programExerciseTopRow">
+                          <strong>{exercise.title}</strong>
+
+                          <div
+                            className="programExerciseTopActions"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                           <button
+                                  type="button"
+                                  className="exerciseIconBtn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (exercise.is_locked) return;
+                                    toggleFavorite(exercise.exercise_id);
+                                  }}
+                                  disabled={favoriteLoadingId === exercise.exercise_id || exercise.is_locked}
+                                  title={
+                                    exercise.is_locked
+                                      ? "Deze oefening kan niet meer aangepast worden"
+                                      : "Favoriet"
+                                  }
+                                >
+                              <img
+                                src={
+                                  favoriteExerciseIds.includes(exercise.exercise_id)
+                                    ? "/images/favorite-filled.svg"
+                                    : "/images/favorite.svg"
+                                }
+                                alt="Favoriet"
+                              />
+                            </button>
+                            <div className="programMenuWrap">
+                            <button
+                                type="button"
+                                className="programDotsBtn"
+                                onClick={() => {
+                                  if (exercise.is_locked) return;
+
+                                  setOpenProgramMenuId((prev) =>
+                                    prev === exercise.id ? null : exercise.id
+                                  );
+                                }}
+                                disabled={exercise.is_locked}
+                                title={
+                                  exercise.is_locked
+                                    ? "Deze oefening kan niet meer aangepast worden"
+                                    : "Meer acties"
+                                }
+                              > 
+                                ⋯
+                              </button>
+
+                              {openProgramMenuId === exercise.id && !exercise.is_locked && (
+                                <div className="programDropdownMenu">
+                                  <button
+                                    type="button"
+                                    onClick={() => openProgramEditModal(exercise)}
+                                  >
+                                    <span>✏️</span>
+                                    <span>Programma aanpassen</span>
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteExercise(exercise.id)}
+                                  >
+                                    <span>🗑️</span>
+                                    <span> Oefening verwijderen</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveExerciseFromProgram(exercise)}
+                                  >
+                                    <span>❌</span>
+                                    <span> Volledig programma verwijderen</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="programExerciseMetaRow">
                           <span className={`exerciseTag ${exercise.tagClass}`}>
                             {exercise.category}
                           </span>
-                          <span className="programBars">
-                            {exercise.is_completed ? "Voltooid" : ""}
-                          </span>
+
+                          <img
+                            className="programDifficultyIcon"
+                            src={getDifficultyIcon(exercise.difficulty)}
+                            alt={exercise.difficulty}
+                          />
                         </div>
 
                         <p>
                           {exercise.duration} · {exercise.reps}
                         </p>
-                      </div>
-
-                      <div className="programExerciseActions">
-                        <button
-                          type="button"
-                          className="programExerciseActionBtn"
-                          onClick={() =>
-                            handleToggleExerciseComplete({
-                              id: exercise.id,
-                              is_completed: exercise.is_completed,
-                            })
-                          }
-                          disabled={exerciseActionLoadingId === exercise.id}
-                          title={
-                            exercise.is_completed
-                              ? "Markeer als niet voltooid"
-                              : "Markeer als voltooid"
-                          }
-                        >
-                          {/* {exercise.is_completed ? "↺" : "✓"} */}
-                        </button>
-
-                        <button
-                          type="button"
-                          className="programExerciseActionBtn"
-                          onClick={() => handleDeleteExercise(exercise.id)}
-                          disabled={exerciseActionLoadingId === exercise.id}
-                          title="Verwijderen"
-                        >
-                          ×
-                        </button>
                       </div>
                     </div>
                   ))
@@ -1209,28 +1633,13 @@ export default function PatientDetails() {
                           cursor: "pointer",
                         }}
                       >
-                        ✎
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteNote(note.id)}
-                        disabled={deletingNoteId === note.id}
-                        style={{
-                          border: "none",
-                          background: "transparent",
-                          cursor: "pointer",
-                        }}
-                      >
-                        🗑
+                        <img src="/images/edit-pink.svg" alt="" />
                       </button>
                     </div>
 
-                    <small>{formatDateTime(note.updated_at || note.created_at)}</small>
-                    <strong>
-                      {note.updated_at ? "Bijgewerkte notitie" : "Notitie"}
-                    </strong>
-                    <p>{note.note}</p>
+                    <small>{formatDateTime(note.created_at)}</small>
+                    <strong>{note.title || "Notitie"}</strong>
+                    <p>{note.note}</p>                    
                     <div className="logbookFooter">
                       {note.author?.full_name || profile?.full_name || "Kinesist"}
                     </div>
@@ -1459,6 +1868,84 @@ export default function PatientDetails() {
         </div>
       )}
 
+      {editingProgramExercise && (
+        <div className="kineModalOverlay" onClick={closeProgramEditModal}>
+          <div
+            className="kineModal kineModal--programEdit"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="kineModalHeader">
+              <h3>{editingProgramExercise.title}</h3>
+              <button
+                type="button"
+                className="kineModalClose"
+                onClick={closeProgramEditModal}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="kineModalBody">
+              <div className="kineEditFormGrid">
+                <div className="kineField kineField--half">
+                  <label>Start</label>
+                  <input
+                    type="date"
+                    value={programStartDate}
+                    onChange={(e) => setProgramStartDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="kineField kineField--half">
+                  <label>Einde</label>
+                  <input
+                    type="date"
+                    value={programEndDate}
+                    onChange={(e) => setProgramEndDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="kineField kineField--full">
+                  <label>Herhaal</label>
+                  <select
+                    className="kineSelect"
+                    value={programRepeat}
+                    onChange={(e) => setProgramRepeat(e.target.value)}
+                  >
+                    <option value="Nooit">Nooit</option>
+                    <option value="Wekelijks">Wekelijks</option>
+                    <option value="2x per week">2x per week</option>
+                    <option value="3x per week">3x per week</option>
+                    <option value="4x per week">4x per week</option>
+                    <option value="5x per week">5x per week</option>
+                    <option value="6x per week">6x per week</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="kineModalFooter">
+                <button
+                  type="button"
+                  className="kineTextAction"
+                  onClick={closeProgramEditModal}
+                >
+                  Annuleren
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-primary-large"
+                  onClick={handleSaveProgramEdit}
+                  disabled={savingProgramEdit}
+                >
+                  {savingProgramEdit ? "Opslaan..." : "Opslaan"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showNoteModal && (
         <div className="kineModalOverlay" onClick={closeNoteModal}>
           <div
@@ -1479,14 +1966,22 @@ export default function PatientDetails() {
             <div className="kineModalBody">
               <form className="kineEditForm" onSubmit={handleSaveNote}>
                 <div className="kineField">
-                  <label>Notitie</label>
+                  <label>Titel</label>
+                  <input
+                    type="text"
+                    className="noteTitle"
+                    value={noteTitle}
+                    onChange={(e) => setNoteTitle(e.target.value)}
+                    placeholder="Geef je notitie een titel"
+                  />
+                  <label>Beschrijving</label>
                   <textarea
                     value={noteText}
                     onChange={(e) => setNoteText(e.target.value)}
                     rows={7}
                     style={{
                       width: "100%",
-                      borderRadius: 12,
+                      borderRadius: 8,
                       padding: 14,
                       border: "1px solid #d8d8d8",
                       resize: "vertical",
@@ -1496,13 +1991,25 @@ export default function PatientDetails() {
                 </div>
 
                 <div className="kineModalFooter">
-                  <button
-                    type="button"
-                    className="kineTextAction"
-                    onClick={closeNoteModal}
-                  >
-                    Annuleren
-                  </button>
+                  {editingNote ? (
+                    <button
+                      type="button"
+                      className="kineTextAction"
+                      onClick={() => setNoteToDelete(editingNote)}
+                      disabled={deletingNoteId === editingNote.id}
+                    >
+                      {deletingNoteId === editingNote.id ? "Verwijderen..." : "Verwijderen"}
+                      
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="kineTextAction"
+                      onClick={closeNoteModal}
+                    >
+                      Annuleren
+                    </button>
+                  )}
 
                   <button
                     type="submit"
@@ -1511,12 +2018,61 @@ export default function PatientDetails() {
                   >
                     {savingNote ? "Opslaan..." : "Opslaan"}
                   </button>
-                </div>
-              </form>
+                </div>              
+                </form>
             </div>
           </div>
         </div>
       )}
+      {noteToDelete && (
+  <div
+    className="kineModalOverlay"
+    onClick={() => setNoteToDelete(null)}
+  >
+    <div
+      className="kineModal kineModal--confirm"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="kineModalHeader">
+        <h3>Verwijder notitie</h3>
+        <button
+          type="button"
+          className="kineModalClose"
+          onClick={() => setNoteToDelete(null)}
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="kineModalBody">
+        <p style={{ marginBottom: 24 }}>
+          Ben je zeker dat je deze notitie wil verwijderen?
+        </p>
+
+        <div className="kineModalFooter">
+          <button
+            type="button"
+            className="kineTextAction"
+            onClick={() => setNoteToDelete(null)}
+          >
+            Annuleren
+          </button>
+
+          <button
+            type="button"
+            className="btn-danger"
+            onClick={() => handleDeleteNote(noteToDelete.id)}
+            disabled={deletingNoteId === noteToDelete.id}
+          >
+            {deletingNoteId === noteToDelete.id
+              ? "Verwijderen..."
+              : "Verwijderen"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

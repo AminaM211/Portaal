@@ -28,10 +28,15 @@ export default function KineSidebar({ onLogout }) {
           <span>Oefeningen</span>
         </NavLink>
 
-        <button type="button" className="kineSidebarLink">
+        <NavLink
+          to="/kinesist/settings"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
           <img src="/images/sidebar-settings.svg" alt="" />
           <span>Instellingen</span>
-        </button>
+        </NavLink>
       </nav>
 
       <button type="button" className="kineSidebarLogout" onClick={onLogout}>

@@ -89,9 +89,9 @@
 .kineDashHeading h1 {
   margin: 0;
   font-family: "Nunito", sans-serif;
-  font-size: 56px;
+  font-size: 40px;
   line-height: 61px;
-  font-weight: 800;
+  font-weight: 700;
   color: #000000;
 }
 
@@ -505,7 +505,7 @@
   }
 
   .kineDashHeading h1 {
-    font-size: 40px;
+    font-size: 32px;
     line-height: 44px;
   }
 
