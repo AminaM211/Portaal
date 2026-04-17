@@ -94,7 +94,7 @@ export default function LoginPage() {
         <div className="header-right">
           <span>Praktijk nog niet geregistreerd?</span>
           <a
-            href="https://jouwdomein.be"
+            href="https://nimbli.be/onboarding.html"
             className="btn-primary"
             target="_blank"
             rel="noreferrer"
@@ -153,7 +153,11 @@ export default function LoginPage() {
           <div className="code-section">
             <p>Heb je een code gekregen van je kinesist?</p>
 
-            <button className="btn-outline">
+            <button
+              type= "button" 
+              className="btn-outline"
+              onClick={() => navigate("/ouder/activatie")}
+            >
               Aanmelden met code
             </button>
           </div>

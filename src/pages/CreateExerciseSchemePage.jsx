@@ -463,6 +463,7 @@ const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
               </div>
             </div>
 
+
             <div className="schemeBuilderRight">
               <h3 className="schemeAssignedTitle">
                 Toegewezen ({selectedExercises.length} oefeningen):

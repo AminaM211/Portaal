@@ -10,6 +10,8 @@ import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
 import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
+import ParentActivationFlow from "./pages/ParentActivationFlow";
+
 
 export default function App() {
   return (
@@ -24,7 +26,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/kinesist/settings"
         element={
@@ -33,7 +34,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/kinesist/oefeningen"
         element={
@@ -42,7 +42,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/kinesist/oefeningen/schema/nieuw"
         element={
@@ -51,8 +50,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-
       <Route
         path="/kinesist/oefeningen/:id"
         element={
@@ -61,7 +58,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route path="/kinesist/settings/team-upgrade" element={<TeamUpgradeFlow />} />
 
       <Route
@@ -72,7 +68,6 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/patient/:id"
         element={
@@ -81,15 +76,14 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
-      <Route
-        path="/kinesist/patient/new"
-        element={
-          <ProtectedRoute allowedRole="kinesist">
-            <NewPatientFlow />
-          </ProtectedRoute>
-        }
+      <Route path="/kinesist/patient/new"element={<ProtectedRoute allowedRole="kinesist">
+        <NewPatientFlow />
+      </ProtectedRoute>}
       />
+
+      <Route path="/ouder/activatie" element={<ParentActivationFlow />} />
+      <Route path="/ouder/dashboard" element={<ParentDashboard />} />
+      {/* <Route path="/kind/dashboard" element={<ChildDashboard />} /> */}
     </Routes>
   );
 }
