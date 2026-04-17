@@ -1008,6 +1008,7 @@ export default function PatientDetails() {
         image: item.exercise?.image_url || "/images/exercise-1.png",
         tagClass: getCategoryClass(item.exercise?.category),
         is_completed: !!item.is_completed,
+        is_past: new Date(item.scheduled_date) < startOfToday(),
         is_locked: isPastOrCompleted(item.scheduled_date, item.is_completed),
       });
     }
@@ -1480,7 +1481,11 @@ export default function PatientDetails() {
                   selectedExercises.map((exercise) => (
                     <div
                         key={exercise.id}
-                        className={`programExerciseCard ${exercise.is_locked ? "is-disabled" : ""}`}
+                        className={`programExerciseCard ${
+                          exercise.is_past ? "is-past" : ""
+                        } ${exercise.is_completed ? "is-completed" : ""} ${
+                          exercise.is_locked ? "is-disabled" : ""
+                        }`}                        
                         onClick={() => {
                           if (exercise.is_locked) return;
 
@@ -1489,6 +1494,12 @@ export default function PatientDetails() {
                           );
                         }}
                       >
+                        {exercise.is_completed && (
+                        <div className="exerciseCompletedBadge">
+                          <p>✓</p> 
+                          <p>Voltooid</p>
+                        </div>
+                      )}
                       <img
                         className="programExerciseThumb"
                         src={exercise.image}

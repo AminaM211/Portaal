@@ -168,7 +168,11 @@ async function handleCreatePatient() {
           <div className="flowContent">
             <h1>Patiënt toegevoegd!</h1>
             <p>Deel deze activatiecode met de ouder(s): </p>
-            <div className="codeBox">{activationCode}</div>
+            <div className="codeBox">
+              <img src="/images/copy.svg" alt="" />
+              <p>{activationCode}</p>
+              </div>
+
             <p>Je kunt de activatiecode ook later terugvinden in het profiel van de patiënt.</p>
 
             <div className="instructions">
@@ -176,38 +180,40 @@ async function handleCreatePatient() {
               <ol>
                 <li>Ga naar het nimbli portaal op je browser.</li>
                 <li>Open de app en kies "Aanmelden met code"</li>
-                <li>Voer de activatiecode {activationCode} in.</li>
+                <li>Voer de activatiecode <span className="code">{activationCode}</span> in.</li>
               </ol>
             </div>
 
             <div className="share">
               <h4>Delen</h4>
-              <button
-                className="btn-secondary"
-                onClick={() => navigator.clipboard.writeText(activationCode)}
-              >
-                <img src="images/QR-code.svg" alt="" />
-                QR-code
-              </button>
-              <a
-                href={`mailto:?subject=Activatiecode voor Nimbli&body=Gebruik deze activatiecode om het profiel van ${form.firstName} te activeren in de Nimbli app: ${activationCode}`}
-                className="btn-secondary"
-              >
-                <img src="images/mail.svg" alt="" />
-                E-mail
-              </a>
-              <a
-                href={`mailto:?subject=Activatiecode voor Nimbli&body=Gebruik deze activatiecode om het profiel van ${form.firstName} te activeren in de Nimbli app: ${activationCode}`}
-                className="btn-secondary"
-              >
-                <img src="images/icon-patients.svg" alt="" />
-                SMS
-              </a>
-            </div>
+              <div className="share-options">
+                <button
+                  className="btn-secondary"
+                  onClick={() => navigator.clipboard.writeText(activationCode)}
+                >
+                  <img src="/images/QR-code.svg" alt="" />
+                  QR-code
+                </button>
+                <a
+                  href={`mailto:?subject=Activatiecode voor Nimbli&body=Gebruik deze activatiecode om het profiel van ${form.firstName} te activeren in de Nimbli app: ${activationCode}`}
+                  className="btn-secondary"
+                >
+                  <img src="/images/mail.svg" alt="" />
+                  E-mail
+                </a>
+                <a
+                  href={`mailto:?subject=Activatiecode voor Nimbli&body=Gebruik deze activatiecode om het profiel van ${form.firstName} te activeren in de Nimbli app: ${activationCode}`}
+                  className="btn-secondary"
+                >
+                  <img src="/images/sms.svg" alt="" />
+                  SMS
+                </a>
+              </div>
+              </div>
 
-            <button className="btn-primary" onClick={() => navigate("/kinesist/dashboard")}>
-              Terug naar dashboard
-            </button>
+              <button className="btn-primary" onClick={() => navigate("/kinesist/dashboard")}>
+                Terug naar dashboard
+              </button>
           </div>
         )}
       </main>

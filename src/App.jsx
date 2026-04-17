@@ -9,6 +9,7 @@ import SettingsPage from "./pages/SettingsPage";
 import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
 import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
+import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
 
 export default function App() {
   return (
@@ -41,6 +42,16 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/kinesist/oefeningen/schema/nieuw"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <CreateExerciseSchemePage />
+          </ProtectedRoute>
+        }
+      />
+
 
       <Route
         path="/kinesist/oefeningen/:id"

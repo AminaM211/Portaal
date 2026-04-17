@@ -2,7 +2,9 @@
   padding: 48px 40px 48px 24px;
   background: #ffffff;
   min-height: 100vh;
+  max-width: 1400px;
 }
+
 
 .patientDetailsTopbar {
   display: flex;
@@ -215,6 +217,7 @@
 
 .patientStatsSection {
   margin-top: 44px;
+  max-width: 1000px;
 }
 
 .patientStatsHeader,
@@ -487,6 +490,7 @@
 .patientProgramSection,
 .patientLogbookSection {
   margin-top: 30px;
+  max-width: 1000px;
 }
 
 .patientProgramHeader,
@@ -1311,23 +1315,39 @@
   margin-top: 0;
 }
 
-.programExerciseCard.is-disabled {
-  opacity: 0.8;
-  cursor: default;
+
+.programExerciseCard.is-past {
+  opacity: 0.7;
 }
 
-.programExerciseCard.is-disabled:hover {
-  box-shadow: none;
-  background-color: #00000008;
+.programExerciseCard.is-completed {
+  border: 1px solid #29BA2F;
+  background-color: #29ba2e0f;
+  opacity: 1;
 }
 
-.programExerciseCard.is-disabled .exerciseIconBtn,
-.programExerciseCard.is-disabled .programDotsBtn {
-  cursor: not-allowed;
-  opacity: 0.8;
+.exerciseCompletedBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  background: #2eb85c;
+  color: white;
+
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  z-index: 999;
 }
 
-.programExerciseCard.is-disabled .programExerciseTopRow strong,
-.programExerciseCard.is-disabled .programExerciseContent p {
-  opacity: 0.8;
+.exerciseCompletedBadge p {
+  margin: 0;
 }

@@ -119,6 +119,7 @@
       color: var(--ink);
       background: var(--bg);
       font-family: 'Cabinet Grotesk', system-ui, sans-serif;
+      max-width: 1200px !important;
     }
 
 

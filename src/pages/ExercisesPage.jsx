@@ -5,6 +5,21 @@ import KineSidebar from "../components/KineSidebar";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
 
+function getCategoryClass(categoryName) {
+  if (categoryName === "Mobiliteit") return "exerciseTag--yellow";
+  if (categoryName === "Flexibiliteit") return "exerciseTag--pink";
+  if (categoryName === "Balans") return "exerciseTag--blue";
+  if (categoryName === "Kracht") return "exerciseTag--green";
+  return "exerciseTag--yellow";
+}
+
+function getDifficultyIcon(difficulty) {
+  if (difficulty === "Makkelijk") return "/images/difficulty-easy.svg";
+  if (difficulty === "Gemiddeld") return "/images/difficulty-medium.svg";
+  if (difficulty === "Moeilijk") return "/images/difficulty-hard.svg";
+  return "/images/difficulty-easy.svg";
+}
+
 export default function ExercisesPage() {
   const navigate = useNavigate();
 
@@ -33,6 +48,7 @@ export default function ExercisesPage() {
       } = await supabase.auth.getUser();
 
       if (authError) throw authError;
+
       if (!user) {
         navigate("/");
         return;
@@ -78,7 +94,7 @@ export default function ExercisesPage() {
 
       setLibraryExercises(libraryRes.data || []);
       setMyExercises(myRes.data || []);
-      setFavoriteIds((favoritesRes.data || []).map((f) => f.exercise_id));
+      setFavoriteIds((favoritesRes.data || []).map((item) => item.exercise_id));
       setExerciseSchemes(schemesRes.data || []);
     } catch (error) {
       console.error(error);
@@ -97,6 +113,8 @@ export default function ExercisesPage() {
     const isFavorite = favoriteIds.includes(exerciseId);
 
     try {
+      setErrorMessage("");
+
       if (isFavorite) {
         const { error } = await supabase
           .from("favorite_exercises")
@@ -123,14 +141,6 @@ export default function ExercisesPage() {
     }
   }
 
-  function getCategoryClass(categoryName) {
-    if (categoryName === "Mobiliteit") return "exerciseTag--yellow";
-    if (categoryName === "Flexibiliteit") return "exerciseTag--pink";
-    if (categoryName === "Balans") return "exerciseTag--blue";
-    if (categoryName === "Kracht") return "exerciseTag--green";
-    return "exerciseTag--yellow";
-  }
-
   const activeDataset = useMemo(() => {
     if (tab === "bibliotheek") return libraryExercises;
     if (tab === "jouw-oefeningen") return myExercises;
@@ -140,7 +150,13 @@ export default function ExercisesPage() {
   const filteredExercises = useMemo(() => {
     return activeDataset.filter((exercise) => {
       const title = exercise.title || "";
-      const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
+      const description = exercise.description || "";
+      const normalizedSearch = search.trim().toLowerCase();
+
+      const matchesSearch =
+        normalizedSearch === "" ||
+        title.toLowerCase().includes(normalizedSearch) ||
+        description.toLowerCase().includes(normalizedSearch);
 
       const matchesCategory =
         category === "Alles" ||
@@ -177,16 +193,20 @@ export default function ExercisesPage() {
         </div>
 
         <div className="exerciseCategoryFilters">
-          {["Alles", "Favorieten", "Balans", "Mobiliteit", "Kracht"].map((item) => (
-            <button
-              key={item}
-              type="button"
-              className={`exerciseCategoryBtn ${category === item ? "is-active" : ""}`}
-              onClick={() => setCategory(item)}
-            >
-              {item}
-            </button>
-          ))}
+          {["Alles", "Favorieten", "Balans", "Mobiliteit", "Flexibiliteit", "Kracht"].map(
+            (item) => (
+              <button
+                key={item}
+                type="button"
+                className={`exerciseCategoryBtn ${
+                  category === item ? "is-active" : ""
+                }`}
+                onClick={() => setCategory(item)}
+              >
+                {item}
+              </button>
+            )
+          )}
         </div>
 
         <div className="exerciseTabsRow">
@@ -224,106 +244,190 @@ export default function ExercisesPage() {
 
         {tab === "bibliotheek" && (
           <div className="exerciseLibraryGrid">
-            {filteredExercises.map((exercise) => (
-              <div key={exercise.id} className="exerciseLibraryCardWrap">
-                <button
-                  type="button"
-                  className="exerciseLibraryCard"
-                  onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
-                >
-                  <img src={exercise.image_url} alt="" />
-                  <div className="exerciseLibraryInfo">
-                    <strong>{exercise.title}</strong>
-
-                    <div className="exerciseCardMetaRow">
-                      <span className={`exerciseTag ${getCategoryClass(exercise.category)}`}>
-                        {exercise.category}
-                      </span>
-                      <span className="exerciseBars">▮▮▮</span>
-                    </div>
-
-                    <p>
-                      {exercise.duration_minutes} min · {exercise.repetitions} herhalingen
-                    </p>
-                  </div>
-                </button>
+            {filteredExercises.length === 0 ? (
+              <div className="exerciseEmptyState">
+                <strong>Geen oefeningen gevonden</strong>
+                <p>Probeer een andere zoekterm of filter.</p>
               </div>
-            ))}
+            ) : (
+              filteredExercises.map((exercise) => (
+                <div key={exercise.id} className="exerciseLibraryCardWrap">
+                  <a
+                    type="button"
+                    className="exerciseLibraryCard"
+                    onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
+                  >
+                    <button
+                      type="button"
+                      className="favIconBtn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(exercise.id);
+                      }}
+                    >
+                      <img
+                        src={
+                          favoriteIds.includes(exercise.id)
+                            ? "/images/favorite-filled.svg"
+                            : "/images/favorite.svg"
+                        }
+                        alt="Favoriet"
+                      />
+                    </button>
+
+                    <img
+                      className="exerciseLibraryThumb"
+                      src={exercise.image_url || "/images/exercise-1.png"}
+                      alt={exercise.title}
+                    />
+
+                    <div className="exerciseLibraryInfo">
+                      <strong>{exercise.title}</strong>
+
+                      <div className="exerciseCardMetaRow">
+                        <span
+                          className={`exerciseTag ${getCategoryClass(
+                            exercise.category
+                          )}`}
+                        >
+                          {exercise.category}
+                        </span>
+
+                        <img
+                          src={getDifficultyIcon(exercise.difficulty)}
+                          alt={exercise.difficulty || "Makkelijk"}
+                          className="exerciseDifficultyIcon"
+                        />
+                      </div>
+
+                      <p>
+                        {exercise.duration_minutes || 0} min ·{" "}
+                        {exercise.repetitions || 0} herhalingen
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              ))
+            )}
           </div>
         )}
 
         {tab === "jouw-oefeningen" && (
           <>
             <button type="button" className="exerciseCreateBtn">
-              Nieuwe oefening maken
+              Oefening toevoegen +
             </button>
 
             <div className="myExercisesGrid">
-              {filteredExercises.map((exercise) => (
-                <div key={exercise.id} className="myExerciseCardWrap">
-                  <button
-                    type="button"
-                    className="myExerciseCard"
-                    onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
-                  >
-                    <div className="myExerciseCardTop">
-                      <strong>{exercise.title}</strong>
-
-                      <button
-                        type="button"
-                        className="favIconBtn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(exercise.id);
-                        }}
-                      >
-                        {favoriteIds.includes(exercise.id) ? "♥" : "♡"}
-                      </button>
-                    </div>
-
-                    <img src={exercise.image_url} alt="" />
-
-                    <div className="exerciseCardMetaRow">
-                      <span className={`exerciseTag ${getCategoryClass(exercise.category)}`}>
-                        {exercise.category}
-                      </span>
-                      <span className="exerciseBars">▮▮▮</span>
-                    </div>
-
-                    <p>
-                      {exercise.duration_minutes} min · {exercise.repetitions} herhalingen
-                    </p>
-                  </button>
+              {filteredExercises.length === 0 ? (
+                <div className="exerciseEmptyState">
+                  <strong>Nog geen eigen oefeningen</strong>
+                  <p>Maak een eerste oefening om hier te tonen.</p>
                 </div>
-              ))}
+              ) : (
+                filteredExercises.map((exercise) => (
+                  <div key={exercise.id} className="myExerciseCardWrap">
+                    <button
+                      type="button"
+                      className="myExerciseCard"
+                      onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
+                    >
+                      <div className="myExerciseCardTop">
+                        <strong>{exercise.title}</strong>
+
+                        <button
+                          type="button"
+                          className="favIconBtn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(exercise.id);
+                          }}
+                        >
+                          <img
+                            src={
+                              favoriteIds.includes(exercise.id)
+                                ? "/images/favorite-filled.svg"
+                                : "/images/favorite.svg"
+                            }
+                            alt="Favoriet"
+                          />
+                        </button>
+                      </div>
+
+                      <div className="myExerciseImageWrap">
+                        <img
+                          src={exercise.image_url || "/images/exercise-1.png"}
+                          alt={exercise.title}
+                        />
+                        {exercise.video_url && (
+                          <div className="myExercisePlayOverlay">▶</div>
+                        )}
+                      </div>
+
+                      <div className="exerciseCardMetaRow">
+                        <span
+                          className={`exerciseTag ${getCategoryClass(
+                            exercise.category
+                          )}`}
+                        >
+                          {exercise.category}
+                        </span>
+
+                        <img
+                          src={getDifficultyIcon(exercise.difficulty)}
+                          alt={exercise.difficulty || "Makkelijk"}
+                          className="exerciseDifficultyIcon"
+                        />
+                      </div>
+
+                      <p>
+                        {exercise.duration_minutes || 0} min ·{" "}
+                        {exercise.repetitions || 0} herhalingen
+                      </p>
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </>
         )}
 
         {tab === "schema’s" && (
           <>
+            <button type="button" className="exerciseCreateBtn" onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}>
+              Nieuw oefenschema maken
+            </button>
             <p className="exerciseSchemesIntro">
               Bundels van oefeningen die je eenvoudig kan hergebruiken en
               toewijzen aan patiënten.
             </p>
-
-            <button type="button" className="exerciseCreateBtn">
-              Nieuw oefenschema maken
-            </button>
-
             <div className="exerciseSchemesGrid">
-              {exerciseSchemes.map((scheme) => (
-                <button key={scheme.id} type="button" className="exerciseSchemeCard">
-                  <div className="exerciseSchemeStack stack-1"></div>
-                  <div className="exerciseSchemeStack stack-2"></div>
+              {exerciseSchemes.length === 0 ? (
+                <div className="exerciseEmptyState">
+                  <strong>Nog geen oefenschema’s</strong>
+                  <p>Maak een eerste schema om hier te tonen.</p>
+                </div>
+              ) : (
+                exerciseSchemes.map((scheme) => (
+                  <button
+                    key={scheme.id}
+                    type="button"
+                    className="exerciseSchemeCard"
+                  >
+                    <div className="exerciseSchemeStack stack-1"></div>
+                    <div className="exerciseSchemeStack stack-2"></div>
 
-                  <div className="exerciseSchemeInner">
-                    <strong>{scheme.title}</strong>
-                    <img src={scheme.image_url || "/images/scheme-1.png"} alt="" />
-                    <p>{scheme.exercise_scheme_items?.length || 0} oefeningen</p>
-                  </div>
-                </button>
-              ))}
+                    <div className="exerciseSchemeInner">
+                      <strong>{scheme.title}</strong>
+                      <img
+                        src={scheme.image_url || "/images/scheme-1.png"}
+                        alt={scheme.title}
+                      />
+                      <p>{scheme.exercise_scheme_items?.length || 0} oefeningen</p>
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
           </>
         )}

@@ -4,6 +4,8 @@
   color: #000000;
   display: grid;
   grid-template-columns: 298px minmax(0, 1fr);
+  max-width: 1400px;
+
 }
 
 .kineSidebar {
@@ -740,9 +742,9 @@
 }
 
 .kineModal--large {
-  height: 80vh;
+ height: 80vh;
  min-width: 50vw;
- overflow-y: auto;
+ overflow-y: auto !important;
 
 }
 
@@ -901,10 +903,10 @@
 
 .btn-archive {
   padding: 8px 24px;
-  border-radius: 4px;
+  border-radius: 4px !important;
   border: none;
-  background: #f3c547;
-  color: #000000;
+  background: #f3c547 !important;
+  color: #000000 !important;
   box-shadow: 0 3px 0 #b58d22;
   font-family: "Nunito", sans-serif;
   font-size: 16px;
@@ -912,3 +914,4 @@
   font-weight: 800;
   cursor: pointer;
 }
+
