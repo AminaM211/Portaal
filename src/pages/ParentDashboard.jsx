@@ -145,17 +145,17 @@ export default function ParentDashboard() {
 
       setPatient(patientData);
 
-      if (patientData?.kinesist_id) {
-        const { data: kinesistData, error: kinesistError } = await supabase
-          .from("profiles")
-          .select("id, full_name, email, phone")
-          .eq("id", patientData.kinesist_id)
-          .single();
+      // if (patientData?.kinesist_id) {
+      //   const { data: kinesistData, error: kinesistError } = await supabase
+      //     .from("profiles")
+      //     .select("id, full_name, email, phone")
+      //     .eq("id", patientData.kinesist_id)
+      //     .single();
 
-        if (!kinesistError) {
-          setKinesistProfile(kinesistData);
-        }
-      }
+      //   if (!kinesistError) {
+      //     setKinesistProfile(kinesistData);
+      //   }
+      // }
 
       const { data: exerciseData, error: exerciseError } = await supabase
         .from("patient_exercises")
@@ -246,34 +246,42 @@ export default function ParentDashboard() {
     return weekDates.map((date) => {
       const key = formatDateKey(date);
       const items = scheduledExercises.filter((item) => item.scheduled_date === key);
-
+  
+      const isSunday = date.getDay() === 0;
+      if (isSunday) {
+        return {
+          key,
+          type: "sunday",
+        };
+      }
+  
       if (items.length === 0) {
         return {
           key,
           type: "empty",
         };
       }
-
+  
       const completedCount = items.filter((item) => item.is_completed).length;
-
+  
       if (completedCount === items.length) {
         return {
           key,
           type: "done",
         };
       }
-
+  
       const isToday = key === todayKey;
-
+  
       if (isToday) {
         return {
           key,
           type: "today",
         };
       }
-
+  
       const isPast = key < todayKey;
-
+  
       return {
         key,
         type: isPast ? "missed" : "pending",
@@ -319,31 +327,66 @@ export default function ParentDashboard() {
     };
   }, [scheduledExercises, todayKey]);
 
-  const categoryProgress = useMemo(() => {
-    const map = {};
+const categoryProgress = useMemo(() => {
+  const now = new Date();
 
-    for (const item of scheduledExercises) {
-      const category = item.exercise?.category || "Overig";
+  const last30Start = new Date();
+  last30Start.setDate(now.getDate() - 30);
 
-      if (!map[category]) {
-        map[category] = {
-          category,
-          total: 0,
-          completed: 0,
-        };
-      }
+  const prev30Start = new Date();
+  prev30Start.setDate(now.getDate() - 60);
 
-      map[category].total += 1;
+  const prev30End = new Date();
+  prev30End.setDate(now.getDate() - 30);
 
-      if (item.is_completed) {
-        map[category].completed += 1;
-      }
+  const map = {};
+
+  for (const item of scheduledExercises) {
+    const category = item.exercise?.category || "Overig";
+    const date = new Date(item.scheduled_date);
+
+    if (!map[category]) {
+      map[category] = {
+        category,
+        total: 0,
+        completed: 0,
+        last30: 0,
+        prev30: 0,
+      };
     }
 
-    return Object.values(map).map((entry) => ({
+    // totaal
+    map[category].total += 1;
+    if (item.is_completed) {
+      map[category].completed += 1;
+    }
+
+    // laatste 30 dagen
+    if (date >= last30Start && item.is_completed) {
+      map[category].last30 += 1;
+    }
+
+    // vorige 30 dagen
+    if (date >= prev30Start && date < prev30End && item.is_completed) {
+      map[category].prev30 += 1;
+    }
+  }
+
+  return Object.values(map).map((entry) => {
+    const percentage =
+      entry.total > 0
+        ? Math.round((entry.completed / entry.total) * 100)
+        : 0;
+
+    const diff = entry.last30 - entry.prev30;
+    const delta = entry.prev30 === 0
+      ? (entry.last30 > 0 ? "+100%" : "0%")
+      : `${diff >= 0 ? "+" : ""}${Math.round((diff / entry.prev30) * 100)}%`;
+
+    return {
       ...entry,
-      percentage:
-        entry.total > 0 ? Math.round((entry.completed / entry.total) * 100) : 0,
+      percentage,
+
       progressClass:
         entry.category === "Grofmotoriek"
           ? "progressBlue"
@@ -352,18 +395,12 @@ export default function ParentDashboard() {
           : entry.category === "Balans"
           ? "progressYellow"
           : "progressPurple",
-      delta:
-        entry.category === "Balans"
-          ? "-12%"
-          : entry.category === "Fijnmotoriek"
-          ? "+3%"
-          : entry.category === "Grofmotoriek"
-          ? "+23%"
-          : "+14%",
-      deltaClass:
-        entry.category === "Balans" ? "deltaNegative" : "deltaPositive",
-    }));
-  }, [scheduledExercises]);
+
+      delta,
+      deltaClass: diff < 0 ? "deltaNegative" : "deltaPositive",
+    };
+  });
+}, [scheduledExercises]);
 
   if (loading) {
     return (
@@ -432,9 +469,19 @@ export default function ParentDashboard() {
                 {weekStatus.map((item, index) => (
                   <div key={item.key} className="parentWeekDay">
                     <div className={`weekCircle ${item.type}`}>
-                      {item.type === "done" && "✓"}
-                      {item.type === "missed" && "✕"}
-                      {item.type === "today" && "⌖"}
+                      {item.type === "done" && (
+                        <img src="/images/check-weekoverzicht.svg" alt="Done" />
+                      )}
+                      {item.type === "missed" && (
+                        <img src="/images/cross-weekoverzicht.svg" alt="missed" />
+                      )}
+                      {item.type === "today" && (
+                        <img src="/images/target.svg" alt="today" />
+                      )}
+                      {item.type === "sunday" && (
+                        <img src="/images/present-streakday.svg" alt="Present on Sunday" />
+                      )}
+                  
                     </div>
                     <span>{getWeekdayLabel(index)}</span>
                   </div>
@@ -565,11 +612,6 @@ export default function ParentDashboard() {
                         </p>
                       </div>
 
-                      <img
-                        className="parentThreeDots"
-                        src="/images/dots.svg"
-                        alt=""
-                      />
                     </button>
                   ))
                 )}

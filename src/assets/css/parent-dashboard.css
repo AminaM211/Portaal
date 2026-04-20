@@ -50,7 +50,7 @@
   .parentCategoryCard {
     background: #fff;
     border: 1px solid #dfe3e8;
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.06);
   }
   
@@ -148,10 +148,10 @@
   }
   
   .parentWeekCard h2 {
-    margin: 0 0 18px;
-    font-size: 16px;
+    margin: 0 0 24px;
+    font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    font-family: "Cabinet Grotesk", sans-serif;
   }
   
   .parentWeekRow {
@@ -175,17 +175,18 @@
   }
   
   .weekCircle {
-    width: 34px;
-    height: 34px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
-    border: 2px solid #d1d5db;
-    background: #f3f4f6;
+    border: 1px solid #BDBDBD;
+    background: #E8EAEE;
     color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 800;
+    margin-bottom: 8px;
   }
   
   .weekCircle.done {
@@ -208,8 +209,8 @@
   
   .weekCircle.pending,
   .weekCircle.empty {
-    background: #ebedf0;
-    border-color: #cfd6dc;
+    border: 1px solid #BDBDBD;
+    background: #E8EAEE;
   }
   
   .parentStatusBlock {
@@ -224,10 +225,10 @@
   }
   
   .parentStatusHeader h2 {
-    margin: 0;
-    font-size: 16px;
+    margin: 0 0 24px;
+    font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    font-family: "Cabinet Grotesk", sans-serif;
   }
   
   .parentStatusFilter {
@@ -295,10 +296,10 @@
   }
   
   .parentCategoryHeader h2 {
-    margin: 0;
-    font-size: 16px;
+    margin: 0 0 24px;
+    font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    font-family: "Cabinet Grotesk", sans-serif;
   }
   
   .parentCategoryHeader span {
@@ -412,7 +413,7 @@
   .parentUpcomingCard {
     width: 100%;
     border: 1px solid #dfe3e8;
-    border-radius: 8px;
+    border-radius: 4px;
     background: #fff;
     padding: 12px;
     display: flex;
@@ -424,9 +425,8 @@
   }
   
   .parentUpcomingCard img:first-child {
-    width: 66px;
-    height: 66px;
-    border-radius: 8px;
+    width: 80px;
+    border-radius: 4px;
     object-fit: cover;
     flex-shrink: 0;
   }
@@ -446,7 +446,7 @@
   .parentUpcomingMeta {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
     margin-bottom: 8px;
   }
   
@@ -457,11 +457,11 @@
   }
   
   .parentThreeDots {
-    width: 16px !important;
-    height: 16px !important;
+    width: 24px !important;
+    height: 24px !important;
     object-fit: contain;
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: -3px;
   }
   
   .parentRecentCard {
@@ -499,7 +499,6 @@
     display: block;
     margin-bottom: 4px;
     font-size: 14px;
-    color: #111827;
   }
   
   .parentRecentInfo p {
@@ -520,7 +519,7 @@
   
   .parentEmptyState {
     border: 1px dashed #d7dde3;
-    border-radius: 8px;
+    border-radius: 4px;
     background: #fff;
     padding: 16px;
   }
@@ -529,7 +528,6 @@
     display: block;
     margin-bottom: 6px;
     font-size: 14px;
-    color: #111827;
   }
   
   .parentEmptyState p {
@@ -548,10 +546,9 @@
     justify-content: center;
     padding: 4px 8px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12px !important;
     font-weight: 500;
     line-height: 1;
-    color: #111827;
   }
   
   .exerciseTag--yellow {
