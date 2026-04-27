@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export default function parentSidebar({ onLogout }) {
+export default function ParentSidebar({ onLogout }) {
   return (
     <aside className="kineSidebar">
       <div className="kineSidebarBrand">
@@ -19,7 +19,7 @@ export default function parentSidebar({ onLogout }) {
         </NavLink>
 
         <NavLink
-          to="/parent/oefenplanning"
+          to="/ouder/oefenplanning"
           className={({ isActive }) =>
             `kineSidebarLink ${isActive ? "is-active" : ""}`
           }
@@ -29,7 +29,7 @@ export default function parentSidebar({ onLogout }) {
         </NavLink>
 
         <NavLink
-          to="/parent/settings"
+          to="/ouder/settings"
           className={({ isActive }) =>
             `kineSidebarLink ${isActive ? "is-active" : ""}`
           }

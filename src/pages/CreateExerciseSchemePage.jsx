@@ -391,32 +391,6 @@ const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
                 />
               </div>
 
-              {/* <div className="formGroupDiv">
-                    <div className="schemeFormGroup">
-                        <label htmlFor="schemeStartDate" className="schemeDate">
-                        Start
-                        </label>
-                        <input
-                        id="schemeStartDate"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="schemeFormGroup">
-                        <label htmlFor="schemeEndDate" className="schemeDate">
-                        Einde
-                        </label>
-                        <input
-                        id="schemeEndDate"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        />
-                    </div>
-                    </div> */}
-
               <div className="schemeFormGroup">
                 <label htmlFor="schemeRepeat">Herhaal</label>
                 <select

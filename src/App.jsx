@@ -11,6 +11,9 @@ import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
 import ParentActivationFlow from "./pages/ParentActivationFlow";
+import ParentOefenplanning from "./pages/ParentOefenplanning";
+import ParentSettings from "./pages/ParentSettings";
+import ParentProfileSelection from "./pages/ParentProfileSelection";
 
 
 export default function App() {
@@ -61,14 +64,6 @@ export default function App() {
       <Route path="/kinesist/settings/team-upgrade" element={<TeamUpgradeFlow />} />
 
       <Route
-        path="/ouder/dashboard"
-        element={
-          <ProtectedRoute allowedRole="ouder">
-            <ParentDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/patient/:id"
         element={
           <ProtectedRoute allowedRole="kinesist">
@@ -81,9 +76,45 @@ export default function App() {
       </ProtectedRoute>}
       />
 
-      <Route path="/ouder/activatie" element={<ParentActivationFlow />} />
-      <Route path="/ouder/dashboard" element={<ParentDashboard />} />
-      {/* <Route path="/kind/dashboard" element={<ChildDashboard />} /> */}
+      <Route
+        path="/ouder/activatie"
+        element={
+            <ParentActivationFlow />
+        }
+      />
+      <Route
+        path="/ouder/dashboard"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ParentDashboard />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/ouder/settings"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ParentSettings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ouder/oefenplanning"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ParentOefenplanning />
+          </ProtectedRoute>
+        }
+      />
+
+        <Route
+          path="/ouder/profielselectie"
+          element={
+            <ProtectedRoute allowedRole="ouder">
+              <ParentProfileSelection />
+            </ProtectedRoute>
+          }
+        />
     </Routes>
   );
 }

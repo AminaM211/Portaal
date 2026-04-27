@@ -247,47 +247,52 @@ export default function ParentDashboard() {
       const key = formatDateKey(date);
       const items = scheduledExercises.filter((item) => item.scheduled_date === key);
   
-      const isSunday = date.getDay() === 0;
-      if (isSunday) {
-        return {
-          key,
-          type: "sunday",
-        };
-      }
-  
-      if (items.length === 0) {
-        return {
-          key,
-          type: "empty",
-        };
-      }
-  
+      const isToday = key === todayKey;
       const completedCount = items.filter((item) => item.is_completed).length;
-  
-      if (completedCount === items.length) {
+      const isDone = items.length > 0 && completedCount === items.length;
+
+      // 1. If all exercises for the day are completed, show done
+      if (isDone) {
         return {
           key,
           type: "done",
         };
       }
-  
-      const isToday = key === todayKey;
-  
+
+      // 2. If it's today (and not fully done yet), show today's target
       if (isToday) {
         return {
           key,
           type: "today",
         };
       }
-  
-      const isPast = key < todayKey;
-  
-      return {
-        key,
-        type: isPast ? "missed" : "pending",
-      };
-    });
-  }, [weekDates, scheduledExercises, todayKey]);
+           // 3. Fallback for Sunday
+           const isSunday = date.getDay() === 0;
+           if (isSunday) {
+             return {
+               key,
+               type: "sunday",
+             };
+           }
+       
+           // 4. If no items are scheduled for this past/future day
+           if (items.length === 0) {
+             return {
+               key,
+               type: "empty",
+             };
+           }
+       
+           const isPast = key < todayKey;
+       
+           return {
+             key,
+             type: isPast ? "missed" : "pending",
+           };
+         });
+       }, [weekDates, scheduledExercises, todayKey]);
+     
+
 
   const stats = useMemo(() => {
     const todayItems = scheduledExercises.filter((item) => item.scheduled_date === todayKey);
@@ -372,37 +377,35 @@ const categoryProgress = useMemo(() => {
     }
   }
 
-  return Object.values(map).map((entry) => {
-    const percentage =
-      entry.total > 0
-        ? Math.round((entry.completed / entry.total) * 100)
-        : 0;
+ // ...existing code...
+ return Object.values(map).map((entry) => {
+  const percentage =
+    entry.total > 0
+      ? Math.round((entry.completed / entry.total) * 100)
+      : 0;
 
-    const diff = entry.last30 - entry.prev30;
-    const delta = entry.prev30 === 0
-      ? (entry.last30 > 0 ? "+100%" : "0%")
-      : `${diff >= 0 ? "+" : ""}${Math.round((diff / entry.prev30) * 100)}%`;
+  const diff = entry.last30 - entry.prev30;
+  const delta = entry.prev30 === 0
+    ? (entry.last30 > 0 ? "+100%" : "0%")
+    : `${diff >= 0 ? "+" : ""}${Math.round((diff / entry.prev30) * 100)}%`;
 
-    return {
-      ...entry,
-      percentage,
+  // Een array van beschikbare kleuren in je CSS
+  const progressColors = ["progressBlue", "progressGreen", "progressYellow", "progressPurple", "progressPink"];
+  
+  // Bereken een vaste index op basis van de categorienaam (zodat dezelfde naam altijd dezelfde kleur krijgt)
+  const colorIndex = Array.from(entry.category).reduce((acc, char) => acc + char.charCodeAt(0), 0) % progressColors.length;
 
-      progressClass:
-        entry.category === "Grofmotoriek"
-          ? "progressBlue"
-          : entry.category === "Fijnmotoriek"
-          ? "progressGreen"
-          : entry.category === "Balans"
-          ? "progressYellow"
-          : "progressPurple",
-
-      delta,
-      deltaClass: diff < 0 ? "deltaNegative" : "deltaPositive",
-    };
-  });
+  return {
+    ...entry,
+    percentage,
+    progressClass: progressColors[colorIndex],
+    delta,
+    deltaClass: diff < 0 ? "deltaNegative" : "deltaPositive",
+  };
+});
 }, [scheduledExercises]);
 
-  if (loading) {
+if (loading) {
     return (
       <div className="parentDashboardPage">
         <ParentSidebar activeItem="dashboard" onLogout={handleLogout} />
@@ -492,10 +495,9 @@ const categoryProgress = useMemo(() => {
             <div className="parentStatusBlock">
               <div className="parentStatusHeader">
                 <h2>Status</h2>
-                <button type="button" className="parentStatusFilter">
+                <p className="parentStatusFilter">
                   deze week
-                  {/* <img src="/images/chevron-down.svg" alt="" /> */}
-                </button>
+                </p>
               </div>
 
               <div className="parentStatusGrid">

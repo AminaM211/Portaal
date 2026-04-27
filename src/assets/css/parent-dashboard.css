@@ -28,7 +28,7 @@
   
   .parentDashboardGrid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-columns: minmax(0, 1fr) 320px;
     gap: 32px;
     align-items: start;
   }
@@ -49,7 +49,8 @@
   .parentWeekCard,
   .parentCategoryCard {
     background: #fff;
-    border: 1px solid #dfe3e8;
+    border: 1px solid #dfe3e8 !important;
+    padding: 24px !important;
     border-radius: 4px;
     box-shadow: 0 3px 0 rgba(0, 0, 0, 0.06);
   }
@@ -157,7 +158,6 @@
   .parentWeekRow {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
   }
   
   .parentWeekDay {
@@ -523,6 +523,26 @@
     background: #fff;
     padding: 16px;
   }
+
+  .parentEmptyState img {
+    width: 160px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 24px;
+  }
+
+  .geenoefeningen {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .geenoefeningen p {
+    margin: 0;
+    color: black !important;
+    font-size: 16px !important;
+  }
   
   .parentEmptyState strong {
     display: block;
@@ -533,7 +553,7 @@
   .parentEmptyState p {
     margin: 0;
     color: #6b7280;
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .parentEmptyState.side {
@@ -568,9 +588,10 @@
   }
   
   .exerciseDifficultyIcon {
-    width: 20px;
-    height: 20px;
+    width: 21px !important;
+    height: 21px !important;
     object-fit: contain;
+    border-radius: 0 !important;
   }
   
   @media (max-width: 1200px) {
@@ -601,3 +622,225 @@
       gap: 18px;
     }
   }
+
+
+  
+
+/* OEFENPLANNING PAGE */
+
+/* Oefenplanning Layout */
+.planningGrid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+}
+
+/* Header & Toggle */
+.planningHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.planningToggleBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #82B3E1; /* Nimbli lichtblauw */
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.planningDateRange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* Kalender Kaart */
+.planningCalendarCard {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #EBEBEB;
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.planningCalendarTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.planningCalendarTop button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+.goToTodayBtn {
+  padding: 8px 24px;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 2px solid #2BB39B;
+  box-shadow: 0px 2px 0px #1E7A6A;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2BB39B;
+  margin-top: 12px;
+}
+
+.goToTodayBtn:hover {
+  background: #2BB39B;
+  color: #FFFFFF;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.planningCalendarTop h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.planningWeekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 500;
+  color: #888;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.planningDaysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px 0;
+}
+
+.planningDayCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 48px;
+  cursor: pointer;
+}
+
+.planningDayCell.faded {
+  opacity: 0.3;
+}
+
+.dayNumber {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+  transition: all 0.1s;
+}
+
+.planningDayCell:hover .dayNumber {
+  background: #F0F0F0;
+}
+
+.planningDayCell.selected .dayNumber {
+  background: #000;
+  color: #FFF;
+}
+
+/* planningdaysell selected and today dan groene background*/
+.planningDayCell.selected.is-today .dayNumber {
+  background: #2BB39B !important;
+  color: #FFF;
+}
+
+.dayDots {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+  height: 6px;
+}
+
+.dayDots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-green { background-color: #2DC07F; }
+.dot-white { background-color: #2DC07F; } /* Optioneel: wit als hij in black circle valt, maar in design vallen ze onder de circle */
+
+/* Oefening Kaarten Lokaal */
+.planningExerciseList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.planningExerciseCard {
+  background: white;
+  border: 1px solid #EBEBEB;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.planningExerciseCard.completed {
+  border-color: #2DC07F;
+}
+
+.planningExerciseCard img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.planningExInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.planningExInfo strong {
+  font-size: 15px;
+  color: #333;
+}
+
+.planningExInfo small {
+  color: #888;
+  font-size: 13px;
+}
+
+.planningVoltooidBadge {
+  background: #2DC07F;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 16px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}

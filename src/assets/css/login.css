@@ -129,13 +129,11 @@
   
   .input {
     width: 100%;
-    height: 52px;
     border: 1px solid #b8b8b8;
-    border-radius: 4px;
-    padding: 0 12px;
+    border-radius: 4px !important;
+    padding: 12px;
     font-family: "Nunito", sans-serif;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 16px;
     color: #000000;
     background: #ffffff;
     margin-bottom: 16px;
@@ -147,7 +145,7 @@
   }
   
   .input:focus {
-    border-color: #2bb39b;
+    border-color: black;
   }
   
   .checkbox {

@@ -16,9 +16,13 @@
   min-height: 100vh;
 }
 
+/* .kineSidebarBrand {
+  height: 5px;
+} */
+
 .kineSidebarBrand img {
-  width: 180px;
-  height: auto;
+  width: 180px !important;
+  height: 55px !important;
   display: block;
 }
 
@@ -594,7 +598,7 @@
 
 .kinePatientMoreBtn:hover {
   background: #f6f6f6;
-  border-radius: 4px;
+  border-radius: 99px;
 }
 
 .kinePatientMenu {

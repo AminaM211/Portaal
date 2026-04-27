@@ -24,7 +24,7 @@ export default function LoginPage() {
       }
   
       if (profile?.role === "ouder") {
-        navigate("/ouder/dashboard");
+        navigate("/ouder/profielselectie");
       }
     }
   
@@ -79,7 +79,7 @@ export default function LoginPage() {
     }
 
     if (profile.role === "ouder") {
-      navigate("/ouder/dashboard");
+      navigate("/ouder/profielselectie");
       return;
     }
 

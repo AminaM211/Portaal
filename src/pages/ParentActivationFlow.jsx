@@ -148,7 +148,7 @@ export default function ParentActivationFlow() {
         {step !== 3 ? (
           <div className="parentAuthLoginBlock">
             <span>Heb je al een account?</span>
-            <button type="button" className="parentAuthTopBtn" onClick={() => navigate("/login")}>
+            <button type="button" className="parentAuthTopBtn" onClick={() => navigate("/")}>
               Log in
             </button>
           </div>
