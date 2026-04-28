@@ -83,57 +83,91 @@ export default function ParentActivationFlow() {
     }
   }
 
-  async function handleCreateParentAccount() {
-    try {
-      setLoading(true);
-      setErrorMessage("");
+// ...existing code...
+async function handleCreateParentAccount() {
+  try {
+    setLoading(true);
+    setErrorMessage("");
 
-      if (!fullName.trim() || !email.trim() || !password.trim()) {
-        setErrorMessage("Vul alle velden in.");
-        return;
-      }
-
-      if (!acceptedTerms) {
-        setErrorMessage("Je moet akkoord gaan met de voorwaarden.");
-        return;
-      }
-
-      const signUpRes = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-      });
-
-      if (signUpRes.error) throw signUpRes.error;
-
-      const user = signUpRes.data.user ?? signUpRes.data.session?.user;
-
-      if (!user) {
-        setErrorMessage("Account aangemaakt, maar geen user teruggekregen.");
-        return;
-      }
-
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: user.id,
-        full_name: fullName.trim(),
-        role: "ouder",
-      });
-
-      if (profileError) throw profileError;
-
-      const { error: linkError } = await supabase.rpc("claim_activation_code", {
-        input_code: normalizedCode(),
-      });
-
-      if (linkError) throw linkError;
-
-      setStep(3);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(error.message || "Account aanmaken is mislukt.");
-    } finally {
-      setLoading(false);
+    if (!fullName.trim() || !email.trim() || !password.trim()) {
+      setErrorMessage("Vul alle velden in.");
+      return;
     }
+
+    if (!acceptedTerms) {
+      setErrorMessage("Je moet akkoord gaan met de voorwaarden.");
+      return;
+    }
+
+    let user = null;
+
+    // 1. Probeer eerst een account aan te maken
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+    });
+
+    if (error) {
+      // Als de error zegt dat de user al bestaat, probeer dan in te loggen
+      if (error.message.includes("already registered") || error.status === 422) {
+        console.log("User bestaat al → probeer login");
+
+        const { data: loginData, error: loginError } =
+          await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password,
+          });
+
+        if (loginError) {
+          throw new Error("Inloggen met bestaand account mislukt: " + loginError.message);
+        }
+        user = loginData.user;
+      } else {
+        throw error;
+      }
+    } else {
+      user = data.user ?? data.session?.user;
+    }
+
+    if (!user) {
+      throw new Error("Account aangemaakt, maar geen user teruggekregen.");
+    }
+
+// 2. Sla de naam in de profiles tabel op
+const { error: profileError } = await supabase.from("profiles").upsert({
+  id: user.id,
+  full_name: fullName.trim(),
+  role: "ouder", // Zorg dat het profiel als "ouder" gemarkeerd is
+});
+
+if (profileError) throw profileError;
+
+// 3. Koppel de user aan de patiënt, markeer de code als gebruikt, vul info aan
+
+    // 3. Koppel de user aan de patiënt via een veilige database-functie
+    const { data: updatedPatient, error: linkError } = await supabase.rpc(
+      "link_parent_to_patient",
+      {
+        p_patient_id: matchedPatient.id,
+        p_parent_user_id: user.id,
+        p_parent_name: fullName.trim(),
+        p_parent_email: email.trim(),
+      }
+    );
+
+    if (linkError) throw linkError;
+
+    if (!updatedPatient) {
+      throw new Error("Kon de patiënt niet updaten. De database gaf geen resultaat terug.");
+    }
+
+    setStep(3);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleLogout() {
     await supabase.auth.signOut();

@@ -479,7 +479,7 @@ if (loading) {
                         <img src="/images/cross-weekoverzicht.svg" alt="missed" />
                       )}
                       {item.type === "today" && (
-                        <img src="/images/target.svg" alt="today" />
+                        <img src="/images/target-today.svg" alt="today" />
                       )}
                       {item.type === "sunday" && (
                         <img src="/images/present-streakday.svg" alt="Present on Sunday" />
