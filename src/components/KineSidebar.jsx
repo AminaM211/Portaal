@@ -29,12 +29,12 @@ export default function KineSidebar({ onLogout }) {
         </NavLink>
 
         <NavLink
-          to="/kinesist/settings"
+          to="/kinesist/instellingen"
           className={({ isActive }) =>
             `kineSidebarLink ${isActive ? "is-active" : ""}`
           }
         >
-          <img src="/images/sidebar-settings.svg" alt="" />
+          <img src="/images/sidebar-instellingen.svg" alt="" />
           <span>Instellingen</span>
         </NavLink>
       </nav>

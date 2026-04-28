@@ -1,0 +1,288 @@
+.childApp {
+  display: flex;
+  height: 100vh;
+  background-color: #FFFFFF;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  color: #333;
+}
+
+/* SIDEBAR */
+.ChildSidebarBrand img {
+  width: 120px ;
+  margin-left: 20px ;
+  height: auto ;
+}
+
+.parentDashboardMain {
+  padding: 48px 48px 48px 0px;
+}
+
+.parentDashboardPage {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #000000;
+  display: grid;
+  /* grid-template-columns: 1fr 320px; */
+  max-width: 1400px;
+}
+
+.childDashboardLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+
+
+/* MIDDEN: PAD */
+.childPathArea {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: none; 
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.pathWrapper {
+  width: 400px;
+  height: 999px;
+  position: relative;
+}
+
+.pathSvg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.pathNodesContainer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.pathBubbleWrap {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transform: translate(-50%, -50%);
+}
+
+.pathBubble {
+  border-radius: 50%;
+  width: 94px;
+  height: 77px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pathBubble img {
+  width: 40px;
+  height: auto;
+}
+
+.pathBubble.done { background-color: #29BA2F; color: white; box-shadow: 0px 10px 0px #1D9122;}
+.pathBubble.notdone { background-color: #EB5E5A; color: white; box-shadow: 0px 10px 0px #B93834;}
+.pathBubble.current { background-color: #FBC748; color: white; box-shadow: 0px 10px 0px #C28200;}
+.pathBubble.locked { background-color: #E7E8EA; color: #7C7C7C; box-shadow: 0px 10px 0px #B2B2B2;}
+.pathBubble.moon { background-color: #82B3E1; color: white; box-shadow: 0px 10px 0px #598CBD;}
+
+.bubbleLabel {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* S-Curve Posities voor de UI  */
+.pos-0 { top: 12%; left: 40%; }
+.pos-1 { top: 27%; left: 60%; }
+.pos-2 { top: 42%; left: 40%; }
+.pos-3 { top: 57%; left: 60%; }
+.pos-4 { top: 72%; left: 40%; }
+.pos-5 { top: 87%; left: 60%; }
+
+.monthOverlay {
+  position: absolute;
+  top: 70%; left: 75%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  color: #888;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+
+/* RECHTS: WIDGETS */
+.childRightPanel {
+  min-width: 460px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.topStatsRow {
+  display: flex;
+  gap: 24px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.statItem {
+  display: flex; align-items: center; gap: 8px;
+}
+.statItem .icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 20px;
+}
+.icon.trophy { background: #F8AE49; }
+.icon.star { background: #84C5ED; }
+.icon.lightning { background: #B388FF; }
+
+
+.smallDot-missed { background: #FF6B6B; color: white; }
+.smallDot-done { background: #2DC07F; color: white; }
+.smallDot-today { border: 2px dashed #F8AE49; color: transparent; background: url('/images/target.svg') no-repeat center; background-size: contain; } /* Vervang met een echt icoon of gebruik gewone tekst als backup */
+.smallDot-empty { background: #F0F0F0; color: transparent; }
+.smallDot-gift { background: #F0F0F0; color: #888; font-size: 16px;}
+
+.weekDotLabel { font-size: 12px; font-weight: 700; color: #333; }
+.weekDotLabel.isToday { color: #F8AE49; }
+
+.missionsList {
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.dummyMission {
+  display: flex; gap: 16px; align-items: center;
+  border: 2px solid #F0F0F0;
+  border-radius: 12px; padding: 12px;
+}
+
+.missionIcon {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; color: white;
+}
+.missionIcon.green { background: #2DC07F; }
+.missionIcon.blue { background: #84C5ED; }
+.missionIcon.red { background: #FF6B6B; }
+
+.missionDetails { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.missionDetails h4 { margin: 0; font-size: 15px; font-weight: 600; }
+
+.missionProgressBar {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.progressText { font-size: 12px; color: #888; width: 30px;}
+
+.barTrack {
+  flex: 1; height: 10px; background: #F0F0F0; border-radius: 6px;
+  overflow: hidden;
+}
+.barFill { height: 100%; border-radius: 6px; }
+.barFill.orange { background: #F8AE49; }
+.barFill { background: #D1D5DB; }
+
+.treasureBox { font-size: 20px; }
+
+.dagmissiesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dagmissieCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+  border-bottom: 4px solid #E5E7EB; /* Creëert dat 3D/layer effect */
+}
+
+.missieIconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.missieInfoText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.missieInfoText h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+}
+
+.missieProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.missieCounter {
+  font-size: 14px;
+  color: #333;
+  width: 32px;
+}
+
+.missieBarTrack {
+  flex: 1;
+  height: 12px;
+  background: #F3F4F6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.missieBarFill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.missieChestIcon {
+  font-size: 36px;
+}
+
+.childTopStatsRow {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.childStatItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.childStatNumber {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+}
+
+.childStatIcon img {
+  width: 32px;
+  height: 32px;
+}
+

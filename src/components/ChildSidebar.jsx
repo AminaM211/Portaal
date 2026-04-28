@@ -2,29 +2,44 @@ import { NavLink } from "react-router-dom";
 
 export default function ChildSidebar({ onLogout }) {
   return (
-    <aside className="ChildSidebar">
+    <aside className="kineSidebar">
       <div className="ChildSidebarBrand">
-        <img src="/images/Child-logo-full.png" alt="Nimbli Childscreen" />
+        <img src="/images/logo.png" alt="Nimbli parentendashboard" />
       </div>
 
-      <nav className="ChildSidebarNav">
-        <NavLink to="/Childscreen/oefeningen" className="ChildSidebarLink is-active">
-          <img src="/images/sidebar-oefeningen.svg" alt="" />
-          <span>Dashboard</span>
+      <nav className="kineSidebarNav">
+        <NavLink
+          to="/kind/oefeningen"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
+          <img src="/images/oefeningen-dash.svg" alt="" />
+          <span>Oefeningen</span>
         </NavLink>
 
-        <button type="button" className="ChildSidebarLink">
-          <img src="/images/sidebar-missions.svg" alt="" />
-          <span>Oefeningen</span>
-        </button>
+        <NavLink
+          to="/kind/missies"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
+          <img src="/images/missions-dash.svg" alt="" />
+          <span>Missions</span>
+        </NavLink>
 
-        <button type="button" className="ChildSidebarLink">
-          <img src="/images/sidebar-profile.svg" alt="" />
-          <span>Instellingen</span>
-        </button>
+        <NavLink
+          to="/kind/profiel"
+          className={({ isActive }) =>
+            `kineSidebarLink ${isActive ? "is-active" : ""}`
+          }
+        >
+          <img src="/images/profiel-dash.svg" alt="" />
+          <span>Profiel</span>
+        </NavLink>
       </nav>
 
-      <button type="button" className="ChildSidebarLogout" onClick={onLogout}>
+      <button type="button" className="kineSidebarLogout" onClick={onLogout}>
         <img src="/images/sidebar-logout.svg" alt="" />
       </button>
     </aside>

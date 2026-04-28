@@ -5,15 +5,16 @@ import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NewPatientFlow from "./pages/NewPatientFlow";
-import SettingsPage from "./pages/SettingsPage";
+import InstellingenPage from "./pages/InstellingenPage";
 import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
 import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
 import ParentActivationFlow from "./pages/ParentActivationFlow";
 import ParentOefenplanning from "./pages/ParentOefenplanning";
-import ParentSettings from "./pages/ParentSettings";
+import Parentinstellingen from "./pages/Parentinstellingen";
 import ParentProfileSelection from "./pages/ParentProfileSelection";
+import ChildScreen from "./pages/ChildScreen";  
 
 
 export default function App() {
@@ -30,10 +31,10 @@ export default function App() {
         }
       />
       <Route
-        path="/kinesist/settings"
+        path="/kinesist/instellingen"
         element={
           <ProtectedRoute allowedRole="kinesist">
-            <SettingsPage />
+            <InstellingenPage />
           </ProtectedRoute>
         }
       />
@@ -61,7 +62,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/kinesist/settings/team-upgrade" element={<TeamUpgradeFlow />} />
+      <Route path="/kinesist/instellingen/team-upgrade" element={<TeamUpgradeFlow />} />
 
       <Route
         path="/patient/:id"
@@ -91,10 +92,10 @@ export default function App() {
         }
       />
        <Route
-        path="/ouder/settings"
+        path="/ouder/instellingen"
         element={
           <ProtectedRoute allowedRole="ouder">
-            <ParentSettings />
+            <Parentinstellingen />
           </ProtectedRoute>
         }
       />
@@ -115,6 +116,15 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+
+      <Route
+        path="/kind/oefeningen"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ChildScreen />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

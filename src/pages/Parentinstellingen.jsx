@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ParentSidebar from "../components/ParentSidebar";
-import "../assets/css/parent-settings.css";
+import "../assets/css/parent-instellingen.css";
 
 function getInitials(name) {
   if (!name) return "";
@@ -13,7 +13,7 @@ function getInitials(name) {
     .join("");
 }
 
-export default function ParentSettings() {
+export default function Parentinstellingen() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -236,67 +236,67 @@ export default function ParentSettings() {
     <div className="parentDash">
       <ParentSidebar onLogout={handleLogout} />
 
-      <main className="parentSettingsMain">
-        <div className="parentSettingsContent">
-                  <section className="parentSettingsSection">
-                    <div className="parentSettingsSectionHeader">
-                      <h2>Profiel</h2>
-                      <p>Beheer je persoonlijke gegevens</p>
-                    </div>
+      <main className="parentinstellingenMain">
+        <div className="parentinstellingenContent">
+          <section className="parentinstellingenSection">
+            <div className="parentinstellingenSectionHeader">
+              <h2>Profiel</h2>
+              <p>Beheer je persoonlijke gegevens</p>
+            </div>
 
-                    {errorMessage && <p className="parentError">{errorMessage}</p>}
-                    {successMessage && <p className="parentSuccess">{successMessage}</p>}
+            {errorMessage && <p className="parentError">{errorMessage}</p>}
+            {successMessage && <p className="parentSuccess">{successMessage}</p>}
 
-                    <div className="parentSettingsProfileCard">
-                          <div className="parentField">
-                            <label>Volledige naam</label>
-                            <input
-                              type="text"
-                              value={editFullName}
-                              onChange={(e) => setEditFullName(e.target.value)}
-                            />
-                          </div>
+            <div className="parentinstellingenProfileCard">
+              <div className="parentField">
+                <label>Volledige naam</label>
+                <input
+                  type="text"
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                />
+              </div>
 
-                          <div className="parentField">
-                            <label>E-mailadres</label>
-                            <input
-                              type="email"
-                              disabled
-                              value={editEmail}
-                              onChange={(e) => setEditEmail(e.target.value)}
-                            />
-                          </div>
+              <div className="parentField">
+                <label>E-mailadres</label>
+                <input
+                  type="email"
+                  disabled
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                />
+              </div>
 
-                          <div className="parentField">
-                            <label>Telefoonnummer</label>
-                            <input
-                              type="text"
-                              value={editPhone}
-                              onChange={(e) => setEditPhone(e.target.value)}
-                            />
-                          </div>
+              <div className="parentField">
+                <label>Telefoonnummer</label>
+                <input
+                  type="text"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                />
+              </div>
 
-                        <button
-                          type="button"
-                          className="btn-primary"
-                          onClick={handleSaveProfile}
-                          disabled={savingProfile}
-                        >
-                          {savingProfile ? "Opslaan..." : "Opslaan"}
-                        </button>
-                    </div>
-                  </section>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleSaveProfile}
+                disabled={savingProfile}
+              >
+                {savingProfile ? "Opslaan..." : "Opslaan"}
+              </button>
+            </div>
+          </section>
 
-                  {/* Notifications Section */}
-          <section className="parentSettingsSection">
-            <div className="parentSettingsSectionHeader">
+          {/* Notifications Section */}
+          <section className="parentinstellingenSection">
+            <div className="parentinstellingenSectionHeader">
               <h2>Meldingen</h2>
               <p>Beheer je meldingvoorkeuren</p>
             </div>
 
-            <div className="parentSettingsCardGroup">
-              <div className="parentSettingsCard">
-                <div className="parentSettingsCardTop">
+            <div className="parentinstellingenCardGroup">
+              <div className="parentinstellingenCard">
+                <div className="parentinstellingenCardTop">
                   <div>
                     <strong>Voortgangsupdates ontvangen</strong>
                     <p>Meldingen over voortgang van je kind</p>
@@ -314,8 +314,8 @@ export default function ParentSettings() {
                 </div>
               </div>
 
-              <div className="parentSettingsCard">
-                <div className="parentSettingsCardTop">
+              <div className="parentinstellingenCard">
+                <div className="parentinstellingenCardTop">
                   <div>
                     <strong>Oefenherinnering via e-mail</strong>
                     <p>Ontvang e-mailherinneringen over openstaande oefeningen</p>
@@ -335,22 +335,22 @@ export default function ParentSettings() {
             </div>
           </section>
         </div>
-            <div className="parentSettingsSection">
-                    <button
-                    type="button"
-                    className="btn-outline"
-                    onClick={handleLogout}
-                  >
-                    Verander van profiel
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-primary"
-                    onClick={handleLogout}
-                  >
-                    Log uit
-                  </button>
-          </div>
+        <div className="parentinstellingenSection">
+          <button
+            type="button"
+            className="btn-outline"
+            onClick={() => navigate("/ouder/profielselectie")}
+          >
+            Verander van profiel
+          </button>
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={handleLogout}
+          >
+            Log uit
+          </button>
+        </div>
       </main>
 
       {editingProfile && (

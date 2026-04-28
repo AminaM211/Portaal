@@ -6,7 +6,7 @@
   grid-template-columns: 298px minmax(0, 1fr);
 }
 
-.parentSettingsMain {
+.parentinstellingenMain {
   padding: 48px 48px 48px 0px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
@@ -43,14 +43,14 @@
   font-size: 16px;
 }
 
-.parentSettingsTopbar {
+.parentinstellingenTopbar {
   display: flex;
   align-items: center;
   gap: 24px;
   margin-bottom: 40px;
 }
 
-.parentSettingsTopbar h1 {
+.parentinstellingenTopbar h1 {
   margin: 0;
   font-size: 32px;
   font-weight: 700;
@@ -77,38 +77,38 @@
   height: 20px;
 }
 
-.parentSettingsContent {
+.parentinstellingenContent {
   display: flex;
   flex-direction: column;
   gap: 64px;
 }
 
-.parentSettingsSection {
+.parentinstellingenSection {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.parentSettingsSectionHeader {
+.parentinstellingenSectionHeader {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.parentSettingsSectionHeader h2 {
+.parentinstellingenSectionHeader h2 {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
   color: #111827;
 }
 
-.parentSettingsSectionHeader p {
+.parentinstellingenSectionHeader p {
   margin-top: 4px;
   color: #6b7280;
   font-size: 16px;
 }
 
-.parentSettingsProfileCard {
+.parentinstellingenProfileCard {
     border: none;
     padding: 0;
     display: flex;
@@ -180,49 +180,49 @@
   height: 16px;
 }
 
-.parentSettingsCardGroup {
+.parentinstellingenCardGroup {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-.parentSettingsCard {
+.parentinstellingenCard {
   display: flex;
   flex-direction: column;
 }
 
-.parentSettingsCardTop {
+.parentinstellingenCardTop {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
 }
 
-.parentSettingsCardTop strong {
+.parentinstellingenCardTop strong {
   display: block;
   margin-bottom: 6px;
   font-size: 16px;
   color: #111827;
 }
 
-.parentSettingsCardTop p {
+.parentinstellingenCardTop p {
   margin-bottom: 0;
   font-size: 14px;
   color: #6b7280;
 }
 
-.parentSettingsCardContent {
+.parentinstellingenCardContent {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.parentSettingsCardContent strong {
+.parentinstellingenCardContent strong {
   font-size: 16px;
   color: #111827;
 }
 
-.parentSettingsCardContent p {
+.parentinstellingenCardContent p {
   margin: 0;
   font-size: 14px;
   color: #6b7280;
@@ -430,16 +430,16 @@
 }
 
 @media (max-width: 768px) {
-  .parentSettingsMain {
+  .parentinstellingenMain {
     padding: 24px;
   }
 
-  .parentSettingsTopbar {
+  .parentinstellingenTopbar {
     gap: 16px;
     margin-bottom: 32px;
   }
 
-  .parentSettingsTopbar h1 {
+  .parentinstellingenTopbar h1 {
     font-size: 24px;
   }
 
@@ -448,7 +448,7 @@
     align-items: flex-start;
   }
 
-  .parentSettingsCardTop {
+  .parentinstellingenCardTop {
     flex-direction: column;
     gap: 16px;
   }

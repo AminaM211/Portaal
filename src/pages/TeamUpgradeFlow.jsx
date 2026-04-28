@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
-import "../assets/css/settings.css";
+import "../assets/css/instellingen.css";
 
 const initialMember = {
   firstName: "",
@@ -223,7 +223,7 @@ export default function TeamUpgradeFlow() {
     setSuccessMessage("");
 
     if (step === 1) {
-      navigate("/kinesist/settings");
+      navigate("/kinesist/instellingen");
       return;
     }
 
@@ -330,7 +330,7 @@ export default function TeamUpgradeFlow() {
         if (inviteError) throw inviteError;
       }
 
-      navigate("/kinesist/settings");
+      navigate("/kinesist/instellingen");
         } catch (error) {
       console.error(error);
       setErrorMessage(error.message || "Upgrade opslaan is mislukt.");

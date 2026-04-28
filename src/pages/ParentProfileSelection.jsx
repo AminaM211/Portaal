@@ -26,7 +26,7 @@ export default function ParentProfileSelection() {
           <button
             type="button"
             className="profileCard"
-            onClick={() => navigate("/kind/dashboard")}
+            onClick={() => navigate("/kind/oefeningen")}
           >
             <img src="/images/avatar.svg" alt="" />
             <span>Kind</span>

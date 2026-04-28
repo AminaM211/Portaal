@@ -1,5 +1,5 @@
 /* =========================
-   SETTINGS + TEAM UPGRADE
+   instellingen + TEAM UPGRADE
    ========================= */
 
    .teamUpgradePage {
@@ -12,7 +12,7 @@
 
    }
 
-   .settingsPage{
+   .InstellingenPage{
     display: flex;
     gap: 80px;
     padding: 48px 32px;
@@ -25,7 +25,7 @@
       TYPOGRAPHY
       ========================= */
    
-   .settingsPage h1,
+   .InstellingenPage h1,
    .teamUpgradePage h1 {
      margin: 0 0 28px;
      font-size: 24px;
@@ -34,7 +34,7 @@
      color: #000;
    }
    
-   .settingsPage h2,
+   .InstellingenPage h2,
    .teamUpgradePage h2 {
      margin: 0 0 22px;
      font-size: 20px;
@@ -52,15 +52,15 @@
    }
    
    /* =========================
-      SETTINGS LAYOUT
+      instellingen LAYOUT
       ========================= */
    
-   .settingsMainBlock {
+   .instellingenMainBlock {
      flex: 1;
      max-width: 500px;
    }
    
-   .settingsSideBlock {
+   .instellingenSideBlock {
      /* width: 320px; */
      display: flex;
      flex-direction: column;
@@ -69,7 +69,7 @@
      min-width: 300px;
    }
    
-   .settingsSideBlock h2 {
+   .instellingenSideBlock h2 {
      margin-bottom: 8px;
    }
    
@@ -77,13 +77,13 @@
       FORMS
       ========================= */
    
-   .settingsForm,
+   .instellingenForm,
    .teamUpgradeCard,
    .teamMemberRow {
      width: 100%;
    }
    
-   .settingsField,
+   .instellingenField,
    .teamUpgradeField {
      display: flex;
      flex-direction: column;
@@ -91,7 +91,7 @@
      margin-bottom: 24px;
    }
    
-   .settingsField label,
+   .instellingenField label,
    .teamUpgradeField label {
      font-size: 18px;
      line-height: 1.2;
@@ -99,9 +99,9 @@
      color: #000000;
    }
    
-   .settingsField input,
-   .settingsField select,
-   .settingsField textarea,
+   .instellingenField input,
+   .instellingenField select,
+   .instellingenField textarea,
    .teamUpgradeField input,
    .teamUpgradeField select,
    .teamUpgradeField textarea {
@@ -116,30 +116,30 @@
      transition: border-color 0.18s ease, box-shadow 0.18s ease;
    }
    
-   .settingsField textarea,
+   .instellingenField textarea,
    .teamUpgradeField textarea {
      /* min-height: 120px; */
      padding: 16px;
      resize: vertical;
    }
    
-   .settingsField input::placeholder,
+   .instellingenField input::placeholder,
    .teamUpgradeField input::placeholder,
-   .settingsField textarea::placeholder,
+   .instellingenField textarea::placeholder,
    .teamUpgradeField textarea::placeholder {
      color: #9a9a9a;
    }
    
-   .settingsField input:focus,
-   .settingsField select:focus,
-   .settingsField textarea:focus,
+   .instellingenField input:focus,
+   .instellingenField select:focus,
+   .instellingenField textarea:focus,
    .teamUpgradeField input:focus,
    .teamUpgradeField select:focus,
    .teamUpgradeField textarea:focus {
      border: 1px solid #000000;
    }
    
-   .settingsField input:disabled,
+   .instellingenField input:disabled,
    .teamUpgradeField input:disabled {
      background: #f2f2f2;
      color: #7d7d7d;
@@ -147,33 +147,33 @@
    }
    
    /* =========================
-      SETTINGS PASSWORD
+      instellingen PASSWORD
       ========================= */
    
-   .settingsPasswordInline {
+   .instellingenPasswordInline {
      display: flex;
      gap: 12px;
      align-items: center;
    }
    
-   .settingsPasswordInline input {
+   .instellingenPasswordInline input {
      flex: 1;
    }
    
-   .settingsPasswordEditor {
+   .instellingenPasswordEditor {
      display: flex;
      flex-direction: column;
      gap: 12px;
    }
    
-   .settingsPasswordActions {
+   .instellingenPasswordActions {
      display: flex;
      justify-content: flex-end;
      align-items: center;
      gap: 14px;
    }
    
-   .settingsGhostBtn {
+   .instellingenGhostBtn {
     padding: 8px 24px;
     border: 1px solid #2BB39B;
     border-radius: 4px;
@@ -192,7 +192,7 @@
     background-color: white;
    }
    
-   .settingsSaveBtn {
+   .instellingenSaveBtn {
      margin-top: 10px;
    }
    
@@ -544,15 +544,15 @@
       ========================= */
    
    @media (max-width: 1200px) {
-     .settingsPage {
+     .InstellingenPage {
        flex-direction: column;
      }
    
-     .settingsMainBlock {
+     .instellingenMainBlock {
        max-width: 100%;
      }
    
-     .settingsSideBlock {
+     .instellingenSideBlock {
        width: 100%;
        max-width: 420px;
      }
@@ -564,13 +564,13 @@
    }
    
    @media (max-width: 900px) {
-     .settingsPage,
+     .InstellingenPage,
      .teamUpgradePage {
        padding: 32px 24px;
        gap: 32px;
      }
    
-     .settingsPage h1,
+     .InstellingenPage h1,
      .teamUpgradePage h1 {
        font-size: 36px;
      }
@@ -585,19 +585,19 @@
    }
    
    @media (max-width: 640px) {
-     .settingsPage,
+     .InstellingenPage,
      .teamUpgradePage {
        padding: 24px 16px;
      }
    
-     .settingsPage h1,
+     .InstellingenPage h1,
      .teamUpgradePage h1 {
        font-size: 30px;
      }
    
-     .settingsField input,
-     .settingsField select,
-     .settingsField textarea,
+     .instellingenField input,
+     .instellingenField select,
+     .instellingenField textarea,
      .teamUpgradeField input,
      .teamUpgradeField select,
      .teamUpgradeField textarea {
@@ -605,18 +605,18 @@
        font-size: 16px;
      }
    
-     .settingsPasswordInline {
+     .instellingenPasswordInline {
        flex-direction: column;
        align-items: stretch;
      }
    
-     .settingsGhostBtn,
+     .instellingenGhostBtn,
      .btn-primary-large,
      .btn-outline-large {
        width: 100%;
      }
    
-     .settingsPasswordActions {
+     .instellingenPasswordActions {
        flex-direction: column;
        align-items: stretch;
      }

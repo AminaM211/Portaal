@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Zorgt ervoor dat Google niet probeert in interne pagina's te zoeken:
+Disallow: /kinesist/
+Disallow: /ouder/
+Disallow: /patient/

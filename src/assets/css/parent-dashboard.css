@@ -14,7 +14,12 @@
     display: grid;
     grid-template-columns: 298px minmax(0, 1fr);
     max-width: 1400px;
+
   }
+
+  ::-webkit-scrollbar {
+    display: none;
+}
 
   .parentDashboardLoading,
   .parentDashboardError {
@@ -30,7 +35,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
     gap: 32px;
-    align-items: start;
+    align-items: start; 
   }
   
   .parentDashboardLeft {
@@ -42,7 +47,7 @@
   .parentDashboardRight {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 24px; 
   }
   
   .parentProfileCard,
@@ -632,7 +637,7 @@
 .planningGrid {
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 32px;
+  gap: 32px; 
 }
 
 /* Header & Toggle */

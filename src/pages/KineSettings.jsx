@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
-import "../assets/css/kine-settings.css";
+import "../assets/css/kine-instellingen.css";
 
 function getInitials(name) {
   if (!name) return "";
@@ -13,7 +13,7 @@ function getInitials(name) {
     .join("");
 }
 
-export default function KineSettings() {
+export default function Kineinstellingen() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -236,8 +236,8 @@ export default function KineSettings() {
     <div className="kineDash">
       <KineSidebar onLogout={handleLogout} />
 
-      <main className="kineSettingsMain">
-        <div className="kineSettingsTopbar">
+      <main className="kineinstellingenMain">
+        <div className="kineinstellingenTopbar">
           <button
             type="button"
             className="patientBack"
@@ -253,10 +253,10 @@ export default function KineSettings() {
         {errorMessage && <p className="kineError">{errorMessage}</p>}
         {successMessage && <p className="kineSuccess">{successMessage}</p>}
 
-        <div className="kineSettingsContent">
+        <div className="kineinstellingenContent">
           {/* Profile Section */}
-          <section className="kineSettingsSection">
-            <div className="kineSettingsSectionHeader">
+          <section className="kineinstellingenSection">
+            <div className="kineinstellingenSectionHeader">
               <h2>Profiel</h2>
               <p>Beheer je persoonlijke gegevens</p>
             </div>
@@ -285,15 +285,15 @@ export default function KineSettings() {
           </section>
 
           {/* Notifications Section */}
-          <section className="kineSettingsSection">
-            <div className="kineSettingsSectionHeader">
+          <section className="kineinstellingenSection">
+            <div className="kineinstellingenSectionHeader">
               <h2>Meldingen</h2>
               <p>Beheer je meldingvoorkeuren</p>
             </div>
 
-            <div className="kineSettingsCardGroup">
-              <div className="kineSettingsCard">
-                <div className="kineSettingsCardTop">
+            <div className="kineinstellingenCardGroup">
+              <div className="kineinstellingenCard">
+                <div className="kineinstellingenCardTop">
                   <div>
                     <strong>Voortgangsupdates ontvangen</strong>
                     <p>Meldingen over patiënten voortgang</p>
@@ -311,8 +311,8 @@ export default function KineSettings() {
                 </div>
               </div>
 
-              <div className="kineSettingsCard">
-                <div className="kineSettingsCardTop">
+              <div className="kineinstellingenCard">
+                <div className="kineinstellingenCardTop">
                   <div>
                     <strong>Oefenherinnering via e-mail</strong>
                     <p>Ontvang e-mailherinneringen over openstaande oefeningen</p>
@@ -333,15 +333,15 @@ export default function KineSettings() {
           </section>
 
           {/* Account Section */}
-          <section className="kineSettingsSection">
-            <div className="kineSettingsSectionHeader">
+          <section className="kineinstellingenSection">
+            <div className="kineinstellingenSectionHeader">
               <h2>Account</h2>
               <p>Beheer je accountinstellingen</p>
             </div>
 
-            <div className="kineSettingsCardGroup">
-              <div className="kineSettingsCard">
-                <div className="kineSettingsCardContent">
+            <div className="kineinstellingenCardGroup">
+              <div className="kineinstellingenCard">
+                <div className="kineinstellingenCardContent">
                   <strong>Wachtwoord wijzigen</strong>
                   <p>Wijzig je wachtwoord voor veiligheid</p>
                   <button
@@ -354,8 +354,8 @@ export default function KineSettings() {
                 </div>
               </div>
 
-              <div className="kineSettingsCard">
-                <div className="kineSettingsCardContent">
+              <div className="kineinstellingenCard">
+                <div className="kineinstellingenCardContent">
                   <strong>Afmelden</strong>
                   <p>Log uit van je account</p>
                   <button

@@ -245,7 +245,8 @@ export default function ExercisesPage() {
         {tab === "bibliotheek" && (
           <div className="exerciseLibraryGrid">
             {filteredExercises.length === 0 ? (
-              <div className="exerciseEmptyState">
+              <div className="kinePatientsEmpty">
+                 <img src="/images/monkey-search.png" alt="Geen patiënten gevonden" />
                 <strong>Geen oefeningen gevonden</strong>
                 <p>Probeer een andere zoekterm of filter.</p>
               </div>
@@ -320,7 +321,8 @@ export default function ExercisesPage() {
 
             <div className="myExercisesGrid">
               {filteredExercises.length === 0 ? (
-                <div className="exerciseEmptyState">
+                <div className="kinePatientsEmpty">
+                    <img src="/images/monkey-search.png" alt="Geen patiënten gevonden" />
                   <strong>Nog geen eigen oefeningen</strong>
                   <p>Maak een eerste oefening om hier te tonen.</p>
                 </div>
@@ -394,16 +396,18 @@ export default function ExercisesPage() {
 
         {tab === "schema’s" && (
           <>
-            <button type="button" className="exerciseCreateBtn" onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}>
-              Nieuw oefenschema maken
-            </button>
+           
             <p className="exerciseSchemesIntro">
               Bundels van oefeningen die je eenvoudig kan hergebruiken en
               toewijzen aan patiënten.
             </p>
+            <button type="button" className="exerciseCreateBtn" onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}>
+              Nieuw oefenschema maken
+            </button>
             <div className="exerciseSchemesGrid">
               {exerciseSchemes.length === 0 ? (
-                <div className="exerciseEmptyState">
+                <div className="kinePatientsEmpty">
+                      <img src="/images/monkey-search.png" alt="Geen patiënten gevonden" />
                   <strong>Nog geen oefenschema’s</strong>
                   <p>Maak een eerste schema om hier te tonen.</p>
                 </div>

@@ -271,7 +271,7 @@ export default function KineDashboard() {
 
           <div className="kineDashProfile">
             <div className="kineDashProfileAvatar">
-              <img src="/images/profile-avatar.png" alt="" />
+              <img src="/images/profile-avatar.png" alt="Profielfoto" />
             </div>
 
             <div className="kineDashProfileInfo">
@@ -284,16 +284,15 @@ export default function KineDashboard() {
         <section className="kineDashStats">
           <div className="kineStat">
             <div>
-            <img src="/images/icon-patients.svg" alt="" />
+              <img src="/images/icon-patients.svg" alt="Patiënten icoon" />
               <strong>{patientCount}</strong>
             </div>
             <span>Patiënten</span>
-
           </div>
 
           <div className="kineStat">
             <div>
-            <img src="/images/icon-therapy.svg" alt="" />
+              <img src="/images/icon-therapy.svg" alt="Therapietrouw icoon" />
               <strong>{averageTherapy}</strong>
             </div>
             <span>Therapietrouw</span>
@@ -301,7 +300,7 @@ export default function KineDashboard() {
 
           <div className="kineStat">
             <div>
-            <img src="/images/icon-compliance.svg" alt="" />
+              <img src="/images/icon-compliance.svg" alt="Nalevingspercentage icoon" />
               <strong>{complianceRate}</strong>
             </div>
             <span>Nalevingspercentage</span>
@@ -314,7 +313,7 @@ export default function KineDashboard() {
 
             <div className="kinePatientsActions">
               <div className="kineSearch">
-                <img src="/images/search-icon.svg" alt="" />
+                <img src="/images/search-icon.svg" alt="Zoek icoon" />
                 <input
                   type="text"
                   placeholder="Zoek patiënt..."
@@ -324,7 +323,7 @@ export default function KineDashboard() {
               </div>
 
               <button type="button" className="btn-outline-small">
-                <img src="/images/check-square.png" alt="" />
+                <img src="/images/check-square.png" alt="Selecteer icoon" />
                 <span>Selecteer</span>
               </button>
 
@@ -340,8 +339,9 @@ export default function KineDashboard() {
 
           {errorMessage && <p className="kineError">{errorMessage}</p>}
 
+        
           <div className="kinePatientsTable">
-            <div className="kinePatientsHead">
+          <div className="kinePatientsHead">
               <div>Naam</div>
               <div>Leeftijd</div>
               <div>Behandeldoel</div>
@@ -349,11 +349,21 @@ export default function KineDashboard() {
             </div>
 
             {filteredPatients.length === 0 ? (
-              <div className="kinePatientsEmpty">
-                Je hebt nog geen patiënten.
+              <div className="kinePatientsEmpty EmptyState">
+                <img src="/images/monkey-empty.png" alt="Geen patiënten gevonden" />
+                <p>Je hebt nog geen patiënten.</p>
+                <button
+                type="button"
+                className="btn-outline-small btn-smaller"
+                onClick={() => navigate("/kinesist/patient/new")}
+              >
+                Patiënt toevoegen
+              </button>
               </div>
             ) : (
+              
               filteredPatients.map((patient, index) => (
+                
                 <div key={patient.id} className="kinePatientRowWrap">
                   <button
                     type="button"

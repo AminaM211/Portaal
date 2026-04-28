@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
-import "../assets/css/settings.css";
+import "../assets/css/instellingen.css";
 
 function splitName(fullName = "") {
   const parts = fullName.trim().split(/\s+/).filter(Boolean);
@@ -21,7 +21,7 @@ function splitName(fullName = "") {
   };
 }
 
-export default function SettingsPage() {
+export default function InstellingenPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -42,10 +42,10 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
-    loadSettings();
+    loadinstellingen();
   }, []);
 
-  async function loadSettings() {
+  async function loadinstellingen() {
     try {
       setLoading(true);
       setErrorMessage("");
@@ -141,7 +141,7 @@ export default function SettingsPage() {
       }
 
       setSuccessMessage("Profiel succesvol opgeslagen.");
-      await loadSettings();
+      await loadinstellingen();
     } catch (error) {
       console.error(error);
       setErrorMessage(error.message || "Opslaan is mislukt.");
@@ -204,12 +204,12 @@ export default function SettingsPage() {
     <div className="kineDash">
       <KineSidebar onLogout={handleLogout} />
 
-      <main className="settingsPage">
-        <section className="settingsMainBlock">
+      <main className="InstellingenPage">
+        <section className="instellingenMainBlock">
           <h1>Mijn profiel</h1>
 
-          <form className="settingsForm" onSubmit={handleSaveProfile}>
-            <div className="settingsField">
+          <form className="instellingenForm" onSubmit={handleSaveProfile}>
+            <div className="instellingenField">
               <label>Naam</label>
               <input
                 type="text"
@@ -219,7 +219,7 @@ export default function SettingsPage() {
               />
             </div>
 
-            <div className="settingsField">
+            <div className="instellingenField">
               <label>Achternaam</label>
               <input
                 type="text"
@@ -229,7 +229,7 @@ export default function SettingsPage() {
               />
             </div>
 
-            <div className="settingsField">
+            <div className="instellingenField">
               <label>E-mail</label>
               <input
                 type="email"
@@ -239,22 +239,22 @@ export default function SettingsPage() {
               />
             </div>
 
-            <div className="settingsField">
+            <div className="instellingenField">
               <label>Wachtwoord</label>
 
               {!showPasswordEdit ? (
-                <div className="settingsPasswordInline">
+                <div className="instellingenPasswordInline">
                   <input type="text" value={maskedPassword} disabled />
                   <button
                     type="button"
-                    className="settingsGhostBtn"
+                    className="instellingenGhostBtn"
                     onClick={() => setShowPasswordEdit(true)}
                   >
                     Wijzigen
                   </button>
                 </div>
               ) : (
-                <div className="settingsPasswordEditor">
+                <div className="instellingenPasswordEditor">
                   <input
                     type="password"
                     value={newPassword}
@@ -262,7 +262,7 @@ export default function SettingsPage() {
                     onChange={(e) => setNewPassword(e.target.value)}
                   />
 
-                  <div className="settingsPasswordActions">
+                  <div className="instellingenPasswordActions">
                     <button
                       type="button"
                       className="kineTextAction"
@@ -287,7 +287,7 @@ export default function SettingsPage() {
               )}
             </div>
 
-            <div className="settingsField">
+            <div className="instellingenField">
               <label>Rol</label>
               <input type="text" value={roleLabel} disabled />
             </div>
@@ -297,7 +297,7 @@ export default function SettingsPage() {
 
             <button
               type="submit"
-              className="btn-primary-large settingsSaveBtn"
+              className="btn-primary-large instellingenSaveBtn"
               disabled={saving}
             >
               {saving ? "Opslaan..." : "Opslaan"}
@@ -305,7 +305,7 @@ export default function SettingsPage() {
           </form>
         </section>
 
-        <aside className="settingsSideBlock">
+        <aside className="instellingenSideBlock">
           <h2>Support</h2>
 
           <button
@@ -319,7 +319,7 @@ export default function SettingsPage() {
           <button
             type="button"
             className="btn-primary-large"
-            onClick={() => navigate("/kinesist/settings/team-upgrade")}
+            onClick={() => navigate("/kinesist/instellingen/team-upgrade")}
           >
             Upgrade naar Team
           </button>

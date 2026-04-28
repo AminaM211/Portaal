@@ -274,6 +274,14 @@
   white-space: nowrap;
 }
 
+.btn-smaller {
+  padding: 4px 18px !important;
+  width: auto !important;
+  font-size: 14px !important;
+  border-radius: 4px !important;
+  margin-top: 8px !important;
+}
+
 .btn-primary-small {
   background: #2bb39b;
   color: #ffffff;
@@ -291,6 +299,8 @@
   color: #2bb39b;
   border: 2px solid #2bb39b;
   box-shadow: 0 2px 0 #1e7a6a;
+  border-radius: 4px !important;
+  min-height: 42px !important;
 }
 
 .btn-outline-small img {
@@ -425,6 +435,32 @@
   font-size: 16px;
   line-height: 20px;
   color: #444444;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-direction: column;
+}
+
+.exerciseSchemesIntro {
+  font-size : 16px !important;
+  max-width: 400px !important;
+}
+
+.kinePatientsEmpty img {
+  width: 180px;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.EmptyState img {
+  width: 220px;
+  height: auto;
+  margin: 16px 0;
+}
+
+.kinePatientsEmpty p {
+  margin: 0;
+  text-align: center;
 }
 
 .kineDashLoading {
