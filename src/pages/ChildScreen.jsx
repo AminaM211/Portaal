@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ChildSidebar from "../components/ChildSidebar";
@@ -12,6 +12,47 @@ function formatDateKey(date) {
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+// NIEUW: Genereer 28 dagen (vorige week + deze week + 2 weken vooruit)
+function getPathDates() {
+  const today = new Date();
+  const weekday = (today.getDay() + 6) % 7; 
+  const currentMonday = new Date(today);
+  currentMonday.setDate(today.getDate() - weekday);
+  currentMonday.setHours(0, 0, 0, 0);
+
+  // Pak de maandag van VORIGE week
+  const startDay = new Date(currentMonday);
+  startDay.setDate(currentMonday.getDate() - 7); 
+
+  return Array.from({ length: 28 }).map((_, i) => {
+    const d = new Date(startDay);
+    d.setDate(startDay.getDate() + i);
+    return d;
+  });
+}
+
+// NIEUW: Teken automatisch het SVG pad zodra er meer dan 6 nodes zijn
+function generateSnakePath(nodesCount) {
+  let d = "M 100 50 "; // Start mooi in het midden
+  for (let i = 0; i < nodesCount; i++) {
+    const startY = 50 + i * 160;
+    const endY = startY + 160;
+    
+    // We creëren een kleine marge (20px) zodat de lijn verticaal vertrekt en landt. 
+    // Hierdoor sluiten de bogen 100% vloeiend op elkaar aan zonder een 'knik'.
+    const cp1Y = startY; 
+    const cp2Y = endY;
+
+    // Wissel van rechts naar links
+    if (i % 2 === 0) {
+      d += `C 400 ${cp1Y}, 400 ${cp2Y}, 250 ${endY} `;
+    } else {
+      d += `C 40 ${cp1Y}, 40 ${cp2Y}, 250 ${endY} `;
+    }
+  }
+  return d;
 }
 
 function getWeekDates() {
@@ -45,8 +86,13 @@ export default function ChildScreen() {
   const [patient, setPatient] = useState(null);
   const [missions, setMissions] = useState([]);
 
+  const [selectedDay, setSelectedDay] = useState(null);
+  
   const todayDate = new Date();
   const todayKey = formatDateKey(todayDate);
+
+  const scrollRef = useRef(null);
+
 
   // --- 1. DATA INITIALISATIE ---
   useEffect(() => {
@@ -115,27 +161,55 @@ export default function ChildScreen() {
     });
   }, [weekDates, scheduledExercises, todayKey]);
 
-  // De berekening voor het pad (midden)
-  const weekData = useMemo(() => {
-    return weekDates.map((date, i) => {
+  const pathDates = useMemo(() => getPathDates(), []);
+  
+  const pathData = useMemo(() => {
+    // We filteren de Zondagen even eruit voor het zigzag pad, optioneel maar houdt het strak:
+    return pathDates.filter(d => d.getDay() !== 0).map((date, i) => {
       const key = formatDateKey(date);
       const isToday = key === todayKey;
       const isPast = key < todayKey;
       const itemsForDay = scheduledExercises.filter(e => e.scheduled_date === key);
       const isDone = itemsForDay.length > 0 && itemsForDay.every(e => e.is_completed);
+      
+      let pathState = "moon"; 
 
-      let pathState = "locked"; 
-      if (isDone) pathState = "done";
-      else if (isToday) pathState = "current";
-      else if (key > todayKey) pathState = "moon";
+      if (isDone) {
+        pathState = "done";
+      } else if (isToday) {
+        pathState = "current"; 
+      } else if (isPast) {
+        if (itemsForDay.length > 0) {
+          pathState = "notdone";
+        } else {
+          pathState = "locked"; 
+        }
+      } else {
+        if (itemsForDay.length === 0) {
+          pathState = "moon";
+        } else {
+          pathState = "locked";
+        }
+      }
 
       return {
         key,
-        longLabel: isToday ? "VANDAAG" : getWeekdayLabel(i),
+        date,
+        longLabel: isToday ? "VANDAAG" : getWeekdayLabel((date.getDay() + 6) % 7),
         pathState,
+        isToday,
+        exercises: itemsForDay 
       };
     });
-  }, [weekDates, scheduledExercises, todayKey]);
+  }, [pathDates, scheduledExercises, todayKey]);
+
+
+  // NIEUW: Scrolt naar "Vandaag" zodra het scherm geladen is
+  useEffect(() => {
+    if (!loading && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [loading, pathData]);
 
   const stats = useMemo(() => {
     const todayItems = scheduledExercises.filter(e => e.scheduled_date === todayKey);
@@ -197,29 +271,150 @@ export default function ChildScreen() {
     <div className="childApp">
       <ChildSidebar onLogout={handleLogout} />
 
-      <main className="childPathArea">
-         <div className="pathWrapper">
-           <svg className="pathSvg" viewBox="0 0 500 1200" preserveAspectRatio="xMidYMid meet">
-             <path d="M 250 100 C 450 100, 450 300, 250 300 C 50 300, 50 500, 250 500 C 450 500, 450 700, 250 700 C 50 700, 50 900, 250 900 C 450 900, 450 1100, 250 1100" 
-                   fill="transparent" stroke="#F4EFE6" strokeWidth="40" strokeLinecap="round" />
-           </svg>
-           
-           <div className="pathNodesContainer">
-             {weekData.slice(0, 6).map((day, i) => (
-               <div key={day.key} className={`pathBubbleWrap pos-${i}`}>
-                 <div className={`pathBubble ${day.pathState}`}>
-                   {day.pathState === "done" && <img src="/images/check-white.svg" alt="✓" />}
-                   {day.pathState === "current" && <img src="/images/star-white.svg" alt="⭐" />}
-                   {day.pathState === "locked" && <img src="/images/lock-grey.svg" alt="🔒"/>}
-                   {day.pathState === "moon" && <img src="/images/moon-white.svg" alt="🌙"/>}
-                 </div>
-                 <span className="bubbleLabel">{day.longLabel}</span>
+          <main className="childPathArea">
+             <div 
+               className="pathWrapper" 
+               style={{ 
+                 // Aangepast per nieuwe afmetingen: 2 bolletjes per 332.5px
+                 height: `${(pathData.length / 2) * 332.5 + 100}px`, 
+                 width: '490px', 
+                 position: 'relative', 
+                 marginTop: '40px', 
+                 marginBottom: '40px' 
+               }}
+             >
+               
+               {/* SVG PATROON */}
+               <svg width="100%" height="100%" style={{ position: 'absolute', top: 0, left: 0 }}>
+                 <defs>
+                   <pattern id="figma-snake" x="0" y="0" width="490" height="332.5" patternUnits="userSpaceOnUse">
+                     <path 
+                       d="M475 0C475 49.0327 435.251 88.782 386.218 88.782H97.5975C51.9801 88.782 15 125.762 15 171.379C15 216.996 51.9802 253.977 97.5975 253.977H396.477C439.844 253.977 475 289.133 475 332.5" 
+                       stroke="#F3EBE0" 
+                       strokeWidth="30" 
+                       fill="none"
+                     />
+                   </pattern>
+                 </defs>
+                 <rect width="100%" height="100%" fill="url(#figma-snake)" />
+               </svg>
+               
+               {/* BOLLETJES */}
+               <div className="pathNodesContainer" style={{ position: 'absolute', width: '100%', left: '0', top: '0', height: '100%' }}>
+                 {pathData.map((day, i) => {
+                   
+                   // De SVG start rechts, dus i=0 is rechts (100%), i=1 is links (0%)
+                   const isLeft = (i % 2 !== 0); 
+
+                  //  let popoverTypeClass = "popover-exercises"; // Standaard breed (lijst)
+                  //  if (day.key < todayKey) {
+                  //    popoverTypeClass = "popover-past";
+                  //  } else if (day.key > todayKey && day.exercises.length === 0) {
+                  //    popoverTypeClass = "popover-future-empty";
+                  //  } else if (day.key === todayKey && day.exercises.length === 0) {
+                  //    popoverTypeClass = "popover-today-empty";
+                  //  }
+    
+                   return (
+                     <div 
+                       key={day.key} 
+                       ref={day.isToday ? scrollRef : null}
+                       className={`pathBubbleWrap ${selectedDay === day.key ? 'clicked' : ''}`}
+                       onClick={() => setSelectedDay(selectedDay === day.key ? null : day.key)}
+                       style={{
+                         position: 'absolute',
+                         top: `${100 + (i * 166.25)}px`, 
+                         left: isLeft ? '30%' : '70%', 
+                         transform: 'translate(-50%, -50%)',
+                         transition: 'transform 0.2s ease-in-out',
+                         zIndex: selectedDay === day.key ? 50 : (day.isToday ? 10 : 1),
+                         cursor: 'pointer'
+                       }}
+                     >
+                       <a className={`pathBubble ${day.pathState}`}>
+                         {day.pathState === "done" && <img src="/images/check-white.svg" alt="✓" />}
+                         {day.pathState === "notdone" && <img src="/images/onvoltooid-icon.svg" alt="x" />}
+                         {day.pathState === "current" && <img src="/images/star-white.svg" alt="⭐" />}
+                         {day.pathState === "locked" && <img src="/images/lock-grey.svg" alt="🔒"/>}
+                         {day.pathState === "moon" && <img src="/images/moon-white.svg" alt="🌙"/>}
+                       </a>
+                       <span className="bubbleLabel">{day.longLabel}</span>
+
+
+
+                       {/* NIEUW: EXERCISE POPOVER */}
+                       {selectedDay === day.key && (
+                         <div 
+                           // "empty" class toepassen voor smalle popup = Voor verleden EN alle dagen zonder oefeningen
+                           className={`dayPopover ${(day.exercises.length === 0 || day.key < todayKey) ? 'empty' : ''}`} 
+                           onClick={(e) => e.stopPropagation()}
+                         >
+                           <div className="popoverArrow" />
+
+                           <div className="popoverContent" style={{ textAlign: (day.exercises.length === 0 || day.key < todayKey) ? 'center' : 'left' }}>
+                             
+                              {/* SITUATIE 1: VERLEDEN */}
+                              {day.key < todayKey ? (
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
+                                 <img src="/images/relax2.png" alt="Relax" style={{ width: '60px' }} />
+                                 <div>
+                                   <p style={{ margin: 0, color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Deze dag is al voorbij!</p>
+                                   <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Je kunt deze oefeningen niet meer maken.</p>
+                                 </div>
+                               </div>
+                             ) : 
+                             /* SITUATIE 2: TOEKOMST & GEEN OEFENINGEN */
+                             (day.key > todayKey && day.exercises.length === 0) ? (
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
+                               <img src="/images/empty-state-relax.png" alt="Relax" style={{ width: '60px' }} />
+                               <div>
+                                 <p style={{ margin: "0", color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Geen oefeningen gepland!</p>
+                                 <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Relax en geniet van je dag.</p>
+                               </div>
+                               </div>
+                             ) : 
+                             /* SITUATIE 3: VANDAAG & GEEN OEFENINGEN */
+                             (day.key === todayKey && day.exercises.length === 0) ? (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
+                              <img src="/images/monkey-search.png" alt="Relax" style={{ width: '60px' }} />
+                              <div>
+                              <p style={{ margin: "0", color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Geen oefeningen vandaag!</p>
+                              <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Geniet van je vrije tijd en tot snel!</p>
+                              </div>
+                              </div>
+                            ) : 
+                             /* SITUATIE 4: LIJST MET OEFENINGEN (Voor Vandaag en de Toekomst) */
+                             (
+                               day.exercises.map((ex, idx) => (
+                                 <div key={ex.id} className="exerciseItem">
+                                   <div className="exerciseInfo">
+                                     <h4 className="exerciseTitle">{ex.title || `Oefening ${idx + 1}`}</h4>
+                                     <div className="exerciseTags">
+                                       <span className="exerciseTag">
+                                         <img src="/images/star-outline.svg" alt="XP" /> 20 XP
+                                       </span>
+                                       <span className="exerciseTag">
+                                         <img src="/images/Clock.svg" alt="Tijd" /> 5 min
+                                       </span>
+                                     </div>
+                                   </div>
+                                   
+                                   {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) */}
+                                   <button className={`startButton ${!day.isToday ? 'disabled' : ''}`}>
+                                     Start
+                                   </button>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                         </div>
+                       )}
+                     </div>
+                   )
+                 })}
                </div>
-             ))}
-             <h2 className="monthOverlay">{todayDate.toLocaleString('nl-NL', { month: 'long' })}</h2>
-           </div>
-         </div>
-      </main>
+             </div>
+          </main>
 
       <aside className="childRightPanel">
         <div className="childTopStatsRow">
@@ -245,7 +440,7 @@ export default function ChildScreen() {
                 <div className={`weekCircle ${item.type}`}>
                   {item.type === "done" && <img src="/images/check-weekoverzicht.svg" alt="Done" />}
                   {item.type === "missed" && <img src="/images/cross-weekoverzicht.svg" alt="missed" />}
-                  {item.type === "today" && <img src="/images/target.svg" alt="today" />}
+                  {item.type === "today" && <img src="/images/target-today.svg" alt="today" />}
                   {item.type === "sunday" && <img src="/images/present-streakday.svg" alt="Present" />}
                 </div>
                 <span>{getWeekdayLabel(index)}</span>

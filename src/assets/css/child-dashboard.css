@@ -46,9 +46,11 @@
 }
 
 .pathWrapper {
-  width: 400px;
+  width: 900px;
   height: 999px;
   position: relative;
+
+  
 }
 
 .pathSvg {
@@ -84,24 +86,26 @@
   height: auto;
 }
 
-.pathBubble.done { background-color: #29BA2F; color: white; box-shadow: 0px 10px 0px #1D9122;}
-.pathBubble.notdone { background-color: #EB5E5A; color: white; box-shadow: 0px 10px 0px #B93834;}
-.pathBubble.current { background-color: #FBC748; color: white; box-shadow: 0px 10px 0px #C28200;}
-.pathBubble.locked { background-color: #E7E8EA; color: #7C7C7C; box-shadow: 0px 10px 0px #B2B2B2;}
-.pathBubble.moon { background-color: #82B3E1; color: white; box-shadow: 0px 10px 0px #598CBD;}
+.pathBubble.done { background-color: #29BA2F; color: white; box-shadow: 0px 8px 0px #1D9122;}
+.pathBubble.notdone { background-color: #EB5E5A; color: white; box-shadow: 0px 8px 0px #B93834;}
+.pathBubble.current { background-color: #FBC748; color: white; box-shadow: 0px 8px 0px #C28200;}
+.pathBubble.locked { background-color: #E7E8EA; color: #7C7C7C; box-shadow: 0px 8px 0px #B2B2B2;}
+.pathBubble.moon { background-color: #82B3E1; color: white; box-shadow: 0px 8px 0px #598CBD;}
 
 .bubbleLabel {
   font-weight: 700;
   font-size: 14px;
 }
 
-/* S-Curve Posities voor de UI  */
-.pos-0 { top: 12%; left: 40%; }
-.pos-1 { top: 27%; left: 60%; }
-.pos-2 { top: 42%; left: 40%; }
-.pos-3 { top: 57%; left: 60%; }
-.pos-4 { top: 72%; left: 40%; }
-.pos-5 { top: 87%; left: 60%; }
+.pathBubble {
+  transition: all 0.1s ease-in-out;
+}
+
+.pathBubbleWrap:active .pathBubble,
+.pathBubbleWrap.clicked .pathBubble {
+  transform: translateY(4px); /* Duw visueel naar beneden */
+  box-shadow: 0 0px 0 transparent !important; /* Verberg de schaduwrand onderaan */
+}
 
 .monthOverlay {
   position: absolute;
@@ -286,3 +290,139 @@
   height: 32px;
 }
 
+
+
+/* ...existing code... */
+
+/* --- POPOVER STYLES --- */
+.dayPopover {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  background-color: #ffffff;
+  border: 2px solid #D3D5D9;
+  border-radius: 8px;
+  box-shadow: 0 4px 0 #D3D5D9;
+  padding: 20px;
+  z-index: 9999;
+  font-family: system-ui, sans-serif;
+  cursor: default;
+}
+
+
+/* .dayPopover.popover-exercises {
+  width: 320px; 
+}
+
+.dayPopover.popover-past {
+  width: 260px; 
+}*/
+
+.dayPopover.popover-future-empty .popoverContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px; /* Adjust spacing as needed */
+}
+
+/* .dayPopover.popover-today-empty {
+  width: 200px; 
+}  */
+
+
+.popoverArrow {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-left: 2px solid #D3D5D9;
+  border-top: 2px solid #D3D5D9;
+}
+
+.popoverContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  /* gap: 16px; */
+}
+
+.popoverEmpty {
+  margin: 0;
+  color: #718096;
+  font-size: 14px;
+  text-align: center;
+}
+
+.exerciseItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #D3D5D9;
+  padding-bottom: 16px;
+}
+
+/* Haalt de border en padding weg bij de laatste oefening */
+.exerciseItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.exerciseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.exerciseTitle {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-family: "Cabinet Grotesk", sans-serif;
+}
+
+.exerciseTags {
+  display: flex;
+  gap: 16px;
+  font-family: "Cabinet Grotesk", sans-serif;
+  align-items: center;
+
+}
+
+.exerciseTag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  font-size: 16px !important;
+}
+
+
+.exerciseTag img {
+  height: 18px;
+}
+
+.startButton {
+  background-color: #2BB39B;
+  border: none;
+  box-shadow: 0 2px 0 #1E7A6A;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 8px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.startButton.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
