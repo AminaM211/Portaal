@@ -15,7 +15,7 @@ import ParentOefenplanning from "./pages/ParentOefenplanning";
 import Parentinstellingen from "./pages/Parentinstellingen";
 import ParentProfileSelection from "./pages/ParentProfileSelection";
 import ChildScreen from "./pages/ChildScreen";  
-
+import ExerciseScreen from "./pages/Oefening";
 
 export default function App() {
   return (
@@ -125,6 +125,12 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/kind/oefening" 
+       element={
+        <ProtectedRoute allowedRole="ouder">
+          <ExerciseScreen />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }

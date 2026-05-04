@@ -113,10 +113,10 @@ export default function ChildScreen() {
 
         // Oefeningen ophalen
         const { data: ex } = await supabase
-          .from("patient_exercises")
-          .select("id, scheduled_date, is_completed")
-          .eq("patient_id", patientData.id);
-        setScheduledExercises(ex || []);
+        .from("patient_exercises")
+        .select("id, scheduled_date, is_completed, exercises(title, duration_minutes)") 
+        .eq("patient_id", patientData.id);
+      setScheduledExercises(ex || []);
 
         // Missies ophalen
         const { data: allMissions } = await supabase
@@ -356,7 +356,7 @@ export default function ChildScreen() {
                               {/* SITUATIE 1: VERLEDEN */}
                               {day.key < todayKey ? (
                                <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
-                                 <img src="/images/relax2.png" alt="Relax" style={{ width: '60px' }} />
+                                 <img src="/images/monkey-stunned.png" alt="Relax" style={{ width: '60px' }} />
                                  <div>
                                    <p style={{ margin: 0, color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Deze dag is al voorbij!</p>
                                    <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Je kunt deze oefeningen niet meer maken.</p>
@@ -385,22 +385,32 @@ export default function ChildScreen() {
                             ) : 
                              /* SITUATIE 4: LIJST MET OEFENINGEN (Voor Vandaag en de Toekomst) */
                              (
-                               day.exercises.map((ex, idx) => (
-                                 <div key={ex.id} className="exerciseItem">
-                                   <div className="exerciseInfo">
-                                     <h4 className="exerciseTitle">{ex.title || `Oefening ${idx + 1}`}</h4>
-                                     <div className="exerciseTags">
-                                       <span className="exerciseTag">
-                                         <img src="/images/star-outline.svg" alt="XP" /> 20 XP
-                                       </span>
-                                       <span className="exerciseTag">
-                                         <img src="/images/Clock.svg" alt="Tijd" /> 5 min
-                                       </span>
-                                     </div>
-                                   </div>
+                              day.exercises.map((ex, idx) => (
+                                <div key={ex.id} className="exerciseItem">
+                                  <div className="exerciseInfo">
+                                    {/* Haal de titel uit de gekoppelde table via ex.exercises?.title */}
+                                    <h4 className="exerciseTitle">{ex.exercises?.title || `Oefening ${idx + 1}`}</h4>
+                                    <div className="exerciseTags">
+                                      <span className="exerciseTag">
+                                        <img src="/images/star-outline.svg" alt="XP" /> 20 XP
+                                      </span>
+                                      <span className="exerciseTag">
+                                        {/* Haal de duur op (optioneel, of laat de hardcoded 5 min staan) */}
+                                        <img src="/images/Clock.svg" alt="Tijd" /> {ex.exercises?.duration_minutes || 5} min
+                                      </span>
+                                    </div>
+                                  </div>
                                    
                                    {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) */}
-                                   <button className={`startButton ${!day.isToday ? 'disabled' : ''}`}>
+                                   <button 
+                                     className={`startButton ${!day.isToday ? 'disabled' : ''}`} 
+                                     onClick={() => {
+                                       if (day.isToday) {
+                                         // Stuur de huidige oefening mee in de 'state'
+                                         navigate('/kind/oefening', { state: { exercise: ex.exercises } });
+                                       }
+                                     }}
+                                   >
                                      Start
                                    </button>
                                   </div>
