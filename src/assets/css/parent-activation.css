@@ -60,10 +60,10 @@
   
   /* ---------- BACK ---------- */
   
-  .parentBackBtn {
+  .patientBack {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -71,7 +71,7 @@
     color: #111827;
   }
   
-  .parentBackBtn img {
+  .patientBack img {
     width: 20px;
   }
   

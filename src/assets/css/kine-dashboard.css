@@ -21,8 +21,9 @@
 } */
 
 .kineSidebarBrand img {
-  width: 180px !important;
-  height: 55px !important;
+  width: 160px !important;
+  height: auto !important;
+  margin-left :24px;
   display: block;
 }
 
@@ -257,57 +258,6 @@
   color: #8f8f8f;
 }
 
-.btn-primary-small,
-.btn-outline-small {
-  min-height: 38px;
-  padding: 8px 24px;
-  border-radius: 4px;
-  font-family: "Nunito", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn-smaller {
-  padding: 4px 18px !important;
-  width: auto !important;
-  font-size: 14px !important;
-  border-radius: 4px !important;
-  margin-top: 8px !important;
-}
-
-.btn-primary-small {
-  background: #2bb39b;
-  color: #ffffff;
-  border: 2px solid #2bb39b;
-  box-shadow: 0 2px 0 #1e7a6a;
-}
-
-.btn-primary-small:hover {
-  background: #189881;
-  border-color: #189881;
-}
-
-.btn-outline-small {
-  background: #ffffff;
-  color: #2bb39b;
-  border: 2px solid #2bb39b;
-  box-shadow: 0 2px 0 #1e7a6a;
-  border-radius: 4px !important;
-  min-height: 42px !important;
-}
-
-.btn-outline-small img {
-  width: 18px;
-  height: 18px;
-}
-
 .kineAddPatientForm {
   display: grid;
   grid-template-columns: 1.5fr 0.8fr 1.4fr auto;
@@ -352,7 +302,7 @@
 .kinePatientsHead {
   min-height: 54px;
   border-bottom: 1px solid #dddddd;
-  padding: 0 24px;
+  padding: 0px 50px 0px 24px;
   background: #ffffff;
 }
 
@@ -463,17 +413,10 @@
   text-align: center;
 }
 
-.kineDashLoading {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: #ffffff;
-}
 
 .kineDashLoading p {
   font-family: "Cabinet Grotesk", sans-serif;
-  font-size: 16px;
-  color: #000000;
+  font-size: 18px;
 }
 
 @media (max-width: 1280px) {
@@ -570,10 +513,7 @@
     width: 100%;
   }
 
-  .btn-primary-small,
-  .btn-outline-small {
-    width: 100%;
-  }
+  /* button widths handled in src/assets/css/buttons.css */
 
   .kineAddPatientForm {
     grid-template-columns: 1fr;
@@ -595,6 +535,23 @@
   grid-template-columns: 1fr 48px;
   align-items: stretch;
   border-bottom: 1px solid #dddddd;
+}
+
+.kinePatientRowWrap.is-selected .kinePatientRow {
+  background: #eefaf7;
+}
+
+.kinePatientRowWrap.is-selected .kinePatientRowContent {
+  background: #eefaf7;
+}
+
+.kinePatientRowWrap.is-selected .kinePatientMoreBtn {
+  background: #e3f5f0;
+  border-radius: 999px;
+}
+
+.kinePatientRowWrap.is-selected .kinePatientMenuWrap {
+  display: none;
 }
 
 .kinePatientRowWrap:last-child {
@@ -758,10 +715,7 @@
     flex-direction: column;
   }
 
-  .kineModalActions .btn-outline-small,
-  .kineModalActions .btn-primary-small {
-    width: 100%;
-  }
+  /* button widths handled in src/assets/css/buttons.css */
 }
 
 .kineModalOverlay {
@@ -911,17 +865,18 @@
 }
 
 .btn-primary-large {
-  padding: 8px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border-radius: 4px;
-  border: 2px solid #2bb39b;
   background: #2bb39b;
-  color: #ffffff;
-  box-shadow: 0 2px 0 #1e7a6a;
-  font-family: "Nunito", sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 800;
+  color: white;
+  font-weight: 700;
   cursor: pointer;
+  padding: 8px 24px;
+  box-shadow: 0 4px 0px #1E7A6A;
+  font-size: 16px;
 }
 
 .kineArchiveText {

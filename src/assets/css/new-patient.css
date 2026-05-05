@@ -1,12 +1,12 @@
 .flowMain {
-    padding: 52px 44px 44px 86px;
+  padding: 48px 40px 48px 24px;
     background: #ffffff;
     min-height: 100vh;
   }
   
   /* BACK BUTTON */
   
-  .backBtn {
+  .patientBack {
     background: transparent;
     border: none;
     font-family: "Cabinet Grotesk", sans-serif;
@@ -19,7 +19,7 @@
     gap: 16px;
   }
 
-  .backBtn img {
+  .patientBack img {
     width: 18px;
   }
 
@@ -93,7 +93,6 @@
   .btn-primary {
     margin-top: 16px;
     padding: 8px 24px;
-    height: 44px;
   
     background: #2bb39b;
     color: #fff;
@@ -105,11 +104,11 @@
     font-weight: 800;
   
     cursor: pointer;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
   }
   
   .btn-primary:hover {
-    background: #189881;
+    background: #1e7a6a;
   }
   
   /* REVIEW CARD */

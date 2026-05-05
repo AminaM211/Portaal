@@ -38,7 +38,12 @@ export default function ProtectedRoute({ children, allowedRole }) {
   }, [allowedRole]);
 
   if (loading) {
-    return <div style={{ padding: "40px" }}>Laden...</div>;
+    return (
+      <div className="kineDashLoading">
+        <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+        <p>laden . . .</p>
+      </div>
+    );
   }
 
   if (!allowed) {

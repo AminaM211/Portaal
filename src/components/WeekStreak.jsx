@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import { normalizeDateKey } from "../utils/childDashboard";
+import "./WeekStreak.css";
 
 function formatDateKey(date) {
   const year = date.getFullYear();
@@ -32,7 +34,7 @@ export default function WeekStreak({ scheduledExercises }) {
   const weekStatus = useMemo(() => {
     return weekDates.map((date) => {
       const key = formatDateKey(date);
-      const items = scheduledExercises.filter((item) => item.scheduled_date === key);
+      const items = scheduledExercises.filter((item) => normalizeDateKey(item.scheduled_date) === key);
   
       const isToday = key === todayKey;
       const completedCount = items.filter((item) => item.is_completed).length;

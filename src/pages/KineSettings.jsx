@@ -217,9 +217,16 @@ export default function Kineinstellingen() {
   }
 
   if (loading) {
-    return (
+    return 
+    <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>(
       <div className="kineDashLoading">
-        <p>Instellingen laden...</p>
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
       </div>
     );
   }

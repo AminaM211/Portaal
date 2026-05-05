@@ -24,7 +24,6 @@ export default function ExerciseScreen() {
   
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
-  const [isMoving, setIsMoving] = useState(false);
   const [progress, setProgress] = useState(0);
   
   // Timer gebaseerd op database duration
@@ -53,6 +52,32 @@ export default function ExerciseScreen() {
       setTimeout(() => setStep('success'), 500);
     }
   }, [progress, step]);
+
+  function checkMovement(landmarks) {
+    // Basis detectie logic
+    const leftWrist = landmarks[15];
+    const leftShoulder = landmarks[11];
+    
+    // Check of pols boven schouder is (arm omhoog)
+    if (leftWrist && leftShoulder && leftWrist.y < leftShoulder.y) {
+      setProgress((prev) => Math.min(prev + 0.5, 100)); // Langzaam verhogen
+    }
+  }
+
+  function onResults(results) {
+    if (!canvasRef.current || !webcamRef.current) return;
+    const canvasCtx = canvasRef.current.getContext("2d");
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
+
+    if (results.poseLandmarks) {
+      drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+      drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
+      checkMovement(results.poseLandmarks);
+    }
+    canvasCtx.restore();
+  }
 
   // MediaPipe AI Logica
   useEffect(() => {
@@ -90,35 +115,6 @@ export default function ExerciseScreen() {
       pose.close();
     };
   }, [step]);
-
-  const onResults = (results) => {
-    if (!canvasRef.current || !webcamRef.current) return;
-    const canvasCtx = canvasRef.current.getContext("2d");
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    canvasCtx.drawImage(results.image, 0, 0, canvasRef.current.width, canvasRef.current.height);
-
-    if (results.poseLandmarks) {
-      drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
-      drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
-      checkMovement(results.poseLandmarks);
-    }
-    canvasCtx.restore();
-  };
-
-  const checkMovement = (landmarks) => {
-    // Basis detectie logic
-    const leftWrist = landmarks[15];
-    const leftShoulder = landmarks[11];
-    
-    // Check of pols boven schouder is (arm omhoog)
-    if (leftWrist && leftShoulder && leftWrist.y < leftShoulder.y) {
-      setIsMoving(true);
-      setProgress((prev) => Math.min(prev + 0.5, 100)); // Langzaam verhogen
-    } else {
-      setIsMoving(false);
-    }
-  };
 
   // --- UI Gedeeltes ---
 

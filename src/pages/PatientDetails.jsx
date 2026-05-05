@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import "../components/ExerciseCard.css";
 import "../assets/css/patient-details.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -250,7 +251,6 @@ export default function PatientDetails() {
 
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [pageRefreshing, setPageRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [noteTitle, setNoteTitle] = useState("");
 
@@ -276,7 +276,6 @@ export default function PatientDetails() {
   const [programToDelete, setProgramToDelete] = useState(null);
 
   const [scheduledExercises, setScheduledExercises] = useState([]);
-  const [exerciseActionLoadingId, setExerciseActionLoadingId] = useState(null);
   const [exerciseToDelete, setExerciseToDelete] = useState(null);
   const [deletingExercise, setDeletingExercise] = useState(false);
 
@@ -381,25 +380,6 @@ export default function PatientDetails() {
       setErrorMessage("Patiënt kon niet geladen worden.");
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function refreshData() {
-    try {
-      setPageRefreshing(true);
-      setErrorMessage("");
-      await Promise.all([
-        loadPatient(userId),
-        loadPatientExercises(),
-        loadExerciseLibrary(),
-        loadNotesSafe(userId),
-        loadFavorites(userId),
-      ]);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Gegevens vernieuwen is mislukt.");
-    } finally {
-      setPageRefreshing(false);
     }
   }
 
@@ -734,52 +714,6 @@ export default function PatientDetails() {
       setErrorMessage("Programma aanpassen is mislukt.");
     } finally {
       setSavingProgramEdit(false);
-    }
-  }
-
-  async function handleToggleExerciseComplete(item) {
-    try {
-      setExerciseActionLoadingId(item.id);
-      setErrorMessage("");
-
-      const { error } = await supabase
-        .from("patient_exercises")
-        .update({ is_completed: !item.is_completed })
-        .eq("id", item.id);
-
-      if (error) throw error;
-
-      await loadPatientExercises();
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Status van oefening wijzigen is mislukt.");
-    } finally {
-      setExerciseActionLoadingId(null);
-    }
-  }
-
-  async function handleConfirmDeleteExercise() {
-    if (!exerciseToDelete) return;
-  
-    try {
-      setDeletingExercise(true);
-      setErrorMessage("");
-  
-      const { error } = await supabase
-        .from("patient_exercises")
-        .delete()
-        .eq("id", exerciseToDelete.id);
-  
-      if (error) throw error;
-  
-      await loadPatientExercises();
-  
-      setExerciseToDelete(null);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Oefening verwijderen is mislukt.");
-    } finally {
-      setDeletingExercise(false);
     }
   }
 
@@ -1135,8 +1069,14 @@ export default function PatientDetails() {
 
   if (loading) {
     return (
-      <div className="kineDashLoading">
-        <p>Patiënt laden...</p>
+      <div className="kineDash">
+        <KineSidebar onLogout={handleLogout} />
+        <main className="kineDashMain">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px", height: "100px" }} alt="" />
+            <p>laden . . .</p>
+          </div>
+        </main>
       </div>
     );
   }

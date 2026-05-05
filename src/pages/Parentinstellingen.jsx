@@ -4,15 +4,6 @@ import { supabase } from "../lib/supabase";
 import ParentSidebar from "../components/ParentSidebar";
 import "../assets/css/parent-instellingen.css";
 
-function getInitials(name) {
-  if (!name) return "";
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-}
-
 export default function Parentinstellingen() {
   const navigate = useNavigate();
 
@@ -86,10 +77,6 @@ export default function Parentinstellingen() {
   async function handleLogout() {
     await supabase.auth.signOut();
     navigate("/");
-  }
-
-  function openEditProfile() {
-    setEditingProfile(true);
   }
 
   function closeEditProfile() {
@@ -218,8 +205,15 @@ export default function Parentinstellingen() {
 
   if (loading) {
     return (
-      <div className="parentDashLoading">
-        <p>Instellingen laden...</p>
+      <div className="parentDashboardPage">
+        <ParentSidebar activeItem="instellingen" onLogout={handleLogout} />
+        <main className="parentDashboardMain">
+          <div className="parentDashboardLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>
+        </main>
       </div>
     );
   }

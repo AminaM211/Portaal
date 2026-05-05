@@ -43,7 +43,6 @@ export default function TeamUpgradeFlow() {
   const [step, setStep] = useState(1);
 
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
 
   const [form, setForm] = useState(initialForm);
   const [teamMembers, setTeamMembers] = useState([{ ...initialMember }]);
@@ -109,7 +108,6 @@ export default function TeamUpgradeFlow() {
       }
 
       setUser(authUser);
-      setProfile(profileData);
 
       const fullNameParts = (profileData.full_name || "").trim().split(/\s+/);
 
@@ -345,9 +343,16 @@ export default function TeamUpgradeFlow() {
   }
 
   if (loading) {
-    return (
+    return 
+    <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>(
       <div className="kineDashLoading">
-        <p>Upgrade flow laden...</p>
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
       </div>
     );
   }
@@ -358,7 +363,7 @@ export default function TeamUpgradeFlow() {
 
       <main className="teamUpgradePage">
         <button type="button" className="teamUpgradeBack" onClick={handleBack}>
-          <img src="/images/back-icon.svg" alt="" className="back"/>
+          <img src="/images/back-icon.svg" alt="" className="patientBack"/>
           <span>Terug</span>
         </button>
 

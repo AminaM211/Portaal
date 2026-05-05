@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import "../components/ExerciseCard.css";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -26,9 +27,6 @@ export default function CreateExerciseSchemePage() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState(null);
-
-  const [startDate, setStartDate] = useState(new Date().toISOString().split("T")[0]);
-const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
 
   const [step, setStep] = useState(1);
   const [tab, setTab] = useState("bibliotheek");
@@ -220,9 +218,10 @@ const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
     return (
       <div className="kineDash">
         <KineSidebar onLogout={handleLogout} />
-        <main className="exercisesMain">
+        <main className="kineDashMain">
           <div className="kineDashLoading">
-            <p>Oefeningen laden...</p>
+            <img src="/images/monkey-load.png" style={{ width: "100px"}} alt="" />
+            <p>laden . . .</p>
           </div>
         </main>
       </div>
@@ -235,7 +234,7 @@ const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
 
       <main className="exercisesMain">
         <div className="schemeTopbar">
-          <button type="button" className="schemeBackBtn" onClick={handleBack}>
+          <button type="button" className="patientBack" onClick={handleBack}>
             <img src="/images/back-icon.svg" alt="" />
             <span>Terug</span>
           </button>
@@ -269,6 +268,7 @@ const [endDate, setEndDate] = useState(new Date().toISOString().split("T")[0]);
               <input
                 type="text"
                 placeholder="Zoek oefeningen..."
+                className="searchbar"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />

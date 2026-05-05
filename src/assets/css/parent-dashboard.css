@@ -23,9 +23,9 @@
 
   .parentDashboardLoading,
   .parentDashboardError {
-    padding: 24px;
-    font-size: 16px;
+    font-size: 18px;
   }
+  
   
   .parentDashboardError {
     color: #c0392b;
@@ -51,7 +51,6 @@
   }
   
   .parentProfileCard,
-  .parentWeekCard,
   .parentCategoryCard {
     background: #fff;
     border: 1px solid #dfe3e8 !important;
@@ -147,75 +146,6 @@
   .parentKinesistMeta img {
     width: 16px;
     height: 16px;
-  }
-  
-  .parentWeekCard {
-    padding: 18px 20px 22px;
-  }
-  
-  .parentWeekCard h2 {
-    margin: 0 0 24px;
-    font-size: 18px;
-    font-weight: 700;
-    font-family: "Cabinet Grotesk", sans-serif;
-  }
-  
-  .parentWeekRow {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .parentWeekDay {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    min-width: 36px;
-  }
-  
-  .parentWeekDay span {
-    font-size: 14px;
-    color: #111827;
-    font-weight: 600;
-  }
-  
-  .weekCircle {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 1px solid #BDBDBD;
-    background: #E8EAEE;
-    color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-  
-  .weekCircle.done {
-    background: #2dbb39;
-    border-color: #2dbb39;
-    color: #fff;
-  }
-  
-  .weekCircle.missed {
-    background: #ef6357;
-    border-color: #ef6357;
-    color: #fff;
-  }
-  
-  .weekCircle.today {
-    background: #fff;
-    border-color: #f0b23f;
-    color: #f0b23f;
-  }
-  
-  .weekCircle.pending,
-  .weekCircle.empty {
-    border: 1px solid #BDBDBD;
-    background: #E8EAEE;
   }
   
   .parentStatusBlock {
@@ -401,132 +331,12 @@
     background: #b36de8;
   }
   
-  .parentSideSection h3 {
-    margin: 0 0 14px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #111827;
-  }
-  
-  .parentUpcomingList,
-  .parentRecentList {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
-  .parentUpcomingCard {
-    width: 100%;
-    border: 1px solid #dfe3e8;
-    border-radius: 4px;
-    background: #fff;
-    padding: 12px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    text-align: left;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .parentUpcomingCard img:first-child {
-    width: 80px;
-    border-radius: 4px;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-  
-  .parentUpcomingInfo {
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .parentUpcomingInfo strong {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #111827;
-  }
-  
-  .parentUpcomingMeta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 8px;
-  }
-  
-  .parentUpcomingInfo p {
-    margin: 0;
-    color: #9ca3af;
-    font-size: 13px;
-  }
-  
   .parentThreeDots {
     width: 24px !important;
     height: 24px !important;
     object-fit: contain;
     flex-shrink: 0;
     margin-top: -3px;
-  }
-  
-  .parentRecentCard {
-    border: 1px solid #dfe3e8;
-    border-radius: 8px;
-    background: #fff;
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .parentRecentLeft {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .parentRecentCheck {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: #2dbb39;
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  
-  .parentRecentInfo strong {
-    display: block;
-    margin-bottom: 4px;
-    font-size: 14px;
-  }
-  
-  .parentRecentInfo p {
-    margin: 0;
-    font-size: 12px;
-    color: #9ca3af;
-  }
-  
-  .parentXpTag {
-    background: #2dbb39;
-    color: #fff;
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 800;
-    white-space: nowrap;
-  }
-  
-  .parentEmptyState {
-    border: 1px dashed #d7dde3;
-    border-radius: 4px;
-    background: #fff;
-    padding: 16px;
   }
 
   .parentEmptyState img {
@@ -543,60 +353,17 @@
     align-items: center;
   }
 
+  .geenoefeningen img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 16px;
+  }
+
   .geenoefeningen p {
     margin: 0;
     color: black !important;
     font-size: 16px !important;
-  }
-  
-  .parentEmptyState strong {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-  }
-  
-  .parentEmptyState p {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-  }
-  
-  .parentEmptyState.side {
-    padding: 14px;
-  }
-  
-  .exerciseTag {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    font-size: 12px !important;
-    font-weight: 500;
-    line-height: 1;
-  }
-  
-  .exerciseTag--yellow {
-    background: #f4c344;
-  }
-  
-  .exerciseTag--pink {
-    background: #f2a8df;
-  }
-  
-  .exerciseTag--blue {
-    background: #9dd0ee;
-  }
-  
-  .exerciseTag--green {
-    background: #9ce65e;
-  }
-  
-  .exerciseDifficultyIcon {
-    width: 21px !important;
-    height: 21px !important;
-    object-fit: contain;
-    border-radius: 0 !important;
   }
   
   @media (max-width: 1200px) {
@@ -715,7 +482,7 @@
 
 .planningCalendarTop h4 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
 }
 
@@ -726,7 +493,7 @@
   font-weight: 500;
   color: #888;
   margin-bottom: 12px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .planningDaysGrid {
@@ -756,7 +523,7 @@
   justify-content: center;
   border-radius: 50%;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
   transition: all 0.1s;
 }
@@ -790,7 +557,7 @@
 }
 
 .dot-green { background-color: #2DC07F; }
-.dot-white { background-color: #2DC07F; } /* Optioneel: wit als hij in black circle valt, maar in design vallen ze onder de circle */
+.dot-white { background-color: #FFFFFF; } /* Optioneel: wit als hij in black circle valt, maar in design vallen ze onder de circle */
 
 /* Oefening Kaarten Lokaal */
 .planningExerciseList {
@@ -808,6 +575,32 @@
   align-items: center;
   gap: 16px;
   position: relative;
+}
+
+.flex-two {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-tertiary {
+  padding: 6px 18px;
+  background: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  display: flex;
+  color: black;
+  align-items: center;
+  gap: 8px;
+}
+
+.kinePatientsActions {
+  display: flex;
+  justify-content: space-between;
 }
 
 .planningExerciseCard.completed {

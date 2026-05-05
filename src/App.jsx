@@ -15,11 +15,13 @@ import ParentOefenplanning from "./pages/ParentOefenplanning";
 import Parentinstellingen from "./pages/Parentinstellingen";
 import ParentProfileSelection from "./pages/ParentProfileSelection";
 import ChildScreen from "./pages/ChildScreen";  
+import ChildMissionsPage from "./pages/ChildMissionsPage";
 import ExerciseScreen from "./pages/Oefening";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="/" element={<LoginPage />} />
 
       <Route
@@ -125,6 +127,14 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/kind/missies"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ChildMissionsPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/kind/oefening" 
        element={
         <ProtectedRoute allowedRole="ouder">
@@ -132,5 +142,6 @@ export default function App() {
         </ProtectedRoute>
       } />
     </Routes>
+    </>
   );
 }

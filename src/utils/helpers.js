@@ -14,6 +14,39 @@ export function formatDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+export function formatDate(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toLocaleDateString("nl-BE", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+}
+
+export function formatShortDateTime(value) {
+  if (!value) return "-";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return (
+    date.toLocaleDateString("nl-BE", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }) +
+    " " +
+    date.toLocaleTimeString("nl-BE", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+}
+
 export function calculateAge(birthDate) {
   if (!birthDate) return "-";
   const today = new Date();
@@ -42,6 +75,30 @@ export function getDifficultyIcon(difficulty) {
   if (difficulty === "Gemiddeld") return "/images/difficulty-medium.svg";
   if (difficulty === "Moeilijk") return "/images/difficulty-hard.svg";
   return "/images/difficulty-easy.svg"; // Fallback
+}
+
+export function getExerciseImageSrc(imageUrl) {
+  if (!imageUrl) return "/images/exercise-1.png";
+
+  const normalized = imageUrl.trim();
+
+  if (/^https?:\/\//i.test(normalized) || normalized.startsWith("data:")) {
+    return normalized;
+  }
+
+  if (normalized.startsWith("/")) {
+    return normalized;
+  }
+
+  if (normalized.startsWith("images/")) {
+    return `/${normalized}`;
+  }
+
+  if (normalized.startsWith("public/")) {
+    return `/${normalized.slice(7)}`;
+  }
+
+  return `/images/${normalized.replace(/^\.?\/*/, "")}`;
 }
 
 export function formatDateForInput(dateValue) {

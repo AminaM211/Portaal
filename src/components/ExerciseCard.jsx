@@ -1,0 +1,42 @@
+import React from "react";
+import {
+  formatDate,
+  getCategoryClass,
+  getDifficultyIcon,
+  getExerciseImageSrc,
+} from "../utils/helpers";
+import "./ExerciseCard.css";
+
+export default function ExerciseCard({ item, todayKey, onClick }) {
+  return (
+    <button
+      key={item.id}
+      type="button"
+      className="parentUpcomingCard"
+      onClick={onClick}
+    >
+      <img
+        src={getExerciseImageSrc(item.exercise?.image_url)}
+        alt={item.exercise?.title || "Oefening"}
+      />
+      <div className="parentUpcomingInfo">
+        <strong>{item.exercise?.title || "Oefening"}</strong>
+        <div className="parentUpcomingMeta">
+          <span className={`exerciseTag ${getCategoryClass(item.exercise?.category)}`}>
+            {item.exercise?.category || "Overig"}
+          </span>
+          <img
+            className="exerciseDifficultyIcon"
+            src={getDifficultyIcon(item.exercise?.difficulty)}
+            alt={item.exercise?.difficulty || "Makkelijk"}
+          />
+        </div>
+        <p>
+          {item.scheduled_date === todayKey
+            ? "Vandaag"
+            : formatDate(item.scheduled_date)}
+        </p>
+      </div>
+    </button>
+  );
+}

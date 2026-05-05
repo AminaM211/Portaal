@@ -1,15 +1,21 @@
 import React from "react";
 import { formatShortDateTime } from "../utils/helpers";
+import "./RecentExercises.css";
 
-export default function RecentExercises({ exercises }) {
+export default function RecentExercises({
+  exercises,
+  dateField = "created_at",
+  emptyTitle = "Nog geen recente oefeningen",
+  emptyDescription = "Voltooide oefeningen verschijnen hier.",
+}) {
   return (
     <div className="parentSideSection">
       <h3>Recente oefeningen</h3>
       <div className="parentRecentList">
         {exercises.length === 0 ? (
           <div className="parentEmptyState side">
-            <strong>Nog geen recente oefeningen</strong>
-            <p>Voltooide oefeningen verschijnen hier.</p>
+            <strong>{emptyTitle}</strong>
+            <p>{emptyDescription}</p>
           </div>
         ) : (
           exercises.map((item) => (
@@ -18,7 +24,7 @@ export default function RecentExercises({ exercises }) {
                 <span className="parentRecentCheck">✓</span>
                 <div className="parentRecentInfo">
                   <strong>{item.exercise?.title || "Oefening"}</strong>
-                  <p>{formatShortDateTime(item.created_at)}</p>
+                  <p>{formatShortDateTime(item[dateField])}</p>
                 </div>
               </div>
               <span className="parentXpTag">+100 XP</span>
