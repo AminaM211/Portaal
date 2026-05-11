@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ChildSidebar from "../components/ChildSidebar";
 import ChildStatsRow from "../components/ChildStatsRow";
@@ -228,7 +228,7 @@ export default function ChildProfilePage() {
                   <span>{hoursUntilReset} UUR</span>
                 </div>
               </div>
-              <a href="/kind/missies" className="seeAllLink">Zie alle</a>
+              <Link to="/kind/missies" className="seeAllLink">Zie alle</Link>
             </div>
             <div className="dagmissiesList">
               {previewMissions.length === 0 ? (
