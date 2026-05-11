@@ -16,6 +16,7 @@ import Parentinstellingen from "./pages/Parentinstellingen";
 import ParentProfileSelection from "./pages/ParentProfileSelection";
 import ChildScreen from "./pages/ChildScreen";  
 import ChildMissionsPage from "./pages/ChildMissionsPage";
+import ChildProfilePage from "./pages/ChildProfilePage";
 import ExerciseScreen from "./pages/Oefening";
 
 export default function App() {
@@ -124,6 +125,14 @@ export default function App() {
         element={
           <ProtectedRoute allowedRole="ouder">
             <ChildScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/kind/profiel"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ChildProfilePage />
           </ProtectedRoute>
         }
       />

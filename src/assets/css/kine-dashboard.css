@@ -13,7 +13,13 @@
   padding: 48px 24px 36px 32px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+    position: sticky !important;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 298px;
+  overflow-y: auto;
+  z-index: 50;
 }
 
 /* .kineSidebarBrand {
@@ -60,11 +66,17 @@
   font-family: "Nunito", sans-serif;
   font-size: 16px;
   line-height: 20px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .kineSidebarLink.is-active {
   background: #f6f6f6;
+  font-weight: 700;
+}
+
+.kineSidebarLink.is-active span{
+  background: #f6f6f6;
+  font-weight: 700;
 }
 
 .kineSidebarLogout {
@@ -877,6 +889,7 @@
   padding: 8px 24px;
   box-shadow: 0 4px 0px #1E7A6A;
   font-size: 16px;
+    line-height: 20px;
 }
 
 .kineArchiveText {

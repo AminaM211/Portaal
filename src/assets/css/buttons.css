@@ -5,7 +5,7 @@
   padding: 8px 24px;
   border-radius: 4px;
   border: 2px solid #2bb39b;
-  box-shadow: 0 2px 0 #1e7a6a;
+  box-shadow: 0 4px 0 #1e7a6a;
   background: #ffffff;
   color: #2bb39b;
   display: inline-flex;
@@ -21,7 +21,7 @@
 .btn-outline-small:hover {
   background-color: #2bb39a12;
   color: #2bb39b;
-box-shadow: 0 2px 0 #1e7a6a;
+box-shadow: 0 4px 0 #1e7a6a;
 }
 
 .btn-outline-small img {

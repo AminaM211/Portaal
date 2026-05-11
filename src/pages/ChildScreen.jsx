@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ChildSidebar from "../components/ChildSidebar";
 import ChildStatsRow from "../components/ChildStatsRow";
@@ -37,6 +37,7 @@ function getPathDates() {
 
 export default function ChildScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // State
   const [loading, setLoading] = useState(true);
@@ -50,6 +51,15 @@ export default function ChildScreen() {
   const todayKey = formatDateKey(todayDate);
 
   const scrollRef = useRef(null);
+
+  async function refetchScheduledExercises(patientId) {
+    const { data: ex } = await supabase
+      .from("patient_exercises")
+      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+      .eq("patient_id", patientId);
+
+    setScheduledExercises(ex || []);
+  }
 
 
   // --- 1. DATA INITIALISATIE ---
@@ -68,11 +78,7 @@ export default function ChildScreen() {
         if (patientError || !patientData) return;
 
         // Oefeningen ophalen
-        const { data: ex } = await supabase
-        .from("patient_exercises")
-        .select("id, scheduled_date, is_completed, exercises(title, duration_minutes)") 
-        .eq("patient_id", patientData.id);
-      setScheduledExercises(ex || []);
+        await refetchScheduledExercises(patientData.id);
 
         // Missies ophalen
         const { data: allMissions } = await supabase
@@ -90,7 +96,7 @@ export default function ChildScreen() {
       }
     }
     init();
-  }, [navigate, todayKey]);
+  }, [navigate, location.key, todayKey]);
 
   // --- 2. AFGELEIDE STATE (MEMO'S) ---
   const pathDates = useMemo(() => getPathDates(), []);
@@ -173,6 +179,56 @@ export default function ChildScreen() {
   const previewMissions = useMemo(() => missions.slice(0, 3), [missions]);
   const hasMoreMissions = missions.length > previewMissions.length;
   const hoursUntilReset = getHoursUntilReset();
+
+  useEffect(() => {
+    if (!activePatientId) return;
+
+    const channel = supabase
+      .channel(`patient_exercises:${activePatientId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "patient_exercises", filter: `patient_id=eq.${activePatientId}` },
+        async () => {
+          try {
+            await refetchScheduledExercises(activePatientId);
+          } catch (err) {
+            console.error("Failed to refetch exercises after realtime update", err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {}
+    };
+  }, [activePatientId]);
+
+  useEffect(() => {
+    if (!activePatientId) return;
+    let mounted = true;
+
+    async function refetchExercises() {
+      try {
+        const { data } = await supabase
+          .from("patient_exercises")
+          .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+          .eq("patient_id", activePatientId);
+
+        if (mounted) setScheduledExercises(data || []);
+      } catch (err) {
+        console.error("Failed to poll exercises", err);
+      }
+    }
+
+    refetchExercises();
+    const iv = setInterval(refetchExercises, 8000);
+    return () => {
+      mounted = false;
+      clearInterval(iv);
+    };
+  }, [activePatientId]);
 
   useEffect(() => {
     if (!activePatientId) return;
@@ -294,7 +350,7 @@ export default function ChildScreen() {
       <div className="childApp">
         <ChildSidebar onLogout={handleLogout} />
         <main className="childPathArea">
-          <div className="childLoading">
+          <div className="kineDashLoading">
             <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
             <p>laden . . .</p>
           </div>
@@ -443,7 +499,14 @@ export default function ChildScreen() {
                                      onClick={() => {
                                        if (day.isToday) {
                                          // Stuur de huidige oefening mee in de 'state'
-                                         navigate('/kind/oefening', { state: { exercise: ex.exercises } });
+                                        navigate('/kind/oefening', {
+                                          state: {
+                                            exercise: ex.exercises,
+                                            stats,
+                                            scheduledExercises,
+                                            patientExerciseId: ex.id,
+                                          },
+                                        });
                                        }
                                      }}
                                    >

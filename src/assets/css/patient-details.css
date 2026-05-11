@@ -18,7 +18,7 @@
   border: none;
   background: #2bb39b;
   color: white;
-  box-shadow: 0 2px 0 #1f826f;
+  box-shadow: 0 4px 0 #1f826f;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -30,13 +30,12 @@
 }
 
 .patientArchiveBtn {
-  height: 35px;
   padding: 8px 24px;
   border-radius: 4px;
   border: 2px solid #f3c547;
   background: #f3c547;
   color: #000000;
-  box-shadow: 0 2px 0 #b58d22;
+  box-shadow: 0 4px 0 #b58d22;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -175,7 +174,7 @@
   border-radius: 4px;
   background: #2bb39b;
   color: #ffffff;
-  box-shadow: 0 2px 0 #1e7a6a;
+  box-shadow: 0 4px 0 #1e7a6a;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -391,6 +390,14 @@
   font-size: 14px;
   line-height: 18px;
   color: #000000;
+}
+
+
+.patientTopActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
 }
 
 .exerciseCard p {
@@ -802,7 +809,7 @@
   background: #2bb39b;
   color: #ffffff;
   border: none;
-  box-shadow: 0 2px 0 #1e7a6a;
+  box-shadow: 0 4px 0 #1e7a6a;
 }
 
 .logbookList {
@@ -1053,8 +1060,8 @@
 }
 
 .btn-primary-small img {
-  width: 14px;
-  height: 14px;
+  width: 21px;
+  height: 21px;
 }
 
 .btn-archive {

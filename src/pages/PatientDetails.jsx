@@ -1107,7 +1107,7 @@ export default function PatientDetails() {
           <div className="patientTopActions">
             <button
               type="button"
-              className="btn-edit"
+              className="btn-primary-small"
               onClick={openEditModal}
             >
               <img src="/images/edit.svg" alt="" />

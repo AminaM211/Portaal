@@ -178,7 +178,7 @@
     border: 1px solid #2BB39B;
     border-radius: 4px;
     color: #2BB39B;
-    box-shadow: 0 2px 0 #2BB39B;
+    box-shadow: 0 4px 0 #2BB39B;
     font-family: "Nunito", sans-serif;
     font-size: 14px;
     line-height: 20px;
@@ -339,7 +339,7 @@
     background: #2bb39b;
     color: #ffffff;
     border: 2px solid #2bb39b;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
     width: 220px;
    }
    
@@ -359,7 +359,7 @@
      background: #ffffff;
      color: #2bb39b;
      border: 2px solid #2bb39b;
-     box-shadow: 0 2px 0 #2bb39b;
+     box-shadow: 0 4px 0 #2bb39b;
    }
    
    /* =========================
@@ -418,6 +418,8 @@
   padding: 8px 24px;
   box-shadow: 0 4px 0px #1E7A6A;
   font-size: 16px;
+  line-height: 20px;
+  min-height: 40px;
    }
 
    .teamUpgradeBack img {
@@ -453,13 +455,13 @@
      color: #2BB39B;
      border: 2px solid #2BB39B;
      font-size: 16px;
-     box-shadow: 0 2px 0 #1e7a6a;
+     box-shadow: 0 4px 0 #1e7a6a;
    }
    
    .btn-outline-large:hover {
      background-color: #2BB39B;
     color: white;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
    }
    
    .btn-primary-small {

@@ -262,7 +262,7 @@ export default function ChildMissionsPage() {
       <div className="childApp">
         <ChildSidebar onLogout={handleLogout} />
         <main className="childPathArea">
-          <div className="childLoading">
+          <div className="kineDashLoading">
             <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
             <p>laden . . .</p>
           </div>

@@ -108,6 +108,7 @@ export default function ParentDashboard() {
           exercise:exercises (
             id,
             title,
+            description,
             category,
             difficulty,
             duration_minutes,

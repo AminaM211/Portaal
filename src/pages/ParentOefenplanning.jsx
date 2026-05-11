@@ -52,7 +52,7 @@ export default function ParentOefenplanning() {
           .from("patient_exercises")
           .select(`
             id, patient_id, exercise_id, scheduled_date, is_completed, created_at,
-            exercise:exercises (id, title, category, difficulty, duration_minutes, repetitions, image_url)
+            exercise:exercises (id, title, description, category, difficulty, duration_minutes, repetitions, image_url)
           `)
           .eq("patient_id", patientData.id)
           .order("scheduled_date", { ascending: true });
