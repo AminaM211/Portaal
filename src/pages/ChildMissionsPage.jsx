@@ -57,7 +57,7 @@ export default function ChildMissionsPage() {
 
         const { data: ex, error: exError } = await supabase
           .from("patient_exercises")
-          .select("id, scheduled_date, is_completed, exercise_id")
+          .select("id, scheduled_date, is_completed, exercises(id, title, duration_minutes, xp_reward)")
           .eq("patient_id", patientData.id);
 
         if (exError) {
@@ -65,37 +65,7 @@ export default function ChildMissionsPage() {
           setLastError(exError);
         }
 
-        const patientExercises = ex || [];
-
-        // Fetch related exercises data (xp/xp_reward, title) and merge for progress calculations
-        const exerciseIds = Array.from(new Set(patientExercises.map((p) => p.exercise_id).filter(Boolean)));
-        let exercisesMap = {};
-        if (exerciseIds.length) {
-          try {
-            const { data: exRows, error: exRowsErr } = await supabase
-              .from("exercises")
-              .select("id, title, duration_minutes, xp_reward, xp")
-              .in("id", exerciseIds);
-
-            if (exRowsErr) {
-              console.warn("Failed to fetch exercises rows", exRowsErr);
-            } else {
-              exercisesMap = (exRows || []).reduce((acc, r) => {
-                acc[r.id] = r;
-                return acc;
-              }, {});
-            }
-          } catch (err) {
-            console.error("Error fetching exercises for patient_exercises merge", err);
-          }
-        }
-
-        const merged = patientExercises.map((p) => ({
-          ...p,
-          exercises: exercisesMap[p.exercise_id] || null,
-        }));
-
-        setScheduledExercises(merged);
+        setScheduledExercises(ex || []);
 
         const { data: allMissions, error: missionsError } = await supabase
           .from("patient_missions")

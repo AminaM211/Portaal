@@ -70,35 +70,12 @@ export default function ChildProfilePage() {
 
         setPatient(patientData);
 
-        // Fetch exercises
         const { data: ex } = await supabase
           .from("patient_exercises")
-          .select("id, scheduled_date, is_completed, exercise_id")
+          .select("id, scheduled_date, is_completed, exercises(id, title, duration_minutes, xp_reward)")
           .eq("patient_id", patientData.id);
 
-        const patientExercises = ex || [];
-
-        // Fetch exercises details and merge
-        const exerciseIds = Array.from(new Set(patientExercises.map((p) => p.exercise_id).filter(Boolean)));
-        let exercisesMap = {};
-        if (exerciseIds.length) {
-          const { data: exRows } = await supabase
-            .from("exercises")
-            .select("id, title, duration_minutes, xp_reward, xp")
-            .in("id", exerciseIds);
-
-          exercisesMap = (exRows || []).reduce((acc, r) => {
-            acc[r.id] = r;
-            return acc;
-          }, {});
-        }
-
-        const merged = patientExercises.map((p) => ({
-          ...p,
-          exercises: exercisesMap[p.exercise_id] || null,
-        }));
-
-        setScheduledExercises(merged);
+        setScheduledExercises(ex || []);
 
         // Fetch missions
         const { data: allMissions } = await supabase

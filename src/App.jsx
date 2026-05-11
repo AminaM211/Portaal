@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
