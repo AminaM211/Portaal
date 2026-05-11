@@ -2,79 +2,19 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ParentSidebar from "../components/ParentSidebar";
+import WeekStreak from "../components/WeekStreak";
+import UpcomingExercises from "../components/UpcomingExercises";
+import RecentExercises from "../components/RecentExercises";
+import { formatDate } from "../utils/helpers";
 import "../assets/css/parent-dashboard.css";
 
 const LINK_COLUMN = "parent_user_id";
-
-function formatDate(value) {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return date.toLocaleDateString("nl-BE", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-
-function formatShortDateTime(value) {
-  if (!value) return "-";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return (
-    date.toLocaleDateString("nl-BE", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }) +
-    " " +
-    date.toLocaleTimeString("nl-BE", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
-}
 
 function formatDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
-}
-
-function getCategoryClass(category) {
-  if (category === "Mobiliteit") return "exerciseTag--yellow";
-  if (category === "Flexibiliteit") return "exerciseTag--pink";
-  if (category === "Balans") return "exerciseTag--blue";
-  if (category === "Kracht") return "exerciseTag--green";
-  return "exerciseTag--yellow";
-}
-
-function getDifficultyIcon(difficulty) {
-  if (difficulty === "Makkelijk") return "/images/difficulty-easy.svg";
-  if (difficulty === "Gemiddeld") return "/images/difficulty-medium.svg";
-  if (difficulty === "Moeilijk") return "/images/difficulty-hard.svg";
-  return "/images/difficulty-easy.svg";
-}
-
-function getWeekDates() {
-  const today = new Date();
-  const weekday = (today.getDay() + 6) % 7;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - weekday);
-  monday.setHours(0, 0, 0, 0);
-
-  return Array.from({ length: 7 }).map((_, index) => {
-    const date = new Date(monday);
-    date.setDate(monday.getDate() + index);
-    return date;
-  });
-}
-
-function getWeekdayLabel(index) {
-  return ["M", "D", "W", "D", "V", "Z", "Z"][index] || "";
 }
 
 function getInitials(name) {
@@ -93,8 +33,6 @@ export default function ParentDashboard() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [parentProfile, setParentProfile] = useState(null);
   const [patient, setPatient] = useState(null);
   const [kinesistProfile, setKinesistProfile] = useState(null);
 
@@ -122,8 +60,6 @@ export default function ParentDashboard() {
         return;
       }
 
-      setCurrentUser(user);
-
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("id, full_name, role")
@@ -132,7 +68,10 @@ export default function ParentDashboard() {
 
       if (profileError) throw profileError;
 
-      setParentProfile(profileData);
+      if (!profileData || profileData.role !== "ouder") {
+        navigate("/");
+        return;
+      }
 
       const { data: patientData, error: patientError } = await supabase
         .from("patients")
@@ -169,6 +108,7 @@ export default function ParentDashboard() {
           exercise:exercises (
             id,
             title,
+            description,
             category,
             difficulty,
             duration_minutes,
@@ -239,97 +179,6 @@ export default function ParentDashboard() {
         return aDate - bDate;
       })
       .slice(0, 2);
-  }, [scheduledExercises, todayKey]);
-
-  const weekDates = useMemo(() => getWeekDates(), []);
-  const weekStatus = useMemo(() => {
-    return weekDates.map((date) => {
-      const key = formatDateKey(date);
-      const items = scheduledExercises.filter((item) => item.scheduled_date === key);
-  
-      const isToday = key === todayKey;
-      const completedCount = items.filter((item) => item.is_completed).length;
-      const isDone = items.length > 0 && completedCount === items.length;
-
-      // 1. If all exercises for the day are completed, show done
-      if (isDone) {
-        return {
-          key,
-          type: "done",
-        };
-      }
-
-      // 2. If it's today (and not fully done yet), show today's target
-      if (isToday) {
-        return {
-          key,
-          type: "today",
-        };
-      }
-           // 3. Fallback for Sunday
-           const isSunday = date.getDay() === 0;
-           if (isSunday) {
-             return {
-               key,
-               type: "sunday",
-             };
-           }
-       
-           // 4. If no items are scheduled for this past/future day
-           if (items.length === 0) {
-             return {
-               key,
-               type: "empty",
-             };
-           }
-       
-           const isPast = key < todayKey;
-       
-           return {
-             key,
-             type: isPast ? "missed" : "pending",
-           };
-         });
-       }, [weekDates, scheduledExercises, todayKey]);
-     
-
-
-  const stats = useMemo(() => {
-    const todayItems = scheduledExercises.filter((item) => item.scheduled_date === todayKey);
-    const todayCompleted = todayItems.filter((item) => item.is_completed).length;
-
-    const totalAssigned = scheduledExercises.length;
-    const totalCompleted = scheduledExercises.filter((item) => item.is_completed).length;
-
-    const completedDates = Array.from(
-      new Set(
-        scheduledExercises
-          .filter((item) => item.is_completed)
-          .map((item) => item.scheduled_date)
-      )
-    ).sort((a, b) => new Date(b) - new Date(a));
-
-    let streak = 0;
-    const cursor = new Date();
-    cursor.setHours(0, 0, 0, 0);
-
-    while (true) {
-      const key = formatDateKey(cursor);
-      if (completedDates.includes(key)) {
-        streak += 1;
-        cursor.setDate(cursor.getDate() - 1);
-      } else {
-        break;
-      }
-    }
-
-    return {
-      streak,
-      todayCompleted,
-      todayTotal: todayItems.length,
-      totalCompleted,
-      totalAssigned,
-    };
   }, [scheduledExercises, todayKey]);
 
 const categoryProgress = useMemo(() => {
@@ -405,13 +254,53 @@ const categoryProgress = useMemo(() => {
 });
 }, [scheduledExercises]);
 
+  const stats = useMemo(() => {
+    const todayItems = scheduledExercises.filter((item) => item.scheduled_date === todayKey);
+    const todayCompleted = todayItems.filter((item) => item.is_completed).length;
+
+    const totalAssigned = scheduledExercises.length;
+    const totalCompleted = scheduledExercises.filter((item) => item.is_completed).length;
+
+    const completedDates = Array.from(
+      new Set(
+        scheduledExercises
+          .filter((item) => item.is_completed)
+          .map((item) => item.scheduled_date)
+      )
+    ).sort((a, b) => new Date(b) - new Date(a));
+
+    let streak = 0;
+    const cursor = new Date();
+    cursor.setHours(0, 0, 0, 0);
+
+    while (true) {
+      const key = formatDateKey(cursor);
+      if (completedDates.includes(key)) {
+        streak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+
+    return {
+      streak,
+      todayCompleted,
+      todayTotal: todayItems.length,
+      totalCompleted,
+      totalAssigned,
+    };
+  }, [scheduledExercises, todayKey]);
+
 if (loading) {
     return (
       <div className="parentDashboardPage">
         <ParentSidebar activeItem="dashboard" onLogout={handleLogout} />
         <main className="parentDashboardMain">
           <div className="parentDashboardLoading">
-            <p>Dashboard laden...</p>
+                <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
           </div>
         </main>
       </div>
@@ -465,32 +354,7 @@ if (loading) {
               </div>
             </div>
 
-            <div className="parentWeekCard">
-              <h2>Weekoverzicht</h2>
-
-              <div className="parentWeekRow">
-                {weekStatus.map((item, index) => (
-                  <div key={item.key} className="parentWeekDay">
-                    <div className={`weekCircle ${item.type}`}>
-                      {item.type === "done" && (
-                        <img src="/images/check-weekoverzicht.svg" alt="Done" />
-                      )}
-                      {item.type === "missed" && (
-                        <img src="/images/cross-weekoverzicht.svg" alt="missed" />
-                      )}
-                      {item.type === "today" && (
-                        <img src="/images/target-today.svg" alt="today" />
-                      )}
-                      {item.type === "sunday" && (
-                        <img src="/images/present-streakday.svg" alt="Present on Sunday" />
-                      )}
-                  
-                    </div>
-                    <span>{getWeekdayLabel(index)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <WeekStreak scheduledExercises={scheduledExercises} />
 
             <div className="parentStatusBlock">
               <div className="parentStatusHeader">
@@ -566,87 +430,14 @@ if (loading) {
           </section>
 
           <aside className="parentDashboardRight">
-            <div className="parentSideSection">
-              <h3>Aankomende oefeningen</h3>
+            <UpcomingExercises exercises={upcomingExercises} todayKey={todayKey} />
 
-              <div className="parentUpcomingList">
-                {upcomingExercises.length === 0 ? (
-                  <div className="parentEmptyState side">
-                    <strong>Geen aankomende oefeningen</strong>
-                    <p>Nieuwe oefeningen verschijnen hier.</p>
-                  </div>
-                ) : (
-                  upcomingExercises.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className="parentUpcomingCard"
-                      onClick={() => navigate("/ouder/oefenplanning")}
-                    >
-                      <img
-                        src={item.exercise?.image_url || "/images/exercise-1.png"}
-                        alt={item.exercise?.title || "Oefening"}
-                      />
-
-                      <div className="parentUpcomingInfo">
-                        <strong>{item.exercise?.title || "Oefening"}</strong>
-
-                        <div className="parentUpcomingMeta">
-                          <span
-                            className={`exerciseTag ${getCategoryClass(
-                              item.exercise?.category
-                            )}`}
-                          >
-                            {item.exercise?.category || "Overig"}
-                          </span>
-
-                          <img
-                            className="exerciseDifficultyIcon"
-                            src={getDifficultyIcon(item.exercise?.difficulty)}
-                            alt={item.exercise?.difficulty || "Makkelijk"}
-                          />
-                        </div>
-
-                        <p>
-                          {item.scheduled_date === todayKey
-                            ? "Vandaag"
-                            : formatDate(item.scheduled_date)}
-                        </p>
-                      </div>
-
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-
-            <div className="parentSideSection">
-              <h3>Recente oefeningen</h3>
-
-              <div className="parentRecentList">
-                {recentCompleted.length === 0 ? (
-                  <div className="parentEmptyState side">
-                    <strong>Nog geen recente oefeningen</strong>
-                    <p>Voltooide oefeningen verschijnen hier.</p>
-                  </div>
-                ) : (
-                  recentCompleted.map((item) => (
-                    <div key={item.id} className="parentRecentCard">
-                      <div className="parentRecentLeft">
-                        <span className="parentRecentCheck">✓</span>
-
-                        <div className="parentRecentInfo">
-                          <strong>{item.exercise?.title || "Oefening"}</strong>
-                          <p>{formatShortDateTime(item.scheduled_date)}</p>
-                        </div>
-                      </div>
-
-                      <span className="parentXpTag">+100 XP</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
+            <RecentExercises
+              exercises={recentCompleted}
+              dateField="scheduled_date"
+              emptyTitle="Nog geen recente oefeningen"
+              emptyDescription="Voltooide oefeningen verschijnen hier."
+            />
           </aside>
         </div>
       </main>

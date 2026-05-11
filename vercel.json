@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/kind/:path*",
+      "destination": "/#/kind/:path*",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

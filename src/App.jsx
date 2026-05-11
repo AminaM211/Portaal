@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
@@ -15,11 +15,14 @@ import ParentOefenplanning from "./pages/ParentOefenplanning";
 import Parentinstellingen from "./pages/Parentinstellingen";
 import ParentProfileSelection from "./pages/ParentProfileSelection";
 import ChildScreen from "./pages/ChildScreen";  
-
+import ChildMissionsPage from "./pages/ChildMissionsPage";
+import ChildProfilePage from "./pages/ChildProfilePage";
+import ExerciseScreen from "./pages/Oefening";
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="/" element={<LoginPage />} />
 
       <Route
@@ -125,6 +128,29 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/kind/profiel"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ChildProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/kind/missies"
+        element={
+          <ProtectedRoute allowedRole="ouder">
+            <ChildMissionsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/kind/oefening" 
+       element={
+        <ProtectedRoute allowedRole="ouder">
+          <ExerciseScreen />
+        </ProtectedRoute>
+      } />
     </Routes>
+    </>
   );
 }

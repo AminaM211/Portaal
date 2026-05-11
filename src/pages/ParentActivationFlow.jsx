@@ -197,7 +197,7 @@ if (profileError) throw profileError;
 
       {step === 1 && (
         <main className="parentAuthContent codeStep">
-          <button type="button" className="parentBackBtn" onClick={() => navigate(-1)}>
+          <button type="button" className="patientBack" onClick={() => navigate(-1)}>
             <img src="/images/back-icon.svg" alt="" />
             <span>Terug</span>
           </button>
@@ -255,7 +255,7 @@ if (profileError) throw profileError;
 
       {step === 2 && (
         <main className="parentAuthContent signupStep">
-          <button type="button" className="parentBackBtn" onClick={() => setStep(1)}>
+          <button type="button" className="patientBack" onClick={() => setStep(1)}>
             <img src="/images/back-icon.svg" alt="" />
             <span>Terug</span>
           </button>

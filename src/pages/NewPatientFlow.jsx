@@ -111,7 +111,7 @@ export default function NewPatientFlow() {
       <KineSidebar />
 
       <main className="flowMain">
-        <button className="backBtn" onClick={() => (step === 1 ? navigate(-1) : prevStep())}>
+        <button className="patientBack" onClick={() => (step === 1 ? navigate(-1) : prevStep())}>
           <img src="/images/back-icon.svg" alt="back" />
           Terug
         </button>

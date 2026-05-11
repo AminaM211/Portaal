@@ -1,18 +1,20 @@
 import { useEffect, useMemo, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ChildSidebar from "../components/ChildSidebar";
+import ChildStatsRow from "../components/ChildStatsRow";
+import ChildMissionCard from "../components/ChildMissionCard";
+import WeekStreak from "../components/WeekStreak";
+import {
+  formatDateKey,
+  normalizeDateKey,
+  getExerciseXp,
+  getConsecutiveDayStreak,
+  getHoursUntilReset,
+} from "../utils/childDashboard";
 import "../assets/css/child-dashboard.css";
 
 const LINK_COLUMN = "parent_user_id";
-
-// --- Helper Functies ---
-function formatDateKey(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
 
 // NIEUW: Genereer 28 dagen (vorige week + deze week + 2 weken vooruit)
 function getPathDates() {
@@ -26,65 +28,22 @@ function getPathDates() {
   const startDay = new Date(currentMonday);
   startDay.setDate(currentMonday.getDate() - 7); 
 
-  return Array.from({ length: 28 }).map((_, i) => {
+    return Array.from({ length: 28 }).map((_, index) => {
     const d = new Date(startDay);
-    d.setDate(startDay.getDate() + i);
+      d.setDate(startDay.getDate() + index);
     return d;
   });
-}
-
-// NIEUW: Teken automatisch het SVG pad zodra er meer dan 6 nodes zijn
-function generateSnakePath(nodesCount) {
-  let d = "M 100 50 "; // Start mooi in het midden
-  for (let i = 0; i < nodesCount; i++) {
-    const startY = 50 + i * 160;
-    const endY = startY + 160;
-    
-    // We creëren een kleine marge (20px) zodat de lijn verticaal vertrekt en landt. 
-    // Hierdoor sluiten de bogen 100% vloeiend op elkaar aan zonder een 'knik'.
-    const cp1Y = startY; 
-    const cp2Y = endY;
-
-    // Wissel van rechts naar links
-    if (i % 2 === 0) {
-      d += `C 400 ${cp1Y}, 400 ${cp2Y}, 250 ${endY} `;
-    } else {
-      d += `C 40 ${cp1Y}, 40 ${cp2Y}, 250 ${endY} `;
-    }
-  }
-  return d;
-}
-
-function getWeekDates() {
-  const today = new Date();
-  const weekday = (today.getDay() + 6) % 7; // Maandag als start
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - weekday);
-  monday.setHours(0, 0, 0, 0);
-
-  return Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    return d;
-  });
-}
-
-function getWeekdayLabel(i) {
-  return ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"][i];
-}
-
-function getShortWeekdayLabel(i) {
-  return ["M", "D", "W", "D", "V", "Z", "Z"][i];
 }
 
 export default function ChildScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // State
   const [loading, setLoading] = useState(true);
   const [scheduledExercises, setScheduledExercises] = useState([]);
-  const [patient, setPatient] = useState(null);
   const [missions, setMissions] = useState([]);
+  const [activePatientId, setActivePatientId] = useState(null);
 
   const [selectedDay, setSelectedDay] = useState(null);
   
@@ -92,6 +51,15 @@ export default function ChildScreen() {
   const todayKey = formatDateKey(todayDate);
 
   const scrollRef = useRef(null);
+
+  async function refetchScheduledExercises(patientId) {
+    const { data: ex } = await supabase
+      .from("patient_exercises")
+      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+      .eq("patient_id", patientId);
+
+    setScheduledExercises(ex || []);
+  }
 
 
   // --- 1. DATA INITIALISATIE ---
@@ -109,25 +77,18 @@ export default function ChildScreen() {
         const { data: patientData, error: patientError } = await query.limit(1).maybeSingle();
         if (patientError || !patientData) return;
 
-        setPatient(patientData);
-
         // Oefeningen ophalen
-        const { data: ex } = await supabase
-          .from("patient_exercises")
-          .select("id, scheduled_date, is_completed")
-          .eq("patient_id", patientData.id);
-        setScheduledExercises(ex || []);
+        await refetchScheduledExercises(patientData.id);
 
         // Missies ophalen
         const { data: allMissions } = await supabase
           .from("patient_missions")
-          .select(`*, missions (*)`)
-          .eq("patient_id", patientData.id);
+          .select("id, patient_id, mission_id, progress, is_completed, assigned_date, missions(title, type, target, xp_reward)")
+          .eq("patient_id", patientData.id)
+          .order("assigned_date", { ascending: false });
 
-        if (allMissions) {
-          const todaysMissions = allMissions.filter(m => m.assigned_date === todayKey);
-          setMissions(todaysMissions);
-        }
+        setMissions(allMissions || []);
+        setActivePatientId(patientData.id);
       } catch (err) {
         console.error("INIT ERROR:", err);
       } finally {
@@ -135,32 +96,9 @@ export default function ChildScreen() {
       }
     }
     init();
-  }, [navigate, todayKey]);
+  }, [navigate, location.key, todayKey]);
 
   // --- 2. AFGELEIDE STATE (MEMO'S) ---
-  const weekDates = useMemo(() => getWeekDates(), []);
-
-  // De berekening voor het weekoverzicht (rechterkant)
-  const weekStatus = useMemo(() => {
-    return weekDates.map((date) => {
-      const key = formatDateKey(date);
-      const items = scheduledExercises.filter((item) => item.scheduled_date === key);
-      const isToday = key === todayKey;
-      const completedCount = items.filter((item) => item.is_completed).length;
-      const isDone = items.length > 0 && completedCount === items.length;
-
-      if (isDone) return { key, type: "done" };
-      if (isToday) return { key, type: "today" };
-      
-      const isSunday = date.getDay() === 0;
-      if (isSunday) return { key, type: "sunday" };
-      if (items.length === 0) return { key, type: "empty" };
-
-      const isPast = key < todayKey;
-      return { key, type: isPast ? "missed" : "pending" };
-    });
-  }, [weekDates, scheduledExercises, todayKey]);
-
   const pathDates = useMemo(() => getPathDates(), []);
   
   const pathData = useMemo(() => {
@@ -195,7 +133,7 @@ export default function ChildScreen() {
       return {
         key,
         date,
-        longLabel: isToday ? "VANDAAG" : getWeekdayLabel((date.getDay() + 6) % 7),
+        longLabel: isToday ? "VANDAAG" : ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"][(date.getDay() + 6) % 7],
         pathState,
         isToday,
         exercises: itemsForDay 
@@ -212,7 +150,6 @@ export default function ChildScreen() {
   }, [loading, pathData]);
 
   const stats = useMemo(() => {
-    const todayItems = scheduledExercises.filter(e => e.scheduled_date === todayKey);
     const totalCompleted = scheduledExercises.filter(e => e.is_completed).length;
     const completedDates = Array.from(new Set(scheduledExercises.filter(e => e.is_completed).map(e => e.scheduled_date)));
 
@@ -233,24 +170,167 @@ export default function ChildScreen() {
     };
   }, [scheduledExercises, todayKey]);
 
+  const dashboardStats = [
+    { label: "Patiënten", value: stats.trophies, icon: "/images/wins-stat.png", background: "#F8AE49" },
+    { label: "XP", value: stats.totalCompleted, icon: "/images/xp-stat.png", background: "#84C5ED" },
+    { label: "Streak", value: stats.streak, icon: "/images/streak-stat.png", background: "#B388FF" },
+  ];
+
+  const previewMissions = useMemo(() => missions.slice(0, 3), [missions]);
+  const hasMoreMissions = missions.length > previewMissions.length;
+  const hoursUntilReset = getHoursUntilReset();
+
+  useEffect(() => {
+    if (!activePatientId) return;
+
+    const channel = supabase
+      .channel(`patient_exercises:${activePatientId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "patient_exercises", filter: `patient_id=eq.${activePatientId}` },
+        async () => {
+          try {
+            await refetchScheduledExercises(activePatientId);
+          } catch (err) {
+            console.error("Failed to refetch exercises after realtime update", err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {}
+    };
+  }, [activePatientId]);
+
+  useEffect(() => {
+    if (!activePatientId) return;
+    let mounted = true;
+
+    async function refetchExercises() {
+      try {
+        const { data } = await supabase
+          .from("patient_exercises")
+          .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+          .eq("patient_id", activePatientId);
+
+        if (mounted) setScheduledExercises(data || []);
+      } catch (err) {
+        console.error("Failed to poll exercises", err);
+      }
+    }
+
+    refetchExercises();
+    const iv = setInterval(refetchExercises, 8000);
+    return () => {
+      mounted = false;
+      clearInterval(iv);
+    };
+  }, [activePatientId]);
+
+  useEffect(() => {
+    if (!activePatientId) return;
+
+    const channel = supabase
+      .channel(`patient_missions:${activePatientId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "patient_missions", filter: `patient_id=eq.${activePatientId}` },
+        async () => {
+          try {
+            const { data: updated } = await supabase
+              .from("patient_missions")
+              .select("id, patient_id, mission_id, progress, is_completed, assigned_date, missions(title, type, target, xp_reward)")
+              .eq("patient_id", activePatientId)
+              .order("assigned_date", { ascending: false });
+
+            setMissions(updated || []);
+          } catch (err) {
+            console.error("Failed to refetch missions after realtime update", err);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {}
+    };
+  }, [activePatientId]);
+
+  // Polling fallback: refetch missions every 8s in case realtime events don't arrive
+  useEffect(() => {
+    if (!activePatientId) return;
+    let mounted = true;
+
+    async function refetchMissions() {
+      try {
+        const { data } = await supabase
+          .from("patient_missions")
+          .select("id, patient_id, mission_id, progress, is_completed, assigned_date, missions(title, type, target, xp_reward)")
+          .eq("patient_id", activePatientId)
+          .order("assigned_date", { ascending: false });
+
+        if (mounted) setMissions(data || []);
+      } catch (err) {
+        console.error("Failed to poll missions", err);
+      }
+    }
+
+    refetchMissions();
+    const iv = setInterval(refetchMissions, 8000);
+    return () => {
+      mounted = false;
+      clearInterval(iv);
+    };
+  }, [activePatientId]);
+
   // --- 3. AUTO UPDATE MISSIONS IN DATABASE ---
   useEffect(() => {
     if (!missions.length || loading) return;
 
-    const completedToday = scheduledExercises.filter(
-      (e) => e.scheduled_date === todayKey && e.is_completed
+    const completedTodayExercises = scheduledExercises.filter(
+      (e) => normalizeDateKey(e.scheduled_date) === todayKey && e.is_completed
+    );
+    const completedToday = completedTodayExercises.length;
+    const completedTodayXp = completedTodayExercises.reduce(
+      (total, item) => total + getExerciseXp(item),
+      0
+    );
+    const completedTodayMissionCount = missions.filter(
+      (mission) => mission.is_completed && normalizeDateKey(mission.assigned_date) === todayKey
     ).length;
+    const currentStreak = getConsecutiveDayStreak(scheduledExercises, todayKey);
+    const completedThisWeekXp = scheduledExercises
+      .filter((item) => {
+        const itemDate = new Date(normalizeDateKey(item.scheduled_date));
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        const weekday = (today.getDay() + 6) % 7;
+        startOfWeek.setDate(today.getDate() - weekday);
+        startOfWeek.setHours(0, 0, 0, 0);
+        return item.is_completed && itemDate >= startOfWeek;
+      })
+      .reduce((total, item) => total + getExerciseXp(item), 0);
 
     async function syncMissions() {
       for (const m of missions) {
         let progress = 0;
+        const target = Number(m.missions?.target || 1);
+
         if (m.missions?.type === "complete_exercise") progress = completedToday;
-        if (m.missions?.type === "xp") progress = completedToday * 10;
+        if (m.missions?.type === "xp") progress = completedTodayXp;
+        if (m.missions?.type === "complete_daily_missions") progress = completedTodayMissionCount;
+        if (m.missions?.type === "streak") progress = currentStreak;
+        if (m.missions?.type === "xp_weekly") progress = completedThisWeekXp;
         
         // Voorkom onnodige updates als de progress hetzelfde is
         if (m.progress === progress) continue;
 
-        const done = progress >= (m.missions?.target || 1);
+        const done = progress >= target;
         await supabase
           .from("patient_missions")
           .update({ progress, is_completed: done })
@@ -265,7 +345,19 @@ export default function ChildScreen() {
     navigate("/");
   }
 
-  if (loading) return <div className="loading">Laden...</div>;
+  if (loading) {
+    return (
+      <div className="childApp">
+        <ChildSidebar onLogout={handleLogout} />
+        <main className="childPathArea">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+            <p>laden . . .</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="childApp">
@@ -356,7 +448,7 @@ export default function ChildScreen() {
                               {/* SITUATIE 1: VERLEDEN */}
                               {day.key < todayKey ? (
                                <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
-                                 <img src="/images/relax2.png" alt="Relax" style={{ width: '60px' }} />
+                                 <img src="/images/monkey-stunned.png" alt="Relax" style={{ width: '60px' }} />
                                  <div>
                                    <p style={{ margin: 0, color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Deze dag is al voorbij!</p>
                                    <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Je kunt deze oefeningen niet meer maken.</p>
@@ -385,22 +477,39 @@ export default function ChildScreen() {
                             ) : 
                              /* SITUATIE 4: LIJST MET OEFENINGEN (Voor Vandaag en de Toekomst) */
                              (
-                               day.exercises.map((ex, idx) => (
-                                 <div key={ex.id} className="exerciseItem">
-                                   <div className="exerciseInfo">
-                                     <h4 className="exerciseTitle">{ex.title || `Oefening ${idx + 1}`}</h4>
-                                     <div className="exerciseTags">
-                                       <span className="exerciseTag">
-                                         <img src="/images/star-outline.svg" alt="XP" /> 20 XP
-                                       </span>
-                                       <span className="exerciseTag">
-                                         <img src="/images/Clock.svg" alt="Tijd" /> 5 min
-                                       </span>
-                                     </div>
-                                   </div>
+                              day.exercises.map((ex, idx) => (
+                                <div key={ex.id} className="exerciseItem">
+                                  <div className="exerciseInfo">
+                                    {/* Haal de titel uit de gekoppelde table via ex.exercises?.title */}
+                                    <h4 className="exerciseTitle">{ex.exercises?.title || `Oefening ${idx + 1}`}</h4>
+                                    <div className="exerciseTags">
+                                      <span className="exerciseMetaTag">
+                                        <img src="/images/star-outline.svg" alt="XP" /> 20 XP
+                                      </span>
+                                      <span className="exerciseMetaTag">
+                                        {/* Haal de duur op (optioneel, of laat de hardcoded 5 min staan) */}
+                                        <img src="/images/Clock.svg" alt="Tijd" /> {ex.exercises?.duration_minutes || 5} min
+                                      </span>
+                                    </div>
+                                  </div>
                                    
                                    {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) */}
-                                   <button className={`startButton ${!day.isToday ? 'disabled' : ''}`}>
+                                   <button 
+                                     className={`startButton ${!day.isToday ? 'disabled' : ''}`} 
+                                     onClick={() => {
+                                       if (day.isToday) {
+                                         // Stuur de huidige oefening mee in de 'state'
+                                        navigate('/kind/oefening', {
+                                          state: {
+                                            exercise: ex.exercises,
+                                            stats,
+                                            scheduledExercises,
+                                            patientExerciseId: ex.id,
+                                          },
+                                        });
+                                       }
+                                     }}
+                                   >
                                      Start
                                    </button>
                                   </div>
@@ -417,67 +526,32 @@ export default function ChildScreen() {
           </main>
 
       <aside className="childRightPanel">
-        <div className="childTopStatsRow">
-          <div className="childStatItem">
-            <div className="childStatIcon trophy"><img src="/images/wins-stat.png" alt="" /></div>
-            <span className="childStatNumber">{stats.trophies}</span>
-          </div>
-          <div className="childStatItem">
-            <div className="childStatIcon star"><img src="/images/xp-stat.png" alt="" /></div>
-            <span className="childStatNumber">{stats.totalCompleted}</span>
-          </div>
-          <div className="childStatItem">
-            <div className="childStatIcon lightning"><img src="/images/streak-stat.png" alt="" /></div>
-            <span className="childStatNumber">{stats.streak}</span>
-          </div>
-        </div>
+        <ChildStatsRow stats={dashboardStats} />
 
-        <div className="parentWeekCard">
-          <h2>Weekoverzicht</h2>
-          <div className="parentWeekRow">
-            {weekStatus.map((item, index) => (
-              <div key={item.key} className="parentWeekDay">
-                <div className={`weekCircle ${item.type}`}>
-                  {item.type === "done" && <img src="/images/check-weekoverzicht.svg" alt="Done" />}
-                  {item.type === "missed" && <img src="/images/cross-weekoverzicht.svg" alt="missed" />}
-                  {item.type === "today" && <img src="/images/target-today.svg" alt="today" />}
-                  {item.type === "sunday" && <img src="/images/present-streakday.svg" alt="Present" />}
-                </div>
-                <span>{getWeekdayLabel(index)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeekStreak scheduledExercises={scheduledExercises} />
 
         <div className="parentSideSection">
-          <h3>Dagmissies</h3>
+          <div className="dagmissiesHeader" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <h3 style={{ margin: 0 }}>Dagmissies</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#F05D5E', fontWeight: 700, fontSize: '13px' }}>
+                <img src="/images/Clock.svg" alt="" style={{ width: '16px', height: '16px' }} />
+                <span>{hoursUntilReset} UUR</span>
+              </div>
+            </div>
+            <Link
+              to="/kind/missies"
+              className="seeAllLink">
+              Zie alle
+            </Link>
+          </div>
           <div className="dagmissiesList">
             {missions.length === 0 && (
-               <p style={{color: "#888", fontSize: "14px"}}>Geen missies gevonden voor vandaag.</p>
+              <p style={{color: "#888", fontSize: "14px"}}>Geen missies toegewezen aan deze patiënt.</p>
             )}
-            {missions.map((m) => {
-              const target = m.missions?.target || 1;
-              const pct = Math.min(100, Math.round((m.progress / target) * 100));
-              return (
-                <div key={m.id} className={`dagmissieCard ${m.is_completed ? 'done' : ''}`}>
-                  <div className="missieIconCircle" style={{ background: m.is_completed ? "#2DC07F" : "#E5E7EB", color: m.is_completed ? "white" : "transparent" }}>
-                    {m.is_completed ? "✓" : "•"}
-                  </div>
-                  <div className="missieInfoText">
-                    <h4>{m.missions?.title || "Onbekende missie"}</h4>
-                    <div className="missieProgressRow">
-                      <span>{m.progress}/{target}</span>
-                      <div className="missieBarTrack">
-                        <div className="missieBarFill" style={{ width: `${pct}%`, background: m.is_completed ? "#2DC07F" : "#F8AE49" }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="missieChestIcon" style={{fontSize: "24px"}}>
-                    {m.is_completed ? "📦" : "🧰"}
-                  </div>
-                </div>
-              );
-            })}
+            {previewMissions.map((m) => (
+              <ChildMissionCard key={m.id} mission={m} />
+            ))}
           </div>
         </div>
       </aside>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import "../components/ExerciseCard.css";
 import "../assets/css/exercise-detail.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -172,10 +173,18 @@ export default function ExerciseDetailPage() {
         if (error) throw error;
         setIsFavorite(false);
       } else {
-        const { error } = await supabase.from("favorite_exercises").insert({
-          user_id: userId,
-          exercise_id: exercise.id,
-        });
+        const { error } = await supabase
+          .from("favorite_exercises")
+          .upsert(
+            {
+              user_id: userId,
+              exercise_id: exercise.id,
+            },
+            {
+              onConflict: "user_id,exercise_id",
+              ignoreDuplicates: true,
+            }
+          );
 
         if (error) throw error;
         setIsFavorite(true);
@@ -277,8 +286,14 @@ export default function ExerciseDetailPage() {
 
   if (loading) {
     return (
-      <div className="kineDashLoading">
-        <p>Oefening laden...</p>
+      <div className="kineDash">
+        <KineSidebar onLogout={handleLogout} />
+        <main className="kineDashMain">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+            <p>laden . . .</p>
+          </div>
+        </main>
       </div>
     );
   }
@@ -300,7 +315,7 @@ export default function ExerciseDetailPage() {
           <button
             type="button"
             className="patientBack"
-            onClick={() => navigate("/kinesist/oefeningen")}
+            onClick={() => navigate(-1)}
           >
             <img src="/images/back-icon.svg" alt="" />
             <span>Terug</span>
@@ -322,13 +337,15 @@ export default function ExerciseDetailPage() {
               />
             </button>
 
-            <button
-              type="button"
-              className="btn-outline-small btn-outline"
-              onClick={openEditModal}
-            >
-              Wijzig
-            </button>
+            {patientId && (
+              <button
+                type="button"
+                className="btn-outline-small btn-outline"
+                onClick={openEditModal}
+              >
+                Wijzig
+              </button>
+            )}
           </div>
         </div>
 
@@ -336,7 +353,6 @@ export default function ExerciseDetailPage() {
 
         <div className="exerciseVideoHero">
           <img src={exercise.image_url} alt={exercise.title} />
-          <div className="exercisePlayButton">▶</div>
         </div>
 
         <div className="exerciseDetailHeader">
@@ -466,7 +482,7 @@ export default function ExerciseDetailPage() {
               <div className="editModalActions">
                 <button
                   type="button"
-                  className="btn-cancel btn-outline"
+                  className="btn-outline-small"
                   onClick={closeEditModal}
                 >
                   Annuleer
@@ -474,7 +490,7 @@ export default function ExerciseDetailPage() {
 
                 <button
                   type="button"
-                  className="btn-save btn"
+                  className="btn-primary-small"
                   onClick={handleSaveSchedule}
                   disabled={savingSchedule}
                 >

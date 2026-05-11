@@ -115,8 +115,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 40px;
-    border-radius: 8px;
+    padding: 8px 24px;
+    border-radius: 4px;
     border: 1px solid transparent;
     text-decoration: none;
     cursor: pointer;

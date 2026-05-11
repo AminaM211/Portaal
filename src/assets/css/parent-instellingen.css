@@ -14,14 +14,6 @@
   align-items: start;
 }
 
-.parentDashLoading {
-  padding: 48px;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
 
 .parentError {
   margin: 0 0 24px;
@@ -161,7 +153,7 @@
   background: #ffffff;
   border: 1px solid #dfe3e8;
   border-radius: 4px;
-  padding: 10px 16px;
+  padding: 8px 24px;
   font-size: 14px;
   font-weight: 600;
   color: #111827;
@@ -409,15 +401,19 @@
 }
 
 .btn-primary-large {
-  padding: 8px 24px;
-  background: #2bb39b;
-  color: #ffffff;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   border-radius: 4px;
-  font-weight: 600;
+  background: #2bb39b;
+  color: white;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
-  font-size: 14px;
+  padding: 8px 24px;
+  box-shadow: 0 4px 0px #1E7A6A;
+  font-size: 16px;
+  line-height: 20px;
 }
 
 .btn-primary-large:hover:not(:disabled) {

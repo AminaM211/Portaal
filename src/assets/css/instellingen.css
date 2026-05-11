@@ -178,7 +178,7 @@
     border: 1px solid #2BB39B;
     border-radius: 4px;
     color: #2BB39B;
-    box-shadow: 0 2px 0 #2BB39B;
+    box-shadow: 0 4px 0 #2BB39B;
     font-family: "Nunito", sans-serif;
     font-size: 14px;
     line-height: 20px;
@@ -339,7 +339,7 @@
     background: #2bb39b;
     color: #ffffff;
     border: 2px solid #2bb39b;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
     width: 220px;
    }
    
@@ -359,7 +359,7 @@
      background: #ffffff;
      color: #2bb39b;
      border: 2px solid #2bb39b;
-     box-shadow: 0 2px 0 #2bb39b;
+     box-shadow: 0 4px 0 #2bb39b;
    }
    
    /* =========================
@@ -406,17 +406,20 @@
    .btn-primary-large,
    .btn-outline-large,
    .btn-primary-small {
-     border-radius: 4px;
-     font-weight: 800;
-     cursor: pointer;
-     transition: all 0.18s ease;
-     border: none;
-     background: #2bb39b;
-     color: #ffffff;
-     border: 2px solid #2bb39b;
-     box-shadow: 0 2px 0 #1e7a6a;
-     width: 200px;
-   
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 4px;
+  background: #2bb39b;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 24px;
+  box-shadow: 0 4px 0px #1E7A6A;
+  font-size: 16px;
+  line-height: 20px;
+  min-height: 40px;
    }
 
    .teamUpgradeBack img {
@@ -425,16 +428,6 @@
    .teamUpgradeBack  {
     margin-bottom: 8px;
    }
-   
-   .btn-primary-large {
-     padding: 8px 24px;
-     color: #ffffff;
-     font-size: 16px;
-     background: #2bb39b;
-     border: 2px solid #2bb39b;
-     box-shadow: 0 2px 0 #1e7a6a;
-     width: fit-content;
-      }
    
    .btn-primary-large:hover {
      background: #24a696;
@@ -462,20 +455,20 @@
      color: #2BB39B;
      border: 2px solid #2BB39B;
      font-size: 16px;
-     box-shadow: 0 2px 0 #2BB39B;
-
+     box-shadow: 0 4px 0 #1e7a6a;
    }
    
    .btn-outline-large:hover {
-     background: rgba(43, 183, 166, 0.08);
+     background-color: #2BB39B;
+    color: white;
+    box-shadow: 0 4px 0 #1e7a6a;
    }
    
    .btn-primary-small {
-     min-height: 42px;
-     padding: 0 16px;
+     padding: 8 24px;
      background: #2BB39B;
      color: #ffffff;
-     font-size: 15px;
+     font-size: 14px;
    }
    
    .btn-primary-small:hover {
@@ -526,17 +519,9 @@
       LOADING
       ========================= */
    
-   .kineDashLoading {
-     min-height: 100vh;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     background: #f8f8f8;
-   }
    
    .kineDashLoading p {
      font-size: 18px;
-     color: #444444;
    }
    
    /* =========================

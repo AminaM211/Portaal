@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import "../components/ExerciseCard.css";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -28,6 +29,7 @@ export default function ExercisesPage() {
   const [search, setSearch] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [libraryExercises, setLibraryExercises] = useState([]);
   const [myExercises, setMyExercises] = useState([]);
@@ -99,6 +101,8 @@ export default function ExercisesPage() {
     } catch (error) {
       console.error(error);
       setErrorMessage("Oefeningen konden niet geladen worden.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -126,10 +130,18 @@ export default function ExercisesPage() {
 
         setFavoriteIds((prev) => prev.filter((id) => id !== exerciseId));
       } else {
-        const { error } = await supabase.from("favorite_exercises").insert({
-          user_id: userId,
-          exercise_id: exerciseId,
-        });
+        const { error } = await supabase
+          .from("favorite_exercises")
+          .upsert(
+            {
+              user_id: userId,
+              exercise_id: exerciseId,
+            },
+            {
+              onConflict: "user_id,exercise_id",
+              ignoreDuplicates: true,
+            }
+          );
 
         if (error) throw error;
 
@@ -167,6 +179,21 @@ export default function ExercisesPage() {
     });
   }, [activeDataset, search, category, favoriteIds]);
 
+  if (loading) {
+    return (
+      <div className="kineDash">
+        <KineSidebar onLogout={handleLogout} />
+        <main className="kineDashMain">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="kineDash">
       <KineSidebar onLogout={handleLogout} />
@@ -187,6 +214,7 @@ export default function ExercisesPage() {
           <input
             type="text"
             placeholder="Zoek oefeningen..."
+            className="searchbar"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -236,7 +264,10 @@ export default function ExercisesPage() {
             </button>
           </div>
 
-          <button type="button" className="btn-outline-small">
+          <button
+            type="button"
+            className="btn-outline-small"
+          >
             <img src="/images/check-square.png" alt="" />
             <span>Selecteer</span>
           </button>
@@ -301,7 +332,7 @@ export default function ExercisesPage() {
                         />
                       </div>
 
-                      <p>
+                      <p className="exerciseLibraryMeta">
                         {exercise.duration_minutes || 0} min ·{" "}
                         {exercise.repetitions || 0} herhalingen
                       </p>

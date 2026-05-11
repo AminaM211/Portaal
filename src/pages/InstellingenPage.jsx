@@ -194,8 +194,15 @@ export default function InstellingenPage() {
 
   if (loading) {
     return (
-      <div className="kineDashLoading">
-        <p>Instellingen laden...</p>
+      <div className="kineDash">
+        <KineSidebar onLogout={handleLogout} />
+        <main className="kineDashMain">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>
+        </main>
       </div>
     );
   }

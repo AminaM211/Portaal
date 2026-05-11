@@ -1,0 +1,95 @@
+.parentUpcomingCard {
+  width: 100%;
+  border: 1px solid #dfe3e8;
+  border-radius: 4px;
+  background: #fff;
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+}
+
+.parentUpcomingCard img:first-child {
+  width: 80px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.parentUpcomingInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.parentUpcomingInfo strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #111827;
+}
+
+.parentUpcomingMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.parentUpcomingInfo p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.exerciseLibraryMeta {
+  margin: 0;
+  color: #7C7C7C;
+  font-size: 14px;
+}
+
+.exerciseLibraryInfo strong {
+  font-size: 16px;
+}
+
+.exerciseLibraryInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.exerciseTag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 8px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.exerciseTag--yellow {
+  background: #f4c344;
+}
+
+.exerciseTag--pink {
+  background: #f2a8df;
+}
+
+.exerciseTag--blue {
+  background: #9dd0ee;
+}
+
+.exerciseTag--green {
+  background: #9ce65e;
+}
+
+.exerciseDifficultyIcon {
+  width: 21px !important;
+  height: 21px !important;
+  object-fit: contain;
+  border-radius: 0 !important;
+}

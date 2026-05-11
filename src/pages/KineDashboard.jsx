@@ -252,8 +252,14 @@ export default function KineDashboard() {
 
   if (loading) {
     return (
-      <div className="kineDashLoading">
-        <p>Dashboard laden...</p>
+      <div className="kineDash">
+        <KineSidebar onLogout={handleLogout} />
+        <main className="kineDashMain">
+          <div className="kineDashLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+            <p>laden . . .</p>
+          </div>
+        </main>
       </div>
     );
   }
@@ -321,11 +327,6 @@ export default function KineDashboard() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-
-              <button type="button" className="btn-outline-small">
-                <img src="/images/check-square.png" alt="Selecteer icoon" />
-                <span>Selecteer</span>
-              </button>
 
               <button
                 type="button"

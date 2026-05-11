@@ -1,0 +1,376 @@
+.childProfilePage {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  background: white;
+}
+
+.childProfileSection {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: white;
+}
+
+/* Large Profile Card */
+.childProfileCardLarge {
+  background: #FAF5EE;
+  border-radius: 4px;
+  padding: 32px 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  max-width: 500px;
+  min-height: 260px;
+  width: 100%;
+  box-shadow: 0 4px 0px #E1DBD3;
+  position: relative;
+}
+
+  .full {
+    width: 100%;
+  }
+
+.childProfileCardHeader {
+  left: 40px;
+  position: absolute;
+}
+
+.childProfileName {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.childProfileGoal {
+  margin: 0;
+  font-size: 14px;
+  color: #999;
+  font-weight: 400;
+}
+
+/* Mascot Avatar */
+.childProfileMascot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  margin-top: 40px;
+}
+
+.childProfileMascot img {
+  width: 260px;
+  object-fit: cover;
+}
+
+.childProfileAvatar {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 100px;
+  font-weight: 700;
+  object-fit: cover;
+}
+
+/* Stats Row */
+.childProfileStatsRow {
+  display: flex;
+  gap: 32px;
+  width: 100%;
+  margin: 32px 0;
+}
+
+.childStatItemRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.childStatRowIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.childStatRowValue {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+/* Trophies Section */
+.childProfileTrophies {
+  width: 100%;
+  padding-top: 48px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.childProfileTrophiesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.childProfileTrophiesHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: "cabinet grotesk", sans-serif;
+}
+
+.childTrophiesLink {
+font-family: 'Cabinet Grotesk';
+font-style: normal;
+font-weight: 700;
+font-size: 14px;
+line-height: 20px;
+text-decoration-line: underline;
+color: #000000;
+}
+
+.childTrophiesList {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.childTrophyCard {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.childTrophyCard:hover {
+  border-color: #2DC07F;
+  box-shadow: 0 2px 8px rgba(45, 192, 127, 0.1);
+}
+
+.childTrophyIcon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.childTrophyName {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000;
+  margin: 0;
+}
+
+.childTrophyDesc {
+  font-size: 10px;
+  color: #999;
+  margin: 0;
+}
+
+/* Right Panel */
+.childRightPanel {
+  min-width: 420px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  background: white;
+}
+
+.childMissionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.childMissionsHeader h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+
+.childMissionsViewAll {
+  font-size: 12px;
+  color: #2DC07F;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.childMissionsViewAll:hover {
+  color: #20a06a;
+}
+
+.childProfileMissionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.childProfileMissionsList p {
+  margin: 0;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Actions */
+.childProfileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+  align-items: center;
+}
+
+.childProfileButtonOutline {
+  padding: 12px 24px;
+  border: 2px solid #2DC07F;
+  background: white;
+  color: #2DC07F;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+
+.childProfileButtonOutline:hover {
+  background: #E8F8F4;
+}
+
+.childProfileButtonPrimary {
+  padding: 12px 24px;
+  border: none;
+  background: #2DC07F;
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Cabinet Grotesk', sans-serif;
+}
+
+.childProfileButtonPrimary:hover {
+  background: #20a06a;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .childProfilePage {
+    flex-direction: column;
+  }
+
+  .childRightPanel {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .childProfileSection {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .childProfileCardLarge {
+    padding: 40px 30px;
+  }
+
+  .childProfileAvatar {
+    width: 180px;
+    height: 180px;
+    font-size: 80px;
+  }
+
+  .childProfileMascot {
+    width: 180px;
+    height: 180px;
+  }
+
+  .childProfileName {
+    font-size: 24px;
+  }
+
+  .childProfileStatsRow {
+    gap: 40px;
+  }
+
+  .childStatRowIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .childStatRowValue {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .childProfileSection {
+    padding: 20px;
+  }
+
+  .childRightPanel {
+    padding: 20px;
+    min-width: auto;
+  }
+
+  .childProfileCardLarge {
+    padding: 30px 20px;
+    gap: 24px;
+    max-width: 100%;
+  }
+
+  .childProfileAvatar {
+    width: 150px;
+    height: 150px;
+    font-size: 60px;
+  }
+
+  .childProfileMascot {
+    width: 150px;
+    height: 150px;
+  }
+
+  .childProfileName {
+    font-size: 22px;
+  }
+
+  .childProfileGoal {
+    font-size: 13px;
+  }
+
+  .childProfileStatsRow {
+    gap: 30px;
+  }
+
+  .childStatRowIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .childStatRowValue {
+    font-size: 18px;
+  }
+
+  .childTrophiesList {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -37,6 +37,7 @@
   /* BUTTONS */
   .btn-primary,
   .btn-outline {
+    min-height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -53,7 +54,7 @@
     background: #2bb39b;
     color: #ffffff;
     border: 2px solid #2bb39b;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
     font-size: 16px;
     line-height: 20px;
   }
@@ -76,13 +77,16 @@
     background: #ffffff;
     color: #2bb39b;
     border: 2px solid #2bb39b;
-    box-shadow: 0 2px 0 #1e7a6a;
+    box-shadow: 0 4px 0 #1e7a6a;
     font-size: 16px;
     line-height: 20px;
   }
   
   .btn-outline:hover {
-    background: rgba(43, 179, 155, 0.05);
+    background: #2bb39b;
+    color: #ffffff;
+    border: 2px solid #2bb39b;
+    box-shadow: 0 4px 0 #1e7a6a;
   }
   
   .btn-outline:active {
@@ -274,9 +278,8 @@
     .btn-primary,
     .btn-outline {
       font-size: 14px;
-      line-height: 20px;
-      min-height: 38px;
       padding: 8px 24px;
+      min-height: auto;
     }
   
     .login-main {

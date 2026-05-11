@@ -8,32 +8,29 @@ export default function PoseDemo() {
   const [status, setStatus] = useState("Camera starten…")
   const [feedback, setFeedback] = useState("Steek je rechterarm omhoog")
 
-  useEffect(() => {
-    const init = async () => {
-      await tf.setBackend("webgl")
-      await tf.ready()
-      await startCamera()
-      await loadModel()
-    }
-
-    init()
-  }, [])
-
   const startCamera = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true })
     videoRef.current.srcObject = stream
   }
 
-  const loadModel = async () => {
-    const detector = await posedetection.createDetector(
-      posedetection.SupportedModels.MoveNet,
-      {
-        modelType: posedetection.movenet.modelType.SINGLEPOSE_LIGHTNING
-      }
-    )
+  const checkArmUp = (pose) => {
+    const keypoints = pose.keypoints
 
-    setStatus("Model geladen – oefening actief")
-    detectPose(detector)
+    const rightWrist = keypoints.find(k => k.name === "right_wrist")
+    const rightShoulder = keypoints.find(k => k.name === "right_shoulder")
+
+    if (!rightWrist || !rightShoulder) return
+
+    if (rightWrist.score < 0.4 || rightShoulder.score < 0.4) {
+      setFeedback("Zorg dat je volledig in beeld bent")
+      return
+    }
+
+    if (rightWrist.y < rightShoulder.y) {
+      setFeedback("✅ Goed zo! Arm is hoog genoeg")
+    } else {
+      setFeedback("❌ Steek je arm hoger")
+    }
   }
 
   const detectPose = async (detector) => {
@@ -48,26 +45,28 @@ export default function PoseDemo() {
     requestAnimationFrame(() => detectPose(detector))
   }
 
-  const checkArmUp = (pose) => {
-    const keypoints = pose.keypoints
+  const loadModel = async () => {
+    const detector = await posedetection.createDetector(
+      posedetection.SupportedModels.MoveNet,
+      {
+        modelType: posedetection.movenet.modelType.SINGLEPOSE_LIGHTNING
+      }
+    )
 
-    const rightWrist = keypoints.find(k => k.name === "right_wrist")
-    const rightShoulder = keypoints.find(k => k.name === "right_shoulder")
-
-    if (!rightWrist || !rightShoulder) return
-
-    // confidence check (optioneel maar slim)
-    if (rightWrist.score < 0.4 || rightShoulder.score < 0.4) {
-      setFeedback("Zorg dat je volledig in beeld bent")
-      return
-    }
-
-    if (rightWrist.y < rightShoulder.y) {
-      setFeedback("✅ Goed zo! Arm is hoog genoeg")
-    } else {
-      setFeedback("❌ Steek je arm hoger")
-    }
+    setStatus("Model geladen – oefening actief")
+    detectPose(detector)
   }
+
+  useEffect(() => {
+    const init = async () => {
+      await tf.setBackend("webgl")
+      await tf.ready()
+      await startCamera()
+      await loadModel()
+    }
+
+    init()
+  }, [])
 
   return (
     <div style={{ padding: 20 }}>

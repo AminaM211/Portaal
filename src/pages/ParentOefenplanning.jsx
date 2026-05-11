@@ -2,7 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import ParentSidebar from "../components/ParentSidebar";
+import UpcomingExercises from "../components/UpcomingExercises";
+import RecentExercises from "../components/RecentExercises";
+import { getCategoryClass, getDifficultyIcon, getExerciseImageSrc } from "../utils/helpers";
 import "../assets/css/parent-dashboard.css";
+import "../components/ExerciseCard.css";
 
 const LINK_COLUMN = "parent_user_id";
 
@@ -11,21 +15,6 @@ function formatDateKey(date) {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
-}
-
-function getDifficultyIcon(difficulty) {
-  if (difficulty === "Makkelijk") return "/images/difficulty-easy.svg";
-  if (difficulty === "Gemiddeld") return "/images/difficulty-medium.svg";
-  if (difficulty === "Moeilijk") return "/images/difficulty-hard.svg";
-  return "/images/difficulty-easy.svg";
-}
-
-function getCategoryClass(category) {
-  if (category === "Mobiliteit") return "exerciseTag--yellow";
-  if (category === "Flexibiliteit") return "exerciseTag--pink";
-  if (category === "Balans") return "exerciseTag--blue";
-  if (category === "Kracht") return "exerciseTag--green";
-  return "exerciseTag--yellow";
 }
 
 export default function ParentOefenplanning() {
@@ -63,7 +52,7 @@ export default function ParentOefenplanning() {
           .from("patient_exercises")
           .select(`
             id, patient_id, exercise_id, scheduled_date, is_completed, created_at,
-            exercise:exercises (id, title, category, difficulty, duration_minutes, repetitions, image_url)
+            exercise:exercises (id, title, description, category, difficulty, duration_minutes, repetitions, image_url)
           `)
           .eq("patient_id", patientData.id)
           .order("scheduled_date", { ascending: true });
@@ -140,6 +129,21 @@ export default function ParentOefenplanning() {
   async function handleLogout() {
     await supabase.auth.signOut();
     navigate("/");
+  }
+
+  if (loading) {
+    return (
+      <div className="parentDashboardPage">
+        <ParentSidebar activeItem="oefenplanning" onLogout={handleLogout} />
+        <main className="parentDashboardMain">
+          <div className="parentDashboardLoading">
+            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+
+            <p>laden . . .</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
 return (
@@ -219,7 +223,7 @@ return (
                         ) : (
                             selectedDayExercises.map(item => (
                                 <div key={item.id} className={`planningExerciseCard ${item.is_completed ? "completed" : ""}`}>
-                                    <img src={item.exercise?.image_url || "/images/exercise-1.png"} alt="" />
+                                <img src={getExerciseImageSrc(item.exercise?.image_url)} alt="" />
                                     <div className="planningExInfo">
                                         <strong>{item.exercise?.title}</strong>
                                         <div className="parentUpcomingMeta">
@@ -238,48 +242,14 @@ return (
                 </section>
 
                 <aside className="parentDashboardRight">
-                    <div className="parentSideSection">
-                        <h3>Aankomende oefeningen</h3>
-                        <div className="parentUpcomingList">
-                            {upcomingExercises.length === 0 ? (
-                                <div className="parentEmptyState side">Geen aankomende oefeningen</div>
-                            ) : (
-                                upcomingExercises.map(item => (
-                                    <div key={item.id} className="parentUpcomingCard">
-                                         <img src={item.exercise?.image_url || "/images/exercise-1.png"} alt="" />
-                                         <div className="parentUpcomingInfo">
-                                                <strong>{item.exercise?.title}</strong>
-                                                <span className={`exerciseTag ${getCategoryClass(item.exercise?.category)}`}>
-                                                    {item.exercise?.category}
-                                                </span>
-                                         </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
+                  <UpcomingExercises exercises={upcomingExercises} todayKey={todayKey} />
 
-                    <div className="parentSideSection">
-                        <h3>Recente oefeningen</h3>
-                        <div className="parentRecentList">
-                            {recentCompleted.length === 0 ? (
-                                <div className="parentEmptyState side">Nog geen recente oefeningen</div>
-                            ) : (
-                                recentCompleted.map((item) => (
-                                    <div key={item.id} className="parentRecentCard">
-                                        <div className="parentRecentLeft">
-                                            <span className="parentRecentCheck">✓</span>
-                                            <div className="parentRecentInfo">
-                                                <strong>{item.exercise?.title}</strong>
-                                                <p>{item.scheduled_date}</p>
-                                            </div>
-                                        </div>
-                                        <span className="parentXpTag">+100 XP</span>
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
+                  <RecentExercises
+                    exercises={recentCompleted}
+                    dateField="scheduled_date"
+                    emptyTitle="Nog geen recente oefeningen"
+                    emptyDescription="Voltooide oefeningen verschijnen hier."
+                  />
                 </aside>
                 
             </div>
