@@ -124,11 +124,12 @@
 
 
     .kineSidebar {
-      background: #f7f7f7;
-    position: sticky !important;
-      border-right: 2px solid #e6e6e6;
-      padding: 36px 26px;
-      font-family: var(--font);
+      display: none !important;
+    }
+
+    body {
+      max-width: none !important;
+      padding-top: 0;
     }
     
     .brand {
@@ -141,7 +142,7 @@
     }
     
     .brandSub {
-      color: #24b19b;
+      color: #2BB39B;
       font-style: italic;
       margin-top: 6px;
       font-size: 18px;

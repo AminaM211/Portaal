@@ -392,15 +392,21 @@
 }
 
 .kinePatientsEmpty {
-  padding: 24px;
+  /* padding-top: 40px; */
   font-family: "Cabinet Grotesk", sans-serif;
   font-size: 16px;
   line-height: 20px;
   color: #444444;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   flex-direction: column;
+  width: 100%;
+  text-align: center;
+  padding: 48px 0;
+  grid-column: 1 / -1;
+  grid-row: 1;
 }
 
 .exerciseSchemesIntro {
@@ -409,7 +415,7 @@
 }
 
 .kinePatientsEmpty img {
-  width: 180px;
+  width: 140px;
   height: auto;
   margin-bottom: 16px;
 }
@@ -422,7 +428,7 @@
 
 .kinePatientsEmpty p {
   margin: 0;
-  text-align: center;
+  padding-bottom: 16px;
 }
 
 
@@ -464,36 +470,147 @@
   }
 }
 
+@media (max-width: 1280px) {
+  .kineDash {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .kineDashMain {
+    padding: 40px 28px 32px 40px;
+  }
+
+  .kineDashStats {
+    gap: 40px;
+  }
+
+  .kinePatientsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .kinePatientsActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .kineAddPatientForm {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kinePatientsHead,
+  .kinePatientRow {
+    grid-template-columns: minmax(240px, 1.4fr) 110px minmax(220px, 1.6fr) 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .kineDashMain {
+    padding: 28px 16px 24px !important;
+  }
+
+  .kineDashHeading h1 {
+    font-size: 28px;
+    line-height: 38px;
+  }
+
+  .kineDashHeading p {
+    font-size: 15px;
+  }
+
+  .kineDashProfile {
+    gap: 12px;
+    margin-right: 0;
+  }
+
+  .kineDashProfileAvatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .kineDashProfileInfo h2 {
+    font-size: 18px;
+  }
+
+  .kineDashProfileInfo p {
+    font-size: 14px;
+  }
+
+  .kineDashStats {
+    gap: 24px 32px;
+    margin-top: 28px;
+  }
+
+  .kineStat img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .kineStat strong {
+    font-size: 18px;
+  }
+
+  .kineStat span {
+    font-size: 14px;
+  }
+
+  .kinePatientsSection {
+    margin-top: 40px;
+  }
+
+  .kinePatientsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .kinePatientsHeader h3 {
+    font-size: 20px;
+  }
+
+  .kinePatientsActions {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kineSearch {
+    width: 100%;
+    height: 36px;
+  }
+
+  .kineAddPatientForm {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kineAddPatientForm input {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .kinePatientRow {
+    min-width: 680px;
+  }
+
+  .kinePatientsHead {
+    min-width: 680px;
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 960px) {
   .kineDash {
     grid-template-columns: 1fr;
   }
 
   .kineSidebar {
-    min-height: auto;
-    border-right: none;
-    border-bottom: 1px solid #d9d9d9;
-    padding: 20px;
-  }
-
-  .kineSidebarNav {
-    margin-top: 24px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .kineSidebarLink {
-    width: auto;
-    min-height: 48px;
-  }
-
-  .kineSidebarLogout {
-    margin-top: 24px;
+    display: none !important;
   }
 
   .kineDashMain {
-    padding: 24px 20px 28px;
+    padding: 24px 20px 28px !important;
+    width: 100%;
   }
 
   .kineDashTop {
@@ -711,6 +828,60 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .kineModal--large {
+    min-width: 90vw;
+    height: auto;
+    max-height: 90vh;
+  }
+
+  .kineModalHeader {
+    padding: 16px;
+  }
+
+  .kineModalHeader h3 {
+    font-size: 18px;
+  }
+
+  .kineModalBody {
+    padding: 16px;
+  }
+
+  .kineEditForm {
+    gap: 16px;
+  }
+
+  .kineField input {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .kineModalFooter {
+    gap: 16px;
+  }
+
+  .btn-primary-large {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .kineModal--large {
+    min-width: 95vw;
+  }
+
+  .kineField input {
+    height: 40px;
+    padding: 0 12px;
+  }
+
+  .btn-primary-large,
+  .kineTextAction {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 960px) {

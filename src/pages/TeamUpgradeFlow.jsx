@@ -343,16 +343,10 @@ export default function TeamUpgradeFlow() {
   }
 
   if (loading) {
-    return 
-    <div className="kineDashLoading">
-            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
-
-            <p>laden . . .</p>
-          </div>(
+    return (
       <div className="kineDashLoading">
-            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
-
-            <p>laden . . .</p>
+        <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
+        <p>laden . . .</p>
       </div>
     );
   }

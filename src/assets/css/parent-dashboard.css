@@ -30,12 +30,12 @@
   .parentDashboardError {
     color: #c0392b;
   }
-  
+
   .parentDashboardGrid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
     gap: 32px;
-    align-items: start; 
+    align-items: start;
   }
   
   .parentDashboardLeft {
@@ -393,6 +393,215 @@
       grid-template-columns: 1fr;
       gap: 18px;
     }
+
+    .planningGrid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    /* .planningHeaderRow,
+    .planningCalendarTop {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    } */
+
+    .planningCalendarCard {
+      padding: 18px;
+    }
+
+    .planningDateRange {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .kineSidebar {
+      display: none !important;
+    }
+
+    .parentDashboardPage {
+      grid-template-columns: 1fr;
+    }
+
+    .parentDashboardMain {
+      padding: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .parentDashboardMain {
+      padding: 20px;
+    }
+
+    .parentDashboardPage {
+      grid-template-columns: 1fr;
+    }
+
+    .parentDashboardGrid {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .parentProfileCard,
+    .parentCategoryCard {
+      padding: 20px !important;
+    }
+
+    .parentChildAvatar {
+      width: 64px;
+      height: 64px;
+      font-size: 24px;
+    }
+
+    .planningCalendarCard {
+      padding: 18px;
+    }
+
+    .planningGrid {
+      display: flex !important;
+      flex-direction: column !important;
+
+    }
+  }
+
+  @media (max-width: 640px) {
+    .parentDashboardMain {
+      padding: 12px;
+    }
+
+    .parentDashboardGrid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px;
+    }
+
+    .parentProfileCard,
+    .parentCategoryCard {
+      padding: 14px !important;
+    }
+
+    .parentChildAvatar {
+      width: 52px;
+      height: 52px;
+      font-size: 20px;
+    }
+
+    .parentChildInfo h1 {
+      font-size: 16px;
+    }
+
+    .parentChildInfo p {
+      font-size: 12px;
+    }
+
+    .parentKinesistRow {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .parentKinesistMeta {
+      align-items: flex-start;
+    }
+
+    .parentStatusGrid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .parentStatTop {
+      gap: 6px;
+    }
+
+    .parentStatTop img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .parentStatTop strong {
+      font-size: 15px;
+    }
+
+    .parentStatCard span {
+      font-size: 12px;
+    }
+
+    .planningCalendarCard {
+      padding: 12px;
+    }
+
+    /* .planningCalendarTop {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    } */
+
+    .planningCalendarTop h4 {
+      font-size: 16px;
+    }
+
+    .planningDayCell {
+      height: 40px;
+    }
+
+    .dayNumber {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+    }
+
+    .planningWeekdays {
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .planningExerciseList {
+      gap: 12px;
+    }
+
+    .planningExerciseCard {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .planningExerciseCard img {
+      width: 56px;
+      height: 56px;
+    }
+
+    .planningExInfo strong {
+      font-size: 13px;
+    }
+
+    .planningExInfo small {
+      font-size: 11px;
+    }
+
+    .planningVoltooidBadge {
+      padding: 3px 8px;
+      font-size: 11px;
+      top: 10px;
+      right: 10px;
+    }
+
+    /* .planningHeaderRow {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    } */
+
+    .goToTodayBtn {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
+    .planningGrid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
   }
 
 
@@ -569,7 +778,7 @@
 .planningExerciseCard {
   background: white;
   border: 1px solid #EBEBEB;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 16px;
   display: flex;
   align-items: center;

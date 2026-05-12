@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import ParentSidebar from "../components/ParentSidebar";
+import { isVideoFileUrl } from "../utils/helpers";
 import "../components/ExerciseCard.css";
 import "../assets/css/exercise-detail.css";
 import "../assets/css/kine-dashboard.css";
@@ -94,8 +96,10 @@ export default function ExerciseDetailPage() {
   const [exercise, setExercise] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [videoError, setVideoError] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [startDate, setStartDate] = useState("2026-03-01");
@@ -122,6 +126,17 @@ export default function ExerciseDetailPage() {
       }
 
       setUserId(user.id);
+
+      // Fetch user role
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (!profileError && profileData) {
+        setUserRole(profileData.role);
+      }
 
       const [exerciseRes, favoriteRes] = await Promise.all([
         supabase.from("exercises").select("*").eq("id", id).single(),
@@ -285,11 +300,17 @@ export default function ExerciseDetailPage() {
   }
 
   if (loading) {
+    const containerClass = userRole === "ouder" ? "parentDashboardPage" : "kineDash";
+    const mainClass = userRole === "ouder" ? "parentDashboardMain" : "kineDashMain";
     return (
-      <div className="kineDash">
-        <KineSidebar onLogout={handleLogout} />
-        <main className="kineDashMain">
-          <div className="kineDashLoading">
+      <div className={containerClass}>
+        {userRole === "ouder" ? (
+          <ParentSidebar onLogout={handleLogout} />
+        ) : (
+          <KineSidebar onLogout={handleLogout} />
+        )}
+        <main className={mainClass}>
+          <div className={userRole === "ouder" ? "parentDashboardLoading" : "kineDashLoading"}>
             <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
             <p>laden . . .</p>
           </div>
@@ -306,11 +327,18 @@ export default function ExerciseDetailPage() {
     );
   }
 
-  return (
-    <div className="kineDash">
-      <KineSidebar onLogout={handleLogout} />
+  const containerClass = userRole === "ouder" ? "parentDashboardPage" : "kineDash";
+  const mainClass = userRole === "ouder" ? "parentDashboardMain" : "exerciseDetailMain";
 
-      <main className="exerciseDetailMain">
+  return (
+    <div className={containerClass}>
+      {userRole === "ouder" ? (
+        <ParentSidebar onLogout={handleLogout} />
+      ) : (
+        <KineSidebar onLogout={handleLogout} />
+      )}
+
+      <main className={mainClass} style={userRole === "ouder" ? { padding: "40px" } : {}}>
         <div className="exerciseDetailTopbar">
           <button
             type="button"
@@ -322,22 +350,24 @@ export default function ExerciseDetailPage() {
           </button>
 
           <div className="exerciseDetailActions">
-            <button
-              type="button"
-              className="exerciseIconBtn"
-              onClick={toggleFavorite}
-            >
-              <img
-                src={
-                  isFavorite
-                    ? "/images/favorite-filled.svg"
-                    : "/images/favorite.svg"
-                }
-                alt="Favoriet"
-              />
-            </button>
+            {userRole !== "ouder" && (
+              <button
+                type="button"
+                className="exerciseIconBtn"
+                onClick={toggleFavorite}
+              >
+                <img
+                  src={
+                    isFavorite
+                      ? "/images/favorite-filled.svg"
+                      : "/images/favorite.svg"
+                  }
+                  alt="Favoriet"
+                />
+              </button>
+            )}
 
-            {patientId && (
+            {patientId && userRole !== "ouder" && (
               <button
                 type="button"
                 className="btn-outline-small btn-outline"
@@ -352,8 +382,31 @@ export default function ExerciseDetailPage() {
         {errorMessage && <p className="kineError">{errorMessage}</p>}
 
         <div className="exerciseVideoHero">
-          <img src={exercise.image_url} alt={exercise.title} />
+          {isVideoFileUrl(exercise.image_url) ? (
+            (() => {
+              const src = exercise.image_url?.startsWith("http")
+                ? exercise.image_url
+                : `/images/${exercise.image_url}`;
+              return (
+                <video
+                  controls
+                  style={{ width: "100%", height: "auto", maxHeight: "500px" }}
+                  onError={() => setVideoError(true)}
+                >
+                  <source src={src} />
+                </video>
+              );
+            })()
+          ) : (
+            <img src={exercise.image_url || "/images/exercise-1.png"} alt={exercise.title} />
+          )}
         </div>
+
+        {videoError && exercise.image_url && (
+          <div style={{ marginTop: 12 }}>
+            <p style={{ color: "#c62828" }}>Video kon niet geladen worden.</p>
+          </div>
+        )}
 
         <div className="exerciseDetailHeader">
           <h1>{exercise.title}</h1>
@@ -423,7 +476,7 @@ export default function ExerciseDetailPage() {
           </div>
         </div>
 
-        {showEditModal && (
+        {userRole !== "ouder" && showEditModal && (
           <div className="modalOverlay" onClick={closeEditModal}>
             <div className="editModal" onClick={(e) => e.stopPropagation()}>
               <div className="editModalHeader">

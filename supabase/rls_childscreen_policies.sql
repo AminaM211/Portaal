@@ -33,6 +33,34 @@ using (
   )
 );
 
+drop policy if exists "patient_exercises_update_own" on public.patient_exercises;
+create policy "patient_exercises_update_own"
+on public.patient_exercises
+for update
+to authenticated
+using (
+  exists (
+    select 1
+    from public.patients p
+    where p.id = patient_exercises.patient_id
+      and (
+        p.parent_user_id = auth.uid()
+        or p.parent_user_id = current_setting('request.jwt.claim.sub', true)::uuid
+      )
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.patients p
+    where p.id = patient_exercises.patient_id
+      and (
+        p.parent_user_id = auth.uid()
+        or p.parent_user_id = current_setting('request.jwt.claim.sub', true)::uuid
+      )
+  )
+);
+
 drop policy if exists "patient_missions_select_own" on public.patient_missions;
 create policy "patient_missions_select_own"
 on public.patient_missions

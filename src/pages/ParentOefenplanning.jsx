@@ -222,7 +222,12 @@ return (
                                 </div>
                         ) : (
                             selectedDayExercises.map(item => (
-                                <div key={item.id} className={`planningExerciseCard ${item.is_completed ? "completed" : ""}`}>
+                                <div 
+                                    key={item.id} 
+                                    className={`planningExerciseCard ${item.is_completed ? "completed" : ""}`}
+                                    onClick={() => navigate(`/kinesist/oefeningen/${item.exercise?.id}`)}
+                                    style={{ cursor: "pointer" }}
+                                >
                                 <img src={getExerciseImageSrc(item.exercise?.image_url)} alt="" />
                                     <div className="planningExInfo">
                                         <strong>{item.exercise?.title}</strong>

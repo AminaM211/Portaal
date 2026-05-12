@@ -77,10 +77,19 @@ export function getDifficultyIcon(difficulty) {
   return "/images/difficulty-easy.svg"; // Fallback
 }
 
+export function isVideoFileUrl(value) {
+  if (!value || typeof value !== "string") return false;
+  return /\.(mp4|webm|mov|m4v|ogg)$/i.test(value.trim());
+}
+
 export function getExerciseImageSrc(imageUrl) {
   if (!imageUrl) return "/images/exercise-1.png";
 
   const normalized = imageUrl.trim();
+
+  if (isVideoFileUrl(normalized)) {
+    return "/images/exercise-1.png";
+  }
 
   if (/^https?:\/\//i.test(normalized) || normalized.startsWith("data:")) {
     return normalized;

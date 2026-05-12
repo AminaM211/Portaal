@@ -10,6 +10,7 @@ import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
 import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
 import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
+import CreateExercisePage from "./pages/CreateExercisePage";
 import ParentActivationFlow from "./pages/ParentActivationFlow";
 import ParentOefenplanning from "./pages/ParentOefenplanning";
 import Parentinstellingen from "./pages/Parentinstellingen";
@@ -58,12 +59,16 @@ export default function App() {
         }
       />
       <Route
-        path="/kinesist/oefeningen/:id"
+        path="/kinesist/oefeningen/nieuw"
         element={
           <ProtectedRoute allowedRole="kinesist">
-            <ExerciseDetailPage />
+            <CreateExercisePage />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/kinesist/oefeningen/:id"
+        element={<ExerciseDetailPage />}
       />
       <Route path="/kinesist/instellingen/team-upgrade" element={<TeamUpgradeFlow />} />
 

@@ -190,6 +190,27 @@ color: #000000;
   background: white;
 }
 
+@media (max-width: 960px) {
+  .kineSidebar {
+    display: none !important;
+  }
+
+  .childProfilePage {
+    flex-direction: column;
+  }
+
+  .childProfileSection {
+    width: 100%;
+    padding: 24px;
+  }
+
+  .childRightPanel {
+    min-width: 0;
+    width: 100%;
+    padding: 24px;
+  }
+}
+
 .childMissionsHeader {
   display: flex;
   justify-content: space-between;
@@ -322,35 +343,41 @@ color: #000000;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .childProfilePage {
+    flex-direction: column;
+  }
+
   .childProfileSection {
-    padding: 20px;
+    padding: 24px 16px;
+    width: 100%;
   }
 
   .childRightPanel {
-    padding: 20px;
-    min-width: auto;
+    padding: 24px 16px;
+    min-width: 0;
+    width: 100%;
   }
 
   .childProfileCardLarge {
-    padding: 30px 20px;
+    padding: 24px 20px;
     gap: 24px;
     max-width: 100%;
   }
 
   .childProfileAvatar {
-    width: 150px;
-    height: 150px;
-    font-size: 60px;
+    width: 160px;
+    height: 160px;
+    font-size: 64px;
   }
 
   .childProfileMascot {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
   }
 
   .childProfileName {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .childProfileGoal {
@@ -358,19 +385,112 @@ color: #000000;
   }
 
   .childProfileStatsRow {
-    gap: 30px;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .childStatRowIcon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   .childStatRowValue {
+    font-size: 16px;
+  }
+
+  .childTrophiesList {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .childProfileSection {
+    padding: 16px 12px;
+  }
+
+  .childRightPanel {
+    padding: 16px 12px;
+  }
+
+  .childProfileCardLarge {
+    padding: 20px 16px;
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .childProfileAvatar {
+    width: 120px;
+    height: 120px;
+    font-size: 48px;
+  }
+
+  .childProfileMascot {
+    width: 120px;
+    height: 120px;
+  }
+
+  .childProfileMascot img {
+    width: 120px;
+  }
+
+  .childProfileName {
     font-size: 18px;
+  }
+
+  .childProfileGoal {
+    font-size: 12px;
+  }
+
+  .childProfileStatsRow {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .childStatRowIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .childStatRowValue {
+    font-size: 14px;
   }
 
   .childTrophiesList {
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .childTrophyCard {
+    padding: 12px;
+  }
+
+  .childTrophyIcon {
+    font-size: 24px;
+  }
+
+  .childTrophyName {
+    font-size: 11px;
+  }
+
+  .childTrophyDesc {
+    font-size: 9px;
+  }
+
+  .childMissionsHeader h3 {
+    font-size: 13px;
+  }
+
+  .childProfileActions {
+    gap: 8px;
+  }
+
+  .childProfileButtonOutline,
+  .childProfileButtonPrimary {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
   }
 }

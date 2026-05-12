@@ -569,7 +569,30 @@
      }
    }
    
-   @media (max-width: 640px) {
+   @media (max-width: 960px) {
+     .InstellingenPage,
+     .teamUpgradePage {
+       flex-direction: column;
+       gap: 32px;
+       padding: 32px 20px;
+     }
+
+     .instellingenMainBlock {
+       max-width: 100%;
+     }
+
+     .instellingenSideBlock {
+       width: 100%;
+       min-width: 0;
+       max-width: 100%;
+     }
+
+     .teamUpgradeGrid {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 768px) {
      .InstellingenPage,
      .teamUpgradePage {
        padding: 24px 16px;
@@ -577,7 +600,29 @@
    
      .InstellingenPage h1,
      .teamUpgradePage h1 {
-       font-size: 30px;
+       font-size: 26px;
+     }
+
+     .InstellingenPage h2,
+     .teamUpgradePage h2 {
+       font-size: 18px;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .InstellingenPage,
+     .teamUpgradePage {
+       padding: 16px 12px;
+     }
+   
+     .InstellingenPage h1,
+     .teamUpgradePage h1 {
+       font-size: 22px;
+     }
+
+     .InstellingenPage h2,
+     .teamUpgradePage h2 {
+       font-size: 16px;
      }
    
      .instellingenField input,
@@ -586,8 +631,8 @@
      .teamUpgradeField input,
      .teamUpgradeField select,
      .teamUpgradeField textarea {
-       height: 52px;
-       font-size: 16px;
+       padding: 10px;
+       font-size: 14px;
      }
    
      .instellingenPasswordInline {
@@ -597,24 +642,36 @@
    
      .instellingenGhostBtn,
      .btn-primary-large,
-     .btn-outline-large {
+     .btn-outline-large,
+     .teamAddMemberBtn,
+     .teamRemoveMemberBtn {
        width: 100%;
+       padding: 10px 16px;
      }
    
      .instellingenPasswordActions {
        flex-direction: column;
        align-items: stretch;
+       gap: 10px;
      }
    
      .teamUpgradeCard {
-       padding: 20px 18px 6px;
+       padding: 16px 14px;
      }
    
      .teamUpgradeBack {
-       font-size: 24px;
+       font-size: 20px;
      }
    
      .teamUpgradeBack span {
-       font-size: 16px;
+       font-size: 14px;
+     }
+
+     .teamUpgradeMembersBlock {
+       max-width: 100%;
+     }
+
+     .teamUpgradeReview {
+       max-width: 100%;
      }
    }

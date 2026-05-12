@@ -2,9 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import { isVideoFileUrl, getExerciseImageSrc } from "../utils/helpers";
 import "../components/ExerciseCard.css";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
+
+function getMediaSrc(value) {
+  if (!value) return "/images/exercise-1.png";
+  if (value.startsWith("http")) return value;
+  if (value.startsWith("/")) return value;
+  return `/images/${value}`;
+}
 
 function getCategoryClass(categoryName) {
   if (categoryName === "Mobiliteit") return "exerciseTag--yellow";
@@ -289,12 +297,20 @@ export default function ExercisesPage() {
                     className="exerciseLibraryCard"
                     onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
                   >
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       className="favIconBtn"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(exercise.id);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleFavorite(exercise.id);
+                        }
                       }}
                     >
                       <img
@@ -305,13 +321,23 @@ export default function ExercisesPage() {
                         }
                         alt="Favoriet"
                       />
-                    </button>
+                    </div>
 
-                    <img
-                      className="exerciseLibraryThumb"
-                      src={exercise.image_url || "/images/exercise-1.png"}
-                      alt={exercise.title}
-                    />
+                    {isVideoFileUrl(exercise.image_url) ? (
+                      <video
+                        className="exerciseLibraryThumb exerciseLibraryVideoThumb"
+                        src={getMediaSrc(exercise.image_url)}
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    ) : (
+                      <img
+                        className="exerciseLibraryThumb"
+                        src={getExerciseImageSrc(exercise.image_url)}
+                        alt={exercise.title}
+                      />
+                    )}
 
                     <div className="exerciseLibraryInfo">
                       <strong>{exercise.title}</strong>
@@ -346,9 +372,13 @@ export default function ExercisesPage() {
 
         {tab === "jouw-oefeningen" && (
           <>
-            <button type="button" className="exerciseCreateBtn">
-              Oefening toevoegen +
-            </button>
+             <button 
+                    type="button" 
+                    className="btn-primary exerciseCreateBtn"
+                    onClick={() => navigate("/kinesist/oefeningen/nieuw")}
+                  >
+                    Oefening toevoegen +
+                  </button>
 
             <div className="myExercisesGrid">
               {filteredExercises.length === 0 ? (
@@ -360,20 +390,33 @@ export default function ExercisesPage() {
               ) : (
                 filteredExercises.map((exercise) => (
                   <div key={exercise.id} className="myExerciseCardWrap">
-                    <button
-                      type="button"
+                    <div
+                      role="button"
+                      tabIndex={0}
                       className="myExerciseCard"
                       onClick={() => navigate(`/kinesist/oefeningen/${exercise.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          navigate(`/kinesist/oefeningen/${exercise.id}`);
+                        }
+                      }}
                     >
                       <div className="myExerciseCardTop">
                         <strong>{exercise.title}</strong>
 
-                        <button
-                          type="button"
+                        <div
+                          role="button"
+                          tabIndex={0}
                           className="favIconBtn"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleFavorite(exercise.id);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.stopPropagation();
+                              toggleFavorite(exercise.id);
+                            }
                           }}
                         >
                           <img
@@ -384,15 +427,24 @@ export default function ExercisesPage() {
                             }
                             alt="Favoriet"
                           />
-                        </button>
+                        </div>
                       </div>
 
                       <div className="myExerciseImageWrap">
-                        <img
-                          src={exercise.image_url || "/images/exercise-1.png"}
-                          alt={exercise.title}
-                        />
-                        {exercise.video_url && (
+                        {isVideoFileUrl(exercise.image_url) ? (
+                          <video
+                            src={getMediaSrc(exercise.image_url)}
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                        ) : (
+                          <img
+                            src={getExerciseImageSrc(exercise.image_url)}
+                            alt={exercise.title}
+                          />
+                        )}
+                        {isVideoFileUrl(exercise.image_url) && (
                           <div className="myExercisePlayOverlay">▶</div>
                         )}
                       </div>
@@ -417,7 +469,7 @@ export default function ExercisesPage() {
                         {exercise.duration_minutes || 0} min ·{" "}
                         {exercise.repetitions || 0} herhalingen
                       </p>
-                    </button>
+                    </div>
                   </div>
                 ))
               )}
@@ -427,25 +479,32 @@ export default function ExercisesPage() {
 
         {tab === "schema’s" && (
           <>
-           
+            <div >
+              <button
+                type="button"
+                className="exerciseCreateBtn btn-primary"
+                onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}
+              >
+                Nieuw oefenschema maken
+              </button>
+            </div>
+
             <p className="exerciseSchemesIntro">
               Bundels van oefeningen die je eenvoudig kan hergebruiken en
               toewijzen aan patiënten.
             </p>
-            <button type="button" className="exerciseCreateBtn" onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}>
-              Nieuw oefenschema maken
-            </button>
+
             <div className="exerciseSchemesGrid">
               {exerciseSchemes.length === 0 ? (
                 <div className="kinePatientsEmpty">
-                      <img src="/images/monkey-search.png" alt="Geen patiënten gevonden" />
+                  <img src="/images/monkey-search.png" alt="Geen patiënten gevonden" />
                   <strong>Nog geen oefenschema’s</strong>
                   <p>Maak een eerste schema om hier te tonen.</p>
                 </div>
               ) : (
-                exerciseSchemes.map((scheme) => (
+                exerciseSchemes.map((exerciseScheme) => (
                   <button
-                    key={scheme.id}
+                    key={exerciseScheme.id}
                     type="button"
                     className="exerciseSchemeCard"
                   >
@@ -453,12 +512,21 @@ export default function ExercisesPage() {
                     <div className="exerciseSchemeStack stack-2"></div>
 
                     <div className="exerciseSchemeInner">
-                      <strong>{scheme.title}</strong>
-                      <img
-                        src={scheme.image_url || "/images/scheme-1.png"}
-                        alt={scheme.title}
-                      />
-                      <p>{scheme.exercise_scheme_items?.length || 0} oefeningen</p>
+                      <strong>{exerciseScheme.title}</strong>
+                      {isVideoFileUrl(exerciseScheme.image_url) ? (
+                        <video
+                          src={getMediaSrc(exerciseScheme.image_url)}
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                      ) : (
+                        <img
+                          src={getExerciseImageSrc(exerciseScheme.image_url)}
+                          alt={exerciseScheme.title}
+                        />
+                      )}
+                      <p>{exerciseScheme.exercise_scheme_items?.length || 0} oefeningen</p>
                     </div>
                   </button>
                 ))

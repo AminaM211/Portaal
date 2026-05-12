@@ -12,7 +12,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  padding: 0px 40px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -232,9 +232,9 @@
 }
 
 .active-card {
-  display: grid;
+  /* display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 40px;
+  gap: 40px; */
   padding: 24px 32px;
 }
 
@@ -261,9 +261,17 @@
   margin-top: 14px;
 }
 
+.video-hint-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .exercise-kid-hints span,
 .video-hint-strip span {
   display: inline-flex;
+  gap: 8px;
+  margin-left: 8px;
   align-items: center;
   padding: 8px 16px;
   border-radius: 999px;
@@ -344,7 +352,7 @@
   max-width: 300px;
   padding: 14px 16px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
   backdrop-filter: blur(8px);
 }
@@ -469,7 +477,9 @@
   gap: 20px;
   align-items: start;
   justify-content: space-between;
+  padding: 0 32px;
 }
+
 
 
 .active-kicker {
@@ -482,10 +492,10 @@
 }
 
 .active-title {
-  margin: 0;
-  font-size: 36px;
+  margin: 8px 12px;
+  font-size: 28px;
   line-height: 1.05;
-  color: #111827;
+  color: #fff;
 }
 
 .active-description {
@@ -544,15 +554,36 @@
 }
 
 .active-meta-chip {
-  padding: 8px 12px;
+  padding: 8px 18px;
   border-radius: 999px;
   background: #f3f4f6;
   color: #374151;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {
+  .kineSidebar {
+    display: none !important;
+  }
+
+  .page-container {
+    padding: 16px;
+  }
+
+  .header {
+    padding: 12px 0;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .stats-container {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
   .active-body {
     grid-template-columns: 1fr;
   }
@@ -598,45 +629,267 @@
     top: 12px;
     right: 12px;
   }
+
+  .detail-container {
+    padding: 16px 0 24px;
+  }
+
+  .detail-flex {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .side-column {
+    width: 100%;
+  }
+
+  .action-container {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .success-container {
+    padding: 20px 0;
+  }
+
+  .stickynav {
+    width: 100%;
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 24px 16px;
+  }
+
+  .header {
+    padding: 12px 0;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stats-container {
+    width: 100%;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .detail-flex {
+    gap: 20px;
+  }
 }
 
 @media (max-width: 640px) {
+  .page-container {
+    padding: 16px 12px;
+  }
+
   .active-container {
-    padding: 12px;
+    padding: 8px;
+  }
+
+  .header {
+    padding: 8px 0;
+    gap: 8px;
   }
 
   .exercise-counter-value {
-    font-size: 30px;
+    font-size: 24px;
   }
 
   .time-text {
-    min-width: 76px;
+    min-width: 60px;
+    font-size: 14px;
   }
 
   .progress-container {
     flex-wrap: wrap;
+    padding: 12px 16px;
+    gap: 12px;
   }
 
   .pause-button {
     margin-left: auto;
+    padding: 6px 16px;
+    font-size: 14px;
   }
 
   .active-shell {
     width: 100%;
   }
 
+  .exercise-title {
+    font-size: 24px;
+  }
+
+  .image-placeholder {
+    height: 240px;
+  }
+
+  .tags-container {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag-highlight {
+    padding: 3px 10px;
+    font-size: 12px;
+  }
+
+  .action-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .primary-button {
+    width: 100%;
+    padding: 10px 16px;
+  }
+
+  .stats-container {
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .stat-item {
+    gap: 4px;
+  }
+
+  .stat-icon {
+    width: 24px;
+  }
+
+  .detail-container {
+    padding: 16px 0;
+  }
+
+  .detail-flex {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .side-column {
+    width: 100%;
+  }
+
+  .info-box {
+    padding: 12px;
+    font-size: 13px;
+  }
+
   .progress-ring {
-    width: 96px;
-    height: 96px;
-    padding: 8px;
+    width: 80px;
+    height: 80px;
+    padding: 6px;
   }
 
   .progress-ring-inner strong {
-    font-size: 26px;
+    font-size: 20px;
   }
 
   .progress-ring-inner span {
-    font-size: 11px;
+    font-size: 10px;
+  }
+
+  .active-title {
+    font-size: 24px;
+  }
+
+  .active-description {
+    font-size: 14px;
+  }
+
+  .exercise-coach-card {
+    flex-direction: column;
+    padding: 16px 18px;
+  }
+
+  .exercise-counter-card {
+    width: 100%;
+  }
+
+  .feedback-badge {
+    max-width: 200px;
+    padding: 12px 14px;
+  }
+
+  .video-container {
+    aspect-ratio: 4 / 5;
+  }
+
+  .video-hint-strip {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .back-button {
+    font-size: 16px;
+    gap: 8px;
+  }
+
+  .back-button img {
+    width: 18px;
+  }
+
+  .cheer-img {
+    width: 160px;
+  }
+
+  .success-title {
+    font-size: 26px;
+    margin: 16px 0 24px;
+  }
+
+  .xp-earned-container {
+    gap: 16px;
+    font-size: 14px;
+    margin: 8px 0 24px;
+  }
+
+  .xp-icon {
+    width: 20px;
+  }
+
+  .stickynav {
+    padding: 16px 12px;
+    width: 100%;
+  }
+
+  .days-container {
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .day-item {
+    gap: 4px;
+  }
+
+  .day-circle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .day-text {
+    font-size: 12px;
+  }
+
+  .streak-img {
+    width: 180px;
+    margin-bottom: 16px;
+  }
+
+  .streak-score {
+    font-size: 20px;
+  }
+
+  .streakWeekWrapper {
+    width: 100%;
+    margin: 0 auto 24px;
   }
 }
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { formatShortDateTime } from "../utils/helpers";
 import "./RecentExercises.css";
 
@@ -8,6 +9,8 @@ export default function RecentExercises({
   emptyTitle = "Nog geen recente oefeningen",
   emptyDescription = "Voltooide oefeningen verschijnen hier.",
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="parentSideSection">
       <h3>Recente oefeningen</h3>
@@ -19,7 +22,12 @@ export default function RecentExercises({
           </div>
         ) : (
           exercises.map((item) => (
-            <div key={item.id} className="parentRecentCard">
+            <div 
+              key={item.id} 
+              className="parentRecentCard"
+              onClick={() => navigate(`/kinesist/oefeningen/${item.exercise?.id}`)}
+              style={{ cursor: "pointer" }}
+            >
               <div className="parentRecentLeft">
                 <span className="parentRecentCheck">✓</span>
                 <div className="parentRecentInfo">

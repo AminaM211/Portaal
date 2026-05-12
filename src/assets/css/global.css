@@ -159,3 +159,35 @@
   
     z-index: 100;
   }
+
+  @media (max-width: 960px) {
+    .kineSidebar {
+      display: none !important;
+    }
+
+    .kineDash,
+    .parentDashboardPage {
+      grid-template-columns: 1fr !important;
+      padding: 24px 20px !important;
+    }
+
+    .kineDashMain,
+    .parentDashboardMain {
+      padding-left: 20px !important;
+      padding-right: 20px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .kineDash,
+    .parentDashboardPage {
+      padding: 20px 16px !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .kineDash,
+    .parentDashboardPage {
+      padding: 16px 12px !important;
+    }
+  }

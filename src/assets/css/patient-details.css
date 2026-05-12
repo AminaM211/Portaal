@@ -243,6 +243,12 @@
   align-items: center;
 }
 
+.statFlex strong {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
 .patientStatItem span {
   display: block;
   margin-top: 4px;

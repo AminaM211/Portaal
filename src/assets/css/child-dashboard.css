@@ -330,7 +330,9 @@
   top: 130px;
   left: 50%;
   transform: translateX(-50%);
-  width: 320px;
+  max-width: 380px;
+  /* width: 10%; */
+  text-wrap-mode: nowrap;
   background-color: #ffffff;
   border: 2px solid #D3D5D9;
   border-radius: 8px;
@@ -355,7 +357,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 16px; /* Adjust spacing as needed */
+  gap: 16px; 
 }
 
 /* .dayPopover.popover-today-empty {
@@ -381,7 +383,6 @@
   display: flex;
   flex-direction: column;
   align-items: space-between;
-  /* gap: 16px; */
 }
 
 .popoverEmpty {
@@ -398,6 +399,18 @@
   border-bottom: 2px solid #D3D5D9;
   padding-bottom: 16px;
   padding-top: 16px;
+  border-radius: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+  transition: background-color 0.2s;
+  gap: 16px;
+}
+
+.exerciseItem.completed {
+  background-color: #E8F9F5;
+  border-bottom-color: #2DC07F;
+    cursor: not-allowed;
+
 }
 
 /* Haalt de border en padding weg bij de laatste oefening */
@@ -416,13 +429,15 @@
   margin: 0px 0 6px 0;
   font-size: 18px;
   font-family: "Cabinet Grotesk", sans-serif;
+  color: #000;
 }
 
 .exerciseTags {
   display: flex;
-  gap: 16px;
+  gap: 12px;
+  margin-top: 4px;
+  align-items: start;
   font-family: "Cabinet Grotesk", sans-serif;
-  align-items: center;
 
 }
 
@@ -431,7 +446,6 @@
   align-items: center;
   gap: 6px;
   margin: 0;
-  padding: 8px;
   font-size: 14px;
 }
 
@@ -462,6 +476,12 @@
   opacity: 0.5;
 }
 
+.startButton.completed {
+  background-color: #2DC07F;
+  box-shadow: 0 4px 0 #20a060;
+  color: white;
+}
+
 .kineDashLoading {
   width: 100%;
   height: 100%;
@@ -475,4 +495,112 @@
 .kineDashLoading p {
   font-family: "Cabinet Grotesk", sans-serif;
   font-size: 18px;
+}
+
+@media (max-width: 960px) {
+  .kineSidebar, .parentSideSection, .parentWeekCard{
+    display: none !important;
+  }
+
+  .childApp {
+    height: auto;
+    min-height: 100vh;
+    flex-direction: column;
+
+
+  }
+
+  .childPathArea {
+    padding: 16px 8px 24px;
+    justify-content: flex-start;
+    height: 260px !important;
+    order: 2;
+  }
+
+    .pathWrapper {
+      width: 100vw;
+      max-width: none;
+      margin: 0;
+      height: auto;
+      aspect-ratio: unset;
+      display: block;
+    }
+
+    .childPathArea {
+      overflow-x: auto;
+      justify-content: flex-start;
+    }
+  .childRightPanel {
+    min-width: 0;
+    padding: 28px 20px 40px;
+    gap: 28px;
+  }
+
+  .parentDashboardPage {
+    grid-template-columns: 1fr;
+  }
+
+  .parentDashboardMain {
+    padding: 32px 20px 40px 20px;
+  }
+}
+
+.childProfileBtn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .childPathArea {
+    padding: 10px 4px 16px;
+    height: 180px !important;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .pathBubble {
+    width: 76px;
+    height: 62px;
+  }
+
+  .pathBubble img {
+    width: 28px;
+  }
+
+  .bubbleLabel {
+    font-size: 12px;
+  }
+
+
+   .pathWrapper {
+    width: 80vw;
+  }
+
+  .childRightPanel {
+    padding: 20px 12px 28px;
+    gap: 20px;
+  }
+
+  .panelmobile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 60px;
+    padding: 0 16px;
+  }
+
+  .childProfileBtn {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+  .childProfileBtn img{
+    width: 60px;
+} 
 }

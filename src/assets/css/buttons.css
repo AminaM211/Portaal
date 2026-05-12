@@ -53,6 +53,10 @@ box-shadow: 0 4px 0 #1e7a6a;
   box-shadow: 0 4px 0 #1e7a6a;
 }
 
+.exerciseCreateBtn {
+  margin-bottom: 24px;
+}
+
 .btn-primary:hover,
 .schemePrimaryBtn:hover,
 .exerciseCreateBtn:hover,

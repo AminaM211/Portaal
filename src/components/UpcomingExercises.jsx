@@ -5,7 +5,7 @@ import "./UpcomingExercises.css";
 
 export default function UpcomingExercises({ exercises, todayKey, onItemClick }) {
   const navigate = useNavigate();
-  const handleClick = onItemClick ?? (() => navigate("/ouder/oefenplanning"));
+  const handleClick = onItemClick ?? ((item) => navigate(`/kinesist/oefeningen/${item.exercise?.id}`));
 
   return (
     <div className="parentSideSection">

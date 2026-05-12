@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -46,7 +47,8 @@ export default function ChildScreen() {
   const [activePatientId, setActivePatientId] = useState(null);
 
   const [selectedDay, setSelectedDay] = useState(null);
-  
+  const [hasAutoScrolled, setHasAutoScrolled] = useState(false);
+
   const todayDate = new Date();
   const todayKey = formatDateKey(todayDate);
 
@@ -62,6 +64,7 @@ export default function ChildScreen() {
   }
 
 
+  
   // --- 1. DATA INITIALISATIE ---
   useEffect(() => {
     async function init() {
@@ -141,13 +144,13 @@ export default function ChildScreen() {
     });
   }, [pathDates, scheduledExercises, todayKey]);
 
-
-  // NIEUW: Scrolt naar "Vandaag" zodra het scherm geladen is
+  // Scroll naar "Vandaag" alleen bij eerste load
   useEffect(() => {
-    if (!loading && scrollRef.current) {
+    if (!loading && scrollRef.current && !hasAutoScrolled) {
       scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHasAutoScrolled(true);
     }
-  }, [loading, pathData]);
+  }, [loading, pathData, hasAutoScrolled]);
 
   const stats = useMemo(() => {
     const totalCompleted = scheduledExercises.filter(e => e.is_completed).length;
@@ -478,7 +481,7 @@ export default function ChildScreen() {
                              /* SITUATIE 4: LIJST MET OEFENINGEN (Voor Vandaag en de Toekomst) */
                              (
                               day.exercises.map((ex, idx) => (
-                                <div key={ex.id} className="exerciseItem">
+                                <div key={ex.id} className={`exerciseItem ${ex.is_completed ? 'completed' : ''}`}>
                                   <div className="exerciseInfo">
                                     {/* Haal de titel uit de gekoppelde table via ex.exercises?.title */}
                                     <h4 className="exerciseTitle">{ex.exercises?.title || `Oefening ${idx + 1}`}</h4>
@@ -493,11 +496,11 @@ export default function ChildScreen() {
                                     </div>
                                   </div>
                                    
-                                   {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) */}
+                                   {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) OF als oefening al voltooid is */}
                                    <button 
-                                     className={`startButton ${!day.isToday ? 'disabled' : ''}`} 
+                                     className={`startButton ${(!day.isToday || ex.is_completed) ? 'disabled' : ''} ${ex.is_completed ? 'completed' : ''}`} 
                                      onClick={() => {
-                                       if (day.isToday) {
+                                       if (day.isToday && !ex.is_completed) {
                                          // Stuur de huidige oefening mee in de 'state'
                                         navigate('/kind/oefening', {
                                           state: {
@@ -505,12 +508,13 @@ export default function ChildScreen() {
                                             stats,
                                             scheduledExercises,
                                             patientExerciseId: ex.id,
+                                            patientId: activePatientId,
                                           },
                                         });
                                        }
                                      }}
                                    >
-                                     Start
+                                     {ex.is_completed ? 'Klaar' : 'Start'}
                                    </button>
                                   </div>
                                 ))
@@ -526,7 +530,12 @@ export default function ChildScreen() {
           </main>
 
       <aside className="childRightPanel">
-        <ChildStatsRow stats={dashboardStats} />
+        <div className="panelmobile">
+          <ChildStatsRow stats={dashboardStats} />
+          <button className="childProfileBtn" onClick={() => navigate("/kind/profiel")}>
+            <img src="/images/avatar.svg" alt="" />
+          </button>
+       </div>
 
         <WeekStreak scheduledExercises={scheduledExercises} />
 

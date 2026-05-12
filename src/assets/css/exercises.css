@@ -166,10 +166,14 @@
 
 .exerciseLibraryThumb {
   width: 90px;
-  /* height: 76px; */
+  height: 90px;
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;
+}
+
+.exerciseLibraryVideoThumb {
+  background: #111;
 }
 
 .exerciseCardMetaRow {
@@ -208,11 +212,11 @@
 
 .myExerciseCard {
   width: 100%;
-  min-height: 380px;
+  max-width: 260px;
   border: 1.5px solid #dce2e8;
   background: #fff;
-  border-radius: 8px;
-  padding: 8px 24px;
+  border-radius: 4px;
+  padding: 24px;
   box-sizing: border-box;
   text-align: left;
   cursor: pointer;
@@ -220,7 +224,7 @@
 }
 
 .myExerciseCard:hover {
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+  border: 1.5px solid #b7bdc3;
 }
 
 .myExerciseCardTop {
@@ -243,15 +247,26 @@
   position: relative;
   width: 100%;
   height: 158px;
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 18px;
+  background: #f3f4f6;
 }
 
 .myExerciseImageWrap img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: #f3f4f6;
+}
+
+.myExerciseImageWrap video {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .myExercisePlayOverlay {
