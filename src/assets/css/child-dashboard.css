@@ -118,13 +118,52 @@
 
 
 /* RECHTS: WIDGETS */
+
 .childRightPanel {
   min-width: 460px;
   padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  background: white;
 }
+
+/* Missions page layout */
+.childMissionsLayout {
+  flex: 1;
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  position: relative;
+  padding: 40px 48px 40px 40px;
+  overflow-y: auto;
+}
+
+
+.childMissionsTitle {
+  margin: 0;
+  font-family: "Nunito, sans-serif";
+  font-size: 20px;
+  line-height: 31px;
+  font-weight: 700;
+  color: #000;
+}
+
+.childMissionsTimer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #F05D5E;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.childMissionsHeaderRow--monthly { margin-bottom: 14px; }
+
+.childMissionsMonthly { margin-top: 48px; }
+
+.childMissionsAside { padding-top: 34px; }
+
 
 .topStatsRow {
   display: flex;
@@ -304,6 +343,16 @@
   gap: 32px;
 }
 
+/* When stats are used at top of missions page */
+.childMissionsMainColumn .childTopStatsRow {
+  margin: 12px 0 20px;
+  gap: 24px;
+}
+
+.childMissionsMainColumn .childMissionsTitle {
+  margin-top: 8px;
+}
+
 .childStatItem {
   display: flex;
   align-items: center;
@@ -331,8 +380,8 @@
   left: 50%;
   transform: translateX(-50%);
   max-width: 380px;
-  /* width: 10%; */
-  text-wrap-mode: nowrap;
+  width: min(380px, calc(100vw - 32px));
+  white-space: normal;
   background-color: #ffffff;
   border: 2px solid #D3D5D9;
   border-radius: 8px;
@@ -385,6 +434,19 @@
   align-items: space-between;
 }
 
+.popupMessageRow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  text-align: left;
+}
+
+.popupMonkeyIllustration {
+  width: 60px;
+  height: auto;
+  flex-shrink: 0;
+}
+
 .popoverEmpty {
   margin: 0;
   color: #718096;
@@ -397,13 +459,13 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid #D3D5D9;
-  padding-bottom: 16px;
-  padding-top: 16px;
+  padding-bottom: 12px;
+  padding-top: 12px;
   border-radius: 4px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
   transition: background-color 0.2s;
-  gap: 16px;
+  gap: 12px;
 }
 
 .exerciseItem.completed {
@@ -427,7 +489,7 @@
 
 .exerciseTitle {
   margin: 0px 0 6px 0;
-  font-size: 18px;
+  font-size: 16px;
   font-family: "Cabinet Grotesk", sans-serif;
   color: #000;
 }
@@ -446,7 +508,7 @@
   align-items: center;
   gap: 6px;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 
@@ -460,8 +522,9 @@
   box-shadow: 0 4px 0 #1E7A6A;
   color: white;
   font-weight: bold;
-  font-size: 16px;
-  padding: 8px 24px;
+  font-size: 14px;
+  padding: 8px 16px;
+  min-width: 88px;
   border-radius: 4px;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -497,8 +560,8 @@
   font-size: 18px;
 }
 
-@media (max-width: 960px) {
-  .kineSidebar, .parentSideSection, .parentWeekCard{
+@media (max-width: 1200px) {
+     .parentSideSection, .parentWeekCard{
     display: none !important;
   }
 
@@ -506,8 +569,79 @@
     height: auto;
     min-height: 100vh;
     flex-direction: column;
+    /* display: block; */
+  }
 
+  .childPathArea {
+    padding: 16px 8px 24px;
+    justify-content: flex-start;
+    height: 260px !important;
+    order: 2;
+  }
 
+    /* .pathWrapper {
+      width: 100vw;
+      max-width: none;
+      margin: 0;
+      height: auto;
+      aspect-ratio: unset;
+      display: block;
+    } */
+
+    .childPathArea {
+      overflow-x: auto;
+      justify-content: flex-start;
+      margin-left: 400px;
+      margin-top: -1400px;
+    }
+
+  /* .childRightPanel {
+    min-width: 0;
+    padding: 28px 20px 40px;
+    gap: 28px;
+    width: 100%;
+  } */
+
+  .parentDashboardPage {
+    grid-template-columns: 1fr;
+  }
+
+  .parentDashboardMain {
+    padding: 32px 20px 40px 20px;
+  }
+}
+
+@media (max-width: 1000px) {
+    .childPathArea {
+      overflow-x: auto;
+      justify-content: flex-start;
+      margin-left: 300px;
+      margin-top: -1400px;
+    }
+      .kineSidebar {
+    display: block;
+  }
+  }
+
+@media (max-width: 768px) {
+  .kineSidebar {
+    display: none;
+  }
+
+    .childMissionsLayout {
+    display: block;
+    padding: 20px 16px;
+  }
+
+  .childMissionsAside {
+    padding: 12px 0 24px;
+    width: 100%;
+  }
+
+  .childApp {
+    height: auto;
+    min-height: 100vh;
+    flex-direction: column;
   }
 
   .childPathArea {
@@ -534,6 +668,7 @@
     min-width: 0;
     padding: 28px 20px 40px;
     gap: 28px;
+    width: 100%;
   }
 
   .parentDashboardPage {
@@ -543,13 +678,12 @@
   .parentDashboardMain {
     padding: 32px 20px 40px 20px;
   }
-}
 
-.childProfileBtn {
-  display: none;
-}
+  .childRightPanel {
+    width: 100%;
+    padding: 18px 12px 24px;
+  }
 
-@media (max-width: 768px) {
   .childPathArea {
     padding: 10px 4px 16px;
     height: 180px !important;
@@ -603,4 +737,52 @@
   .childProfileBtn img{
     width: 60px;
 } 
+
+  .dayPopover.empty {
+    max-width: 280px;
+    width: calc(100vw - 32px);
+    padding: 12px;
+  }
+
+  .dayPopover {
+    max-width: 320px;
+    width: calc(100vw - 32px);
+    padding: 12px;
+  }
+
+  .dayPopover .popoverContent {
+    text-wrap-mode: wrap;
+  }
+
+  .dayPopover .popupMessageRow {
+    gap: 0;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .dayPopover .popupMonkeyIllustration {
+    display: none;
+  }
+
+  .dayPopover .exerciseItem {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .dayPopover .exerciseTitle {
+    font-size: 15px;
+  }
+
+  .dayPopover .exerciseTags {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dayPopover .startButton {
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
 }

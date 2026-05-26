@@ -1,34 +1,34 @@
 @font-face {
     font-family: "Cabinet Grotesk";
-    src: url("../fonts/CabinetGrotesk-Regular.woff2") format("woff2");
+    src: url("/fonts/CabinetGrotesk-Regular.woff2") format("woff2");
     font-weight: 400;
   font-display: swap;
   }
   
   @font-face {
     font-family: "Cabinet Grotesk";
-    src: url("../fonts/CabinetGrotesk-Medium.woff2") format("woff2");
+    src: url("/fonts/CabinetGrotesk-Medium.woff2") format("woff2");
     font-weight: 500;
     font-display: swap;
   }
   
   @font-face {
     font-family: "Cabinet Grotesk";
-    src: url("../fonts/CabinetGrotesk-Bold.woff2") format("woff2");
+    src: url("/fonts/CabinetGrotesk-Bold.woff2") format("woff2");
     font-weight: 700;
     font-display: swap;
   }
 
   @font-face {
     font-family: "Cabinet Grotesk";
-    src: url("../fonts/CabinetGrotesk-Extrabold.woff2") format("woff2");
+    src: url("/fonts/CabinetGrotesk-Extrabold.woff2") format("woff2");
     font-weight: 800;
     font-display: swap;
   }
 
   @font-face {
     font-family: "Cabinet Grotesk";
-    src: url("../fonts/CabinetGrotesk-Black.woff2") format("woff2");
+    src: url("/fonts/CabinetGrotesk-Black.woff2") format("woff2");
     font-weight: 900;
     font-display: swap;
   }
@@ -53,6 +53,7 @@
   
   body {
     margin: 0;
+    padding-top: 16px;
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
@@ -160,7 +161,7 @@
     z-index: 100;
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 768px) {
     .kineSidebar {
       display: none !important;
     }
@@ -189,5 +190,62 @@
     .kineDash,
     .parentDashboardPage {
       padding: 16px 12px !important;
+    }
+  }
+
+  .mobileBottomNav {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .mobileBottomNav {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      height: 76px;
+      border-radius: 14px;
+      border: 1px solid #e7e7e7;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 200;
+    }
+
+    .mobileBottomNavLink {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      min-width: 74px;
+      padding: 6px 10px;
+      border-radius: 10px;
+      color: #4b4b4b;
+      text-decoration: none;
+      font-family: "Cabinet Grotesk", sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .mobileBottomNavLink img {
+      width: 23px;
+      height: 23px;
+      object-fit: contain;
+    }
+
+    .mobileBottomNavLink.is-active {
+      background: #eaf8f4;
+      color: #17967f;
+      font-weight: 700;
+    }
+
+    /* Keep page content clear from the fixed bottom nav. */
+    body:has(.mobileBottomNav) {
+      padding-bottom: 96px;
     }
   }

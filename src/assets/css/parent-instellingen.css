@@ -4,14 +4,21 @@
   color: #000000;
   display: grid;
   grid-template-columns: 298px minmax(0, 1fr);
+  width: 100%;
 }
 
 .parentinstellingenMain {
-  padding: 48px 48px 48px 0px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 120px;
-  align-items: start;
+  padding: 48px 24px 48px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.parentinstellingenMain > .parentinstellingenSection {
+  width: 100%;
+  max-width: 360px;
 }
 
 
@@ -40,6 +47,14 @@
   align-items: center;
   gap: 24px;
   margin-bottom: 40px;
+}
+
+h1, h2 {
+  font-family: 'cabinet grotesk', sans-serif !important;
+}
+
+.childMissionsMainColumn {
+  max-width: 500px;
 }
 
 .parentinstellingenTopbar h1 {
@@ -73,6 +88,7 @@
   display: flex;
   flex-direction: column;
   gap: 64px;
+  width: 100%;
 }
 
 .parentinstellingenSection {
@@ -107,6 +123,12 @@
     flex-direction: column;
     gap: 24px;
     text-align: left;
+    max-width: 500px;
+}
+
+.parentinstellingenSection {
+      max-width: 500px;
+
 }
 
 .parentProfileTop {
@@ -433,6 +455,10 @@
     gap: 48px;
   }
 
+  .parentinstellingenMain > .parentinstellingenSection {
+    max-width: 100%;
+  }
+
   .parentinstellingenTopbar {
     gap: 16px;
     margin-bottom: 32px;
@@ -563,6 +589,12 @@
     padding: 10px;
     font-size: 14px;
   }
+  .parentinstellingenProfileCard, .parentinstellingenSection {
+    max-width: 100%;
+}
+.childMissionsMainColumn {
+  max-width: 100%;
+}
 }
 
 @media (max-width: 640px) {
@@ -651,6 +683,10 @@
 
   .btn-primary-large {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 16px;
   }
+  .parentinstellingenMain > .parentinstellingenSection {
+  width: 100%;
+  max-width: 100%;
+}
 }

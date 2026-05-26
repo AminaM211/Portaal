@@ -3,6 +3,8 @@
   background: #ffffff;
   min-height: 100vh;
   max-width: 1400px;
+  width: 100%;
+  min-width: 0;
 }
 
 .exercisesHeader {
@@ -94,6 +96,7 @@
   gap: 8px;
   margin-top: 24px;
   margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
 .exerciseTabsRow {
@@ -110,6 +113,7 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .exerciseTabs button {
@@ -139,6 +143,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 26px 24px;
+  width: 100%;
 }
 
 .exerciseLibraryCardWrap {
@@ -158,6 +163,7 @@
   padding: 16px;
   cursor: pointer;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .exerciseLibraryCard:hover {
@@ -204,6 +210,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px 18px;
+  width: 100%;
 }
 
 .myExerciseCardWrap {
@@ -293,6 +300,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
+  width: 100%;
 }
 
 .exerciseSchemeCard {
@@ -401,11 +409,26 @@
 @media (max-width: 900px) {
   .exercisesMain {
     padding: 24px 20px 40px;
+    max-width: 100%;
   }
 
   .exerciseTabsRow {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .exerciseTabsRow,
+  .exerciseSearchBar,
+  .exerciseLibraryGrid,
+  .myExercisesGrid,
+  .exerciseSchemesGrid,
+  .schemeTopbar,
+  .schemeBuilderLayout,
+  .schemeLibrarySection,
+  .schemeNextRow {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
 
@@ -423,10 +446,15 @@
 @media (max-width: 640px) {
   .exercisesMain {
     padding: 20px 16px 32px;
+    overflow-x: hidden;
   }
 
   .exercisesHeader h1 {
     font-size: 1.8rem;
+  }
+
+  .exercisesHeader p {
+    max-width: 100%;
   }
 
   .exercisesHeader p,
@@ -456,6 +484,10 @@
 
   .exerciseLibraryThumb {
     width: 80px;
+  }
+
+  .exerciseTabsRow .btn-outline-small {
+    width: 100%;
   }
 
 }

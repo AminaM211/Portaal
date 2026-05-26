@@ -352,7 +352,7 @@ export default function KineDashboard() {
             {filteredPatients.length === 0 ? (
               <div className="kinePatientsEmpty EmptyState">
                 <img src="/images/monkey-empty.png" alt="Geen patiënten gevonden" />
-                <p>Je hebt nog geen patiënten.</p>
+                <p>Geen patiënten gevonden.</p>
                 <button
                 type="button"
                 className="btn-outline-small btn-smaller"
@@ -592,6 +592,7 @@ export default function KineDashboard() {
           </div>
         </div>
       )}
+
     </div>
   );
 }

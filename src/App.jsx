@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage";
 import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
+import PatientExerciseAssignmentPage from "./pages/PatientExerciseAssignmentPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NewPatientFlow from "./pages/NewPatientFlow";
 import InstellingenPage from "./pages/InstellingenPage";
@@ -77,6 +78,14 @@ export default function App() {
         element={
           <ProtectedRoute allowedRole="kinesist">
             <PatientDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient/:id/oefening-toevoegen"
+        element={
+          <ProtectedRoute allowedRole="kinesist">
+            <PatientExerciseAssignmentPage />
           </ProtectedRoute>
         }
       />

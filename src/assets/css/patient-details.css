@@ -914,6 +914,17 @@
   max-width: 540px;
 }
 
+.kineModal--exerciseWizard {
+  max-width: 1120px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+}
+
+.kineModal--exerciseWizard .kineModalBody {
+  overflow-y: auto;
+}
+
 .kineModalHeader {
   display: flex;
   align-items: center;
@@ -1018,6 +1029,11 @@
   outline: none;
 }
 
+.kineField input:disabled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
 .kineField textarea {
   min-height: 100px;
   height: auto;
@@ -1037,6 +1053,24 @@
   gap: 12px;
   margin-top: 20px;
   margin-bottom: 16px;
+}
+
+.patientExerciseWizardLayout {
+  max-width: none;
+  width: 100%;
+}
+
+.patientExerciseWizardLayout .schemeBuilderLeft,
+.patientExerciseWizardLayout .schemeBuilderRight {
+  min-width: 0;
+}
+
+.patientExerciseWizardLayout .schemeBuilderLeft {
+  flex: 0 0 44%;
+}
+
+.patientExerciseWizardLayout .schemeBuilderRight {
+  flex: 1;
 }
 
 .kineTextAction {
@@ -1214,6 +1248,24 @@
   .patientNewNoteBtn,
   .patientAddExerciseBtn {
     width: 100%;
+  }
+
+  .kineModal--exerciseWizard {
+    max-height: calc(100vh - 24px);
+  }
+
+  .patientExerciseWizardLayout {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .patientExerciseWizardLayout .schemeBuilderLeft,
+  .patientExerciseWizardLayout .schemeBuilderRight {
+    flex: 1 1 auto;
+  }
+
+  .patientExerciseWizardLayout .exerciseLibraryGrid {
+    grid-template-columns: 1fr;
   }
 }
 

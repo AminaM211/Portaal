@@ -449,9 +449,9 @@ export default function ChildScreen() {
                            <div className="popoverContent" style={{ textAlign: (day.exercises.length === 0 || day.key < todayKey) ? 'center' : 'left' }}>
                              
                               {/* SITUATIE 1: VERLEDEN */}
-                              {day.key < todayKey ? (
-                               <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
-                                 <img src="/images/monkey-stunned.png" alt="Relax" style={{ width: '60px' }} />
+                               {day.key < todayKey ? (
+                                 <div className="popupMessageRow">
+                                   <img src="/images/monkey-stunned.png" alt="Relax" className="popupMonkeyIllustration" />
                                  <div>
                                    <p style={{ margin: 0, color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Deze dag is al voorbij!</p>
                                    <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Je kunt deze oefeningen niet meer maken.</p>
@@ -460,8 +460,8 @@ export default function ChildScreen() {
                              ) : 
                              /* SITUATIE 2: TOEKOMST & GEEN OEFENINGEN */
                              (day.key > todayKey && day.exercises.length === 0) ? (
-                               <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
-                               <img src="/images/empty-state-relax.png" alt="Relax" style={{ width: '60px' }} />
+                                 <div className="popupMessageRow">
+                                 <img src="/images/empty-state-relax.png" alt="Relax" className="popupMonkeyIllustration" />
                                <div>
                                  <p style={{ margin: "0", color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Geen oefeningen gepland!</p>
                                  <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Relax en geniet van je dag.</p>
@@ -470,8 +470,8 @@ export default function ChildScreen() {
                              ) : 
                              /* SITUATIE 3: VANDAAG & GEEN OEFENINGEN */
                              (day.key === todayKey && day.exercises.length === 0) ? (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '18px', textAlign: 'left' }}>
-                              <img src="/images/monkey-search.png" alt="Relax" style={{ width: '60px' }} />
+                                <div className="popupMessageRow">
+                                <img src="/images/monkey-search.png" alt="Relax" className="popupMonkeyIllustration" />
                               <div>
                               <p style={{ margin: "0", color: "#1A202C", fontWeight: "bold", fontSize: "14px" }}>Geen oefeningen vandaag!</p>
                               <p style={{ margin: "4px 0 0", color: "#718096", fontSize: "14px" }}>Geniet van je vrije tijd en tot snel!</p>
@@ -530,12 +530,6 @@ export default function ChildScreen() {
           </main>
 
       <aside className="childRightPanel">
-        <div className="panelmobile">
-          <ChildStatsRow stats={dashboardStats} />
-          <button className="childProfileBtn" onClick={() => navigate("/kind/profiel")}>
-            <img src="/images/avatar.svg" alt="" />
-          </button>
-       </div>
 
         <WeekStreak scheduledExercises={scheduledExercises} />
 

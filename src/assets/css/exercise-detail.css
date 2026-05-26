@@ -2,6 +2,8 @@
     min-height: 100vh;
     background: #ffffff;
     padding: 48px 40px 48px 24px;
+  width: 100%;
+  min-width: 0;
   }
   
   .exerciseDetailInner {
@@ -62,6 +64,13 @@
   }
   
   .exerciseVideoHero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .exerciseVideoHero video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -161,8 +170,11 @@
   
   @media (max-width: 960px) {
     .exerciseDetailMain {
-      margin-left: 240px;
+      margin-left: 0;
       padding: 24px 20px 40px;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
     }
   
     .exerciseDetailInner {
@@ -176,7 +188,8 @@
     }
   
     .exerciseVideoHero {
-      height: 280px;
+      height: auto;
+      aspect-ratio: 16 / 9;
     }
   
     .exerciseDetailHeader {
@@ -188,6 +201,14 @@
     .exerciseTagInfoGrid {
       grid-template-columns: 1fr;
       gap: 4px;
+    }
+
+    .exerciseDetailTopbar,
+    .exerciseDetailHeader,
+    .exerciseDetailSection,
+    .exerciseQuickFacts {
+      max-width: 100%;
+      min-width: 0;
     }
   }
 
@@ -300,10 +321,104 @@
   gap: 10px;
   cursor: pointer;
   white-space: nowrap;
-  width: 140px !important;
+  width: auto;
 
   background: #2bb39b;
   color: #ffffff;
   border: 2px solid #2bb39b;
   box-shadow: 0 4px 0 #1e7a6a;
+}
+
+@media (max-width: 768px) {
+  .exerciseDetailMain {
+    padding: 20px 16px 28px;
+  }
+
+  .exerciseDetailTopbar {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .patientBack {
+    font-size: 16px;
+    gap: 10px;
+  }
+
+  .exerciseDetailHeader h1 {
+    font-size: 24px;
+    line-height: 30px;
+  }
+
+  .exerciseDetailSection h2 {
+    font-size: 17px;
+    line-height: 22px;
+  }
+
+  .exerciseDetailSection p,
+  .exerciseTagInfoGrid strong,
+  .exerciseTagInfoGrid span {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .modalOverlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .editModal {
+    max-width: 100%;
+    border-radius: 12px;
+    max-height: 88vh;
+    overflow-y: auto;
+  }
+
+  .editModalHeader,
+  .editModalBody {
+    padding: 16px;
+  }
+
+  .editModalHeader h2 {
+    font-size: 20px;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .formGroup input,
+  .formGroup select {
+    font-size: 15px;
+    height: 42px;
+  }
+
+  .editModalActions {
+    padding: 0 16px 16px;
+    gap: 10px;
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .editModalActions .btn-outline-small,
+  .editModalActions .btn-primary-small {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .exerciseDetailMain {
+    padding: 16px 12px 24px;
+  }
+
+  .exerciseIconBtn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .exerciseDetailHeader h1 {
+    font-size: 21px;
+    line-height: 27px;
+  }
 }

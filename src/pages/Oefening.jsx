@@ -5,6 +5,7 @@ import { Pose, POSE_CONNECTIONS } from "@mediapipe/pose";
 import { Camera } from "@mediapipe/camera_utils";
 import { drawConnectors, drawLandmarks } from "@mediapipe/drawing_utils";
 import { supabase } from "../lib/supabase";
+import { getExerciseImageSrc, isVideoFileUrl } from "../utils/helpers";
 import WeekStreak from "../components/WeekStreak";
 import "../assets/css/Oefening.css"; 
 
@@ -26,6 +27,16 @@ export default function ExerciseScreen() {
   const patientId = location.state?.patientId || null;
   const [markedComplete, setMarkedComplete] = useState(false);
   const [totalXPEarned, setTotalXPEarned] = useState(0);
+
+  const detailMediaSrc = (() => {
+    const mediaUrl = exerciseData?.image_url;
+    if (!mediaUrl) return "/images/exercise-1.png";
+    if (typeof mediaUrl !== "string") return "/images/exercise-1.png";
+
+    const trimmed = mediaUrl.trim();
+    if (trimmed.startsWith("http") || trimmed.startsWith("/")) return trimmed;
+    return `/images/${trimmed}`;
+  })();
 
   console.log('Exercise loaded with patientExerciseId:', patientExerciseId);
 
@@ -73,6 +84,7 @@ export default function ExerciseScreen() {
               xp_reward,
               difficulty,
               image_url,
+              created_by,
               space_needed,
               materials,
               stance
@@ -116,6 +128,9 @@ export default function ExerciseScreen() {
   })();
 
   const isDefaultExercise = exercisePreset === "guided-sequence";
+  const isKinesistUploadedVideo = Boolean(
+    exerciseData?.created_by && isVideoFileUrl(exerciseData?.image_url)
+  );
 
   const guidedExercises = [
     {
@@ -220,6 +235,13 @@ export default function ExerciseScreen() {
   const trackingActiveRef = useRef(false);
   const trackingReadyRef = useRef(false);
   const [progress, setProgress] = useState(0);
+  const [videoDurationSeconds, setVideoDurationSeconds] = useState(null);
+
+  const configuredDurationSeconds = Math.max(1, (exerciseData.duration_minutes || 5) * 60);
+  const activeDurationSeconds =
+    isKinesistUploadedVideo && videoDurationSeconds
+      ? videoDurationSeconds
+      : configuredDurationSeconds;
   
   // Timer gebaseerd op database duration
   const [timeLeft, setTimeLeft] = useState((exerciseData.duration_minutes || 5) * 60);
@@ -232,6 +254,35 @@ export default function ExerciseScreen() {
       return () => clearInterval(timerId);
     }
   }, [step, isPaused, timeLeft]);
+
+  useEffect(() => {
+    setTimeLeft(activeDurationSeconds);
+  }, [activeDurationSeconds, currentExerciseIndex]);
+
+  useEffect(() => {
+    if (step !== "active" || timeLeft > 0) return;
+    setProgress(100);
+  }, [step, timeLeft]);
+
+  useEffect(() => {
+    if (step !== "active" || !isKinesistUploadedVideo) return;
+
+    const totalSeconds = activeDurationSeconds;
+    const elapsedSeconds = Math.max(0, totalSeconds - timeLeft);
+    const timerProgress = Math.min(100, (elapsedSeconds / totalSeconds) * 100);
+    setProgress(timerProgress);
+  }, [step, isKinesistUploadedVideo, timeLeft, activeDurationSeconds]);
+
+  useEffect(() => {
+    if (step !== "active") return;
+    setIsPaused(false);
+  }, [step, currentExerciseIndex]);
+
+  useEffect(() => {
+    if (!isKinesistUploadedVideo) {
+      setVideoDurationSeconds(null);
+    }
+  }, [isKinesistUploadedVideo, exerciseData.id]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -322,6 +373,10 @@ export default function ExerciseScreen() {
   const getExerciseProgressLabel = () => {
     if (!currentExercise) return "";
 
+    if (isKinesistUploadedVideo) {
+      return `${Math.max(0, Math.ceil(timeLeft))}`;
+    }
+
     if (currentExercise.mode === "hold") {
       return `${Math.max(0, Math.ceil((currentExercise.target || 0) * (1 - progress / 100)))}`; 
     }
@@ -391,12 +446,14 @@ export default function ExerciseScreen() {
 
     setFeedback(
       'info',
-      'Klaar?',
-      currentExercise.mode === 'hold'
+      isKinesistUploadedVideo ? 'Kijk en doe mee' : 'Klaar?',
+      isKinesistUploadedVideo
+        ? 'Goed bezig! Kijk naar de video en doe rustig mee tot de timer op is.'
+        : currentExercise.mode === 'hold'
         ? 'Kijk naar jezelf en houd je lichaam rustig recht.'
         : 'Kijk naar jezelf en doe de beweging rustig na.'
     );
-  }, [step, currentExerciseIndex]);
+  }, [step, currentExerciseIndex, isKinesistUploadedVideo]);
 
   function checkMovement(landmarks) {
     if (!currentExercise) return;
@@ -640,9 +697,9 @@ export default function ExerciseScreen() {
 
   // MediaPipe AI Logica
   useEffect(() => {
-    trackingActiveRef.current = step === 'active';
+    trackingActiveRef.current = step === 'active' && !isKinesistUploadedVideo;
 
-    if (step !== 'active') return undefined;
+    if (step !== 'active' || isKinesistUploadedVideo) return undefined;
 
     let cancelled = false;
 
@@ -702,7 +759,7 @@ export default function ExerciseScreen() {
     return () => {
       cancelled = true;
     };
-  }, [step]);
+  }, [step, isKinesistUploadedVideo]);
 
   useEffect(() => {
     return () => {
@@ -757,7 +814,7 @@ export default function ExerciseScreen() {
 
   return (
     <div className="page-container">
-      {renderHeader()}
+      {step !== 'active' && renderHeader()}
 
       {/* STAP 1: DETAIL SCHERM */}
       {step === 'detail' && (
@@ -765,19 +822,24 @@ export default function ExerciseScreen() {
           <div className="detail-flex">
             <div className="main-column">
               <div className="image-placeholder">
-                 {/* Veilig inladen image from public/images/, met fallback bij error */}
-                 <img 
-                   src={
-                     exerciseData.image_url 
-                       ? (exerciseData.image_url.startsWith('/') 
-                           ? exerciseData.image_url 
-                           : `/images/${exerciseData.image_url}`) 
-                       : "/images/exercise-placeholder.jpg"
-                   } 
-                   alt={exerciseData.title || "Exercise"} 
-                   className="exercise-image"
-                   onError={(e) => { e.target.src = "/images/exercise-placeholder.jpg"; }}
-                 />
+                {isVideoFileUrl(exerciseData?.image_url) ? (
+                  <video
+                    src={detailMediaSrc}
+                    className="exercise-image"
+                    controls
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  <img
+                    src={getExerciseImageSrc(exerciseData?.image_url)}
+                    alt={exerciseData.title || "Exercise"}
+                    className="exercise-image"
+                    onError={(e) => {
+                      e.currentTarget.src = "/images/exercise-1.png";
+                    }}
+                  />
+                )}
               </div>
               
               <div className="tags-container">
@@ -856,7 +918,7 @@ export default function ExerciseScreen() {
         </div>
       )}
 
-      {/* STAP 2: ACTIVE SCHERM (AI + WEBCAM) */}
+      {/* STAP 2: ACTIVE SCHERM */}
       {step === 'active' && (
         <div className="active-shell">
               {/* <div className="active-body">
@@ -887,31 +949,51 @@ export default function ExerciseScreen() {
                 <div className="progress-ring" style={{ ["--progress"]: `${getCircularProgress()}%` }}>
                   <div className="progress-ring-inner">
                     <strong>{getExerciseProgressLabel()}</strong>
-                    <span>{currentExercise?.mode === "hold" ? "seconden" : "herhalingen"}</span>
+                    <span>{isKinesistUploadedVideo || currentExercise?.mode === "hold" ? "seconden" : "herhalingen"}</span>
                   </div>
                 </div>
               </div>
 
               <div className="mirror-stage">
-                <Webcam
-                  ref={webcamRef}
-                  className="webcam-view mirror-view"
-                  videoConstraints={{
-                    facingMode: { ideal: "user" },
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                  }}
-                />
-                <canvas ref={canvasRef} width={1280} height={720} className="canvas-overlay mirror-view" />
+                {isKinesistUploadedVideo ? (
+                  <video
+                    src={detailMediaSrc}
+                    className="webcam-view"
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onPlay={() => setIsPaused(false)}
+                    onPause={() => setIsPaused(true)}
+                    onLoadedMetadata={(e) => {
+                      const duration = e.currentTarget.duration;
+                      if (!Number.isFinite(duration) || duration <= 0) return;
+                      const roundedDuration = Math.max(1, Math.ceil(duration));
+                      setVideoDurationSeconds(roundedDuration);
+                      setTimeLeft((prev) => {
+                        if (step !== "active") return roundedDuration;
+                        return Math.min(prev, roundedDuration);
+                      });
+                    }}
+                  />
+                ) : (
+                  <>
+                    <Webcam
+                      ref={webcamRef}
+                      className="webcam-view mirror-view"
+                      videoConstraints={{
+                        facingMode: { ideal: "user" },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                      }}
+                    />
+                    <canvas ref={canvasRef} width={1280} height={720} className="canvas-overlay mirror-view" />
+                  </>
+                )}
               </div>
 
-              <div className="video-hint-strip">
-                 <h1 className="active-title">{currentExercise?.title}</h1>
-                 <div>
-                    <span>Kijk naar jezelf</span>
-                    <span>Houd je hele lichaam in beeld</span>
-                 </div>
-              </div>
+              {/* video-hint-strip removed for 'active' step: no title, tags or stats shown during active exercise */}
             </div>
           </div>
         </div>      

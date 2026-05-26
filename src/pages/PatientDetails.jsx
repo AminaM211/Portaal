@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import "../components/ExerciseCard.css";
+import "../assets/css/exercises.css";
 import "../assets/css/patient-details.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -270,8 +271,16 @@ export default function PatientDetails() {
   
   const [showAddExerciseModal, setShowAddExerciseModal] = useState(false);
   const [exerciseLibrary, setExerciseLibrary] = useState([]);
-  const [selectedExerciseId, setSelectedExerciseId] = useState("");
-  const [scheduledDate, setScheduledDate] = useState("");
+  const [myExercises, setMyExercises] = useState([]);
+  const [addExerciseStep, setAddExerciseStep] = useState(1);
+  const [exerciseTab, setExerciseTab] = useState("bibliotheek");
+  const [exerciseCategory, setExerciseCategory] = useState("Alles");
+  const [exerciseSearch, setExerciseSearch] = useState("");
+  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [assignmentStartDate, setAssignmentStartDate] = useState("");
+  const [assignmentEndDate, setAssignmentEndDate] = useState("");
+  const [assignmentRepeat, setAssignmentRepeat] = useState("Elke dag");
+  const [applyToAllExercises, setApplyToAllExercises] = useState(true);
   const [savingExercise, setSavingExercise] = useState(false);
   const [programToDelete, setProgramToDelete] = useState(null);
 
@@ -371,7 +380,7 @@ export default function PatientDetails() {
       await Promise.all([
         loadPatient(user.id),
         loadPatientExercises(),
-        loadExerciseLibrary(),
+        loadExerciseLibrary(user.id),
         loadNotesSafe(user.id),
         loadFavorites(user.id),
       ]);
@@ -488,16 +497,49 @@ export default function PatientDetails() {
     setScheduledExercises(data || []);
   }
 
-  async function loadExerciseLibrary() {
-    const { data, error } = await supabase
-      .from("exercises")
-      .select("*")
-      .order("title", { ascending: true });
+  async function loadExerciseLibrary(currentUserId) {
+    const authUserId = currentUserId || userId;
 
-    if (error) throw error;
+    const [libraryRes, myRes] = await Promise.all([
+      supabase
+        .from("exercises")
+        .select("*")
+        .eq("is_public", true)
+        .order("title", { ascending: true }),
+      supabase
+        .from("exercises")
+        .select("*")
+        .eq("created_by", authUserId)
+        .order("created_at", { ascending: false }),
+    ]);
 
-    setExerciseLibrary(data || []);
+    if (libraryRes.error) throw libraryRes.error;
+    if (myRes.error) throw myRes.error;
+
+    setExerciseLibrary(libraryRes.data || []);
+    setMyExercises(myRes.data || []);
   }
+
+  const activeExerciseDataset = useMemo(() => {
+    return exerciseTab === "bibliotheek" ? exerciseLibrary : myExercises;
+  }, [exerciseTab, exerciseLibrary, myExercises]);
+
+  const filteredExercises = useMemo(() => {
+    const normalizedSearch = exerciseSearch.trim().toLowerCase();
+
+    return activeExerciseDataset.filter((exercise) => {
+      const title = (exercise.title || "").toLowerCase();
+      const description = (exercise.description || "").toLowerCase();
+      const matchesSearch =
+        normalizedSearch === "" ||
+        title.includes(normalizedSearch) ||
+        description.includes(normalizedSearch);
+      const matchesCategory =
+        exerciseCategory === "Alles" || exercise.category === exerciseCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [activeExerciseDataset, exerciseSearch, exerciseCategory]);
 
   async function loadNotesSafe(currentUserId) {
     const authUserId = currentUserId || userId;
@@ -563,15 +605,64 @@ export default function PatientDetails() {
   }
 
   function openAddExerciseModal() {
-    setSelectedExerciseId("");
-    setScheduledDate(selectedDate || formatDateKey(new Date()));
+    const startDate = selectedDate || formatDateKey(new Date());
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + 30);
+
+    setAddExerciseStep(1);
+    setExerciseTab("bibliotheek");
+    setExerciseCategory("Alles");
+    setExerciseSearch("");
+    setSelectedExercises([]);
+    setAssignmentStartDate(startDate);
+    setAssignmentEndDate(formatDateKey(endDate));
+    setAssignmentRepeat("Elke dag");
+    setApplyToAllExercises(true);
     setShowAddExerciseModal(true);
   }
 
   function closeAddExerciseModal() {
     setShowAddExerciseModal(false);
-    setSelectedExerciseId("");
-    setScheduledDate("");
+    setAddExerciseStep(1);
+    setExerciseTab("bibliotheek");
+    setExerciseCategory("Alles");
+    setExerciseSearch("");
+    setSelectedExercises([]);
+    setAssignmentStartDate("");
+    setAssignmentEndDate("");
+    setAssignmentRepeat("Elke dag");
+    setApplyToAllExercises(true);
+  }
+
+  function toggleExerciseSelection(exercise) {
+    setSelectedExercises((prev) => {
+      const exists = prev.some((item) => item.id === exercise.id);
+
+      if (exists) {
+        return prev.filter((item) => item.id !== exercise.id);
+      }
+
+      return [...prev, exercise];
+    });
+  }
+
+  function handleAddExerciseNext() {
+    if (selectedExercises.length === 0) {
+      setErrorMessage("Selecteer minstens één oefening.");
+      return;
+    }
+
+    setErrorMessage("");
+    setAddExerciseStep(2);
+  }
+
+  function handleAddExerciseBack() {
+    if (addExerciseStep === 2) {
+      setAddExerciseStep(1);
+      return;
+    }
+
+    closeAddExerciseModal();
   }
 
   function openNoteModal(note = null) {
@@ -615,8 +706,24 @@ export default function PatientDetails() {
   async function handleAddExercise(e) {
     e.preventDefault();
 
-    if (!selectedExerciseId || !scheduledDate) {
-      setErrorMessage("Kies een oefening en een datum.");
+    if (selectedExercises.length === 0) {
+      setErrorMessage("Selecteer minstens één oefening.");
+      return;
+    }
+
+    if (!assignmentStartDate || !assignmentEndDate) {
+      setErrorMessage("Vul een start- en einddatum in.");
+      return;
+    }
+
+    const scheduledDates = generateScheduledDates(
+      assignmentStartDate,
+      assignmentEndDate,
+      assignmentRepeat
+    );
+
+    if (scheduledDates.length === 0) {
+      setErrorMessage("Er konden geen oefendagen gegenereerd worden.");
       return;
     }
 
@@ -624,17 +731,25 @@ export default function PatientDetails() {
       setSavingExercise(true);
       setErrorMessage("");
 
-      const { error } = await supabase.from("patient_exercises").insert({
-        patient_id: id,
-        exercise_id: selectedExerciseId,
-        scheduled_date: scheduledDate,
-        is_completed: false,
-      });
+      const exercisesToAssign = applyToAllExercises
+        ? selectedExercises
+        : selectedExercises.slice(0, 1);
+
+      const rows = exercisesToAssign.flatMap((exercise) =>
+        scheduledDates.map((date) => ({
+          patient_id: id,
+          exercise_id: exercise.id,
+          scheduled_date: date,
+          is_completed: false,
+        }))
+      );
+
+      const { error } = await supabase.from("patient_exercises").insert(rows);
 
       if (error) throw error;
 
       await loadPatientExercises();
-      setSelectedDate(scheduledDate);
+      setSelectedDate(assignmentStartDate);
       closeAddExerciseModal();
       setActiveTab("programma");
     } catch (error) {
@@ -950,7 +1065,7 @@ export default function PatientDetails() {
     return grouped;
   }, [scheduledExercises]);
 
-  const selectedExercises = useMemo(() => {
+  const selectedDayExercises = useMemo(() => {
     return exerciseSchedule[selectedDate] || [];
   }, [exerciseSchedule, selectedDate]);
 
@@ -1166,7 +1281,7 @@ export default function PatientDetails() {
         <button
           type="button"
           className="patientAddExerciseBtn"
-          onClick={openAddExerciseModal}
+          onClick={() => navigate(`/patient/${id}/oefening-toevoegen`)}
         >
           Oefening toevoegen
           <img src="/images/plus.svg" alt="" />
@@ -1412,13 +1527,13 @@ export default function PatientDetails() {
               </div>
 
               <div className="programExerciseList">
-                {selectedExercises.length === 0 ? (
+                {selectedDayExercises.length === 0 ? (
                   <div className="programEmptyState">
                     <strong>Geen oefeningen gepland</strong>
                     <p>Er zijn geen oefeningen gekoppeld aan deze dag.</p>
                   </div>
                 ) : (
-                  selectedExercises.map((exercise) => (
+                  selectedDayExercises.map((exercise) => (
                     <div
                         key={exercise.id}
                         className={`programExerciseCard ${
@@ -1775,64 +1890,264 @@ export default function PatientDetails() {
       {showAddExerciseModal && (
         <div className="kineModalOverlay" onClick={closeAddExerciseModal}>
           <div
-            className="kineModal kineModal--addExercise"
+            className="kineModal kineModal--addExercise kineModal--exerciseWizard"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="kineModalHeader">
-              <h3>Oefening toevoegen</h3>
+              <h3>Oefening toewijzen</h3>
               <button
                 type="button"
                 className="kineModalClose"
-                onClick={closeAddExerciseModal}
+                onClick={handleAddExerciseBack}
               >
                 ×
               </button>
             </div>
 
             <div className="kineModalBody">
-              <form className="kineEditForm" onSubmit={handleAddExercise}>
-                <div className="kineField">
-                  <label>Kies een oefening</label>
-                  <select
-                    className="kineSelect"
-                    value={selectedExerciseId}
-                    onChange={(e) => setSelectedExerciseId(e.target.value)}
-                  >
-                    <option value="">Selecteer een oefening</option>
-                    {exerciseLibrary.map((exercise) => (
-                      <option key={exercise.id} value={exercise.id}>
-                        {exercise.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="kineField kineField--small">
-                  <label>Datum</label>
-                  <input
-                    type="date"
-                    value={scheduledDate}
-                    onChange={(e) => setScheduledDate(e.target.value)}
-                  />
-                </div>
-
-                <div className="kineModalFooter">
-                  <button
-                    type="button"
-                    className="kineTextAction"
-                    onClick={closeAddExerciseModal}
-                  >
-                    Annuleren
+              <form onSubmit={handleAddExercise}>
+                <div className="schemeTopbar">
+                  <button type="button" className="patientBack" onClick={handleAddExerciseBack}>
+                    <img src="/images/back-icon.svg" alt="" />
+                    <span>Terug</span>
                   </button>
 
-                  <button
-                    type="submit"
-                    className="btn-primary-large"
-                    disabled={savingExercise}
-                  >
-                    {savingExercise ? "Opslaan..." : "Toevoegen"}
-                  </button>
+                  <div className="schemeStepBlock">
+                    <span className="schemeStepLabel">Stap {addExerciseStep} van 2</span>
+                    <div className="schemeProgressBar">
+                      <div className={`schemeProgressSegment ${addExerciseStep >= 1 ? "is-active" : ""}`} />
+                      <div className={`schemeProgressSegment ${addExerciseStep >= 2 ? "is-active" : ""}`} />
+                    </div>
+                  </div>
                 </div>
+
+                <h1 className="schemeBuilderHeading">Oefening toewijzen</h1>
+
+                {errorMessage && <p className="kineError">{errorMessage}</p>}
+
+                {addExerciseStep === 1 && (
+                  <section className="schemeLibrarySection">
+                    <div className="exerciseSearchBar">
+                      <img src="/images/search-icon.svg" alt="" />
+                      <input
+                        type="text"
+                        placeholder="Zoek oefeningen..."
+                        className="searchbar"
+                        value={exerciseSearch}
+                        onChange={(e) => setExerciseSearch(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="exerciseCategoryFilters">
+                      {["Alles", "Balans", "Mobiliteit", "Kracht"].map((item) => (
+                        <button
+                          key={item}
+                          type="button"
+                          className={`exerciseCategoryBtn ${exerciseCategory === item ? "is-active" : ""}`}
+                          onClick={() => setExerciseCategory(item)}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="exerciseTabsRow">
+                      <div className="exerciseTabs">
+                        <button
+                          type="button"
+                          className={exerciseTab === "bibliotheek" ? "is-active" : ""}
+                          onClick={() => setExerciseTab("bibliotheek")}
+                        >
+                          Bibliotheek
+                        </button>
+
+                        <button
+                          type="button"
+                          className={exerciseTab === "jouw-oefeningen" ? "is-active" : ""}
+                          onClick={() => setExerciseTab("jouw-oefeningen")}
+                        >
+                          Jouw oefeningen
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="exerciseLibraryGrid">
+                      {filteredExercises.map((exercise) => {
+                        const isSelected = selectedExercises.some((item) => item.id === exercise.id);
+
+                        return (
+                          <div key={exercise.id} className="schemeLibraryCardWrap">
+                            <button
+                              type="button"
+                              className={`exerciseLibraryCard schemeSelectableCard ${isSelected ? "is-selected" : ""}`}
+                              onClick={() => toggleExerciseSelection(exercise)}
+                            >
+                              <img
+                                className="exerciseLibraryThumb"
+                                src={exercise.image_url || "/images/exercise-1.png"}
+                                alt={exercise.title}
+                              />
+
+                              <div className="exerciseLibraryInfo">
+                                <strong>{exercise.title}</strong>
+
+                                <div className="exerciseCardMetaRow">
+                                  <span className={`exerciseTag ${getCategoryClass(exercise.category)}`}>
+                                    {exercise.category}
+                                  </span>
+
+                                  <img
+                                    src={getDifficultyIcon(exercise.difficulty)}
+                                    alt={exercise.difficulty || "Makkelijk"}
+                                    className="exerciseDifficultyIcon"
+                                  />
+                                </div>
+
+                                <p>
+                                  {exercise.duration_minutes || 0} min · {exercise.repetitions || 0} herhalingen
+                                </p>
+                              </div>
+
+                              <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                                <img src="/images/dots.svg" alt="" />
+                              </button>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="schemeNextRow">
+                      <button
+                        type="button"
+                        className="schemePrimaryBtn"
+                        onClick={handleAddExerciseNext}
+                        disabled={selectedExercises.length === 0}
+                      >
+                        Volgende
+                      </button>
+                    </div>
+                  </section>
+                )}
+
+                {addExerciseStep === 2 && (
+                  <section className="schemeBuilderLayout patientExerciseWizardLayout">
+                    <div className="schemeBuilderLeft">
+                      <div className="schemeFormGroup">
+                        <label>Patiënt</label>
+                        <input type="text" value={patient?.name || "-"} disabled />
+                      </div>
+
+                      <div className="schemeFormGroup">
+                        <label htmlFor="assignmentStartDate">Start</label>
+                        <input
+                          id="assignmentStartDate"
+                          type="date"
+                          value={assignmentStartDate}
+                          onChange={(e) => setAssignmentStartDate(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="schemeFormGroup">
+                        <label htmlFor="assignmentEndDate">Einde</label>
+                        <input
+                          id="assignmentEndDate"
+                          type="date"
+                          value={assignmentEndDate}
+                          onChange={(e) => setAssignmentEndDate(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="schemeFormGroup">
+                        <label htmlFor="assignmentRepeat">Herhaal</label>
+                        <select
+                          id="assignmentRepeat"
+                          value={assignmentRepeat}
+                          onChange={(e) => setAssignmentRepeat(e.target.value)}
+                        >
+                          <option value="Elke dag">Elke dag</option>
+                          <option value="Wekelijks">Wekelijks</option>
+                          <option value="2x per week">2x per week</option>
+                          <option value="3x per week">3x per week</option>
+                          <option value="4x per week">4x per week</option>
+                          <option value="5x per week">5x per week</option>
+                          <option value="6x per week">6x per week</option>
+                        </select>
+                      </div>
+
+                      <label className="schemeCheckboxRow">
+                        <input
+                          type="checkbox"
+                          checked={applyToAllExercises}
+                          onChange={(e) => setApplyToAllExercises(e.target.checked)}
+                        />
+                        <span>Voor alle oefeningen</span>
+                      </label>
+
+                      <div className="schemeActionRow">
+                        <button
+                          type="button"
+                          className="schemeCancelBtn"
+                          onClick={handleAddExerciseBack}
+                        >
+                          annuleer
+                        </button>
+
+                        <button
+                          type="submit"
+                          className="schemePrimaryBtn"
+                          disabled={savingExercise}
+                        >
+                          {savingExercise ? "Aanmaken..." : "Toewijzen"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="schemeBuilderRight">
+                      <h3 className="schemeAssignedTitle">
+                        Toegewezen ({selectedExercises.length} oefeningen):
+                      </h3>
+
+                      <div className="schemeAssignedList">
+                        {selectedExercises.map((exercise) => (
+                          <div key={exercise.id} className="schemeAssignedCard">
+                            <div className="exerciseLibraryCard">
+                              <img
+                                className="exerciseLibraryThumb"
+                                src={exercise.image_url || "/images/exercise-1.png"}
+                                alt={exercise.title}
+                              />
+
+                              <div className="exerciseLibraryInfo">
+                                <strong>{exercise.title}</strong>
+
+                                <div className="exerciseCardMetaRow">
+                                  <span className={`exerciseTag ${getCategoryClass(exercise.category)}`}>
+                                    {exercise.category}
+                                  </span>
+
+                                  <img
+                                    src={getDifficultyIcon(exercise.difficulty)}
+                                    alt={exercise.difficulty || "Makkelijk"}
+                                    className="exerciseDifficultyIcon"
+                                  />
+                                </div>
+
+                                <p>
+                                  {exercise.duration_minutes || 0} min · {exercise.repetitions || 0} herhalingen
+                                </p>
+                              </div>
+
+                              <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                                <img src="/images/dots.svg" alt="" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+                )}
               </form>
             </div>
           </div>

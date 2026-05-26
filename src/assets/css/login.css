@@ -359,6 +359,9 @@
     .login-left h1 {
       font-size: 36px;
       margin-bottom: 8px;
+      margin-top: 16px;
+      align-self: flex-start;
+      text-align: left;
     }
   
     .login-left > p,

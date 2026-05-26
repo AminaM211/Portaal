@@ -569,7 +569,7 @@
      }
    }
    
-   @media (max-width: 960px) {
+   @media (max-width: 768px) {
      .InstellingenPage,
      .teamUpgradePage {
        flex-direction: column;

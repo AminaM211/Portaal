@@ -20,7 +20,7 @@
 .childProfileCardLarge {
   background: #FAF5EE;
   border-radius: 4px;
-  padding: 32px 40px 0;
+  padding: 32px 40px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,6 +30,7 @@
   width: 100%;
   box-shadow: 0 4px 0px #E1DBD3;
   position: relative;
+  overflow: visible;
 }
 
   .full {
@@ -39,6 +40,33 @@
 .childProfileCardHeader {
   left: 40px;
   position: absolute;
+}
+
+/* Header row (back + stats) */
+.childProfileHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.childBackBtn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+/* Ensure title inside card is left-aligned */
+.childProfileCardHeader {
+  position: static;
+  left: auto;
+  padding-left: 0;
+  align-self: flex-start;
+  text-align: left;
 }
 
 .childProfileName {
@@ -59,13 +87,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
-  margin-top: 40px;
+  width: 220px;
+  margin-top: 28px !important;
+  overflow: visible;
+  z-index: 2;
 }
 
 .childProfileMascot img {
-  width: 260px;
+  width: 100%;
+  max-width: 220px;
+  height: auto;
   object-fit: cover;
+  display: block;
 }
 
 .childProfileAvatar {
@@ -145,8 +178,10 @@ color: #000000;
 
 .childTrophyCard {
   background: white;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
+  border: 1px solid #e7e6e2;
+    box-shadow: 0 4px 0px rgb(205, 200, 189);
+
+  border-radius: 4px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -168,14 +203,13 @@ color: #000000;
 }
 
 .childTrophyName {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
-  color: #000;
   margin: 0;
 }
 
 .childTrophyDesc {
-  font-size: 10px;
+  font-size: 14px;
   color: #999;
   margin: 0;
 }
@@ -190,7 +224,7 @@ color: #000000;
   background: white;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kineSidebar {
     display: none !important;
   }
@@ -314,17 +348,6 @@ color: #000000;
     padding: 40px 30px;
   }
 
-  .childProfileAvatar {
-    width: 180px;
-    height: 180px;
-    font-size: 80px;
-  }
-
-  .childProfileMascot {
-    width: 180px;
-    height: 180px;
-  }
-
   .childProfileName {
     font-size: 24px;
   }
@@ -363,17 +386,6 @@ color: #000000;
     padding: 24px 20px;
     gap: 24px;
     max-width: 100%;
-  }
-
-  .childProfileAvatar {
-    width: 160px;
-    height: 160px;
-    font-size: 64px;
-  }
-
-  .childProfileMascot {
-    width: 160px;
-    height: 160px;
   }
 
   .childProfileName {
@@ -418,21 +430,6 @@ color: #000000;
     padding: 20px 16px;
     gap: 20px;
     max-width: 100%;
-  }
-
-  .childProfileAvatar {
-    width: 120px;
-    height: 120px;
-    font-size: 48px;
-  }
-
-  .childProfileMascot {
-    width: 120px;
-    height: 120px;
-  }
-
-  .childProfileMascot img {
-    width: 120px;
   }
 
   .childProfileName {

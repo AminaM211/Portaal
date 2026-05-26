@@ -99,6 +99,7 @@
 .exercise-title {
   font-size: 32px;
   margin-top: 24px;
+  text-align: left;
 }
 
 .exercise-subtitle {
@@ -137,6 +138,11 @@
   border: 2px solid #2bb39b;
   box-shadow: 0 4px 0 #1e7a6a;
 }
+
+  .header {
+    justify-content: space-between;
+  }
+
 
 .tags-flex {
   display: flex;
@@ -342,6 +348,40 @@
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+/* Mobile: make the video/webcam take full available viewport space */
+@media (max-width: 640px) {
+  .page-container { padding: 0; }
+  .detail-container { padding: 0; }
+  .video-container {
+    aspect-ratio: auto;
+    height: calc(100vh - 72px);
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .mirror-stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  .webcam-view {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .canvas-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .active-shell { padding: 0 12px; }
 }
 
 .feedback-badge {
@@ -568,14 +608,18 @@
   }
 
   .page-container {
-    padding: 16px;
+    padding: 24px;
   }
 
-  .header {
+  /* .header {
     padding: 12px 0;
     gap: 12px;
     flex-wrap: wrap;
+  } */
+     .header {
+    justify-content: space-between;
   }
+
 
   .stats-container {
     width: 100%;
@@ -649,24 +693,19 @@
   }
 
   .success-container {
-    padding: 20px 0;
+    padding: 20px;
   }
 
   .stickynav {
     width: 100%;
-    padding: 20px 16px;
+    padding: 20px 16px !important;
+    margin: 0 24px !important;
   }
 }
 
 @media (max-width: 768px) {
   .page-container {
     padding: 24px 16px;
-  }
-
-  .header {
-    padding: 12px 0;
-    gap: 8px;
-    flex-wrap: wrap;
   }
 
   .stats-container {
@@ -690,8 +729,7 @@
   }
 
   .header {
-    padding: 8px 0;
-    gap: 8px;
+    justify-content: space-between !important;
   }
 
   .exercise-counter-value {
@@ -745,7 +783,7 @@
   }
 
   .primary-button {
-    width: 100%;
+    /* width: 100%; */
     padding: 10px 16px;
   }
 
@@ -856,7 +894,8 @@
 
   .stickynav {
     padding: 16px 12px;
-    width: 100%;
+    margin: 0 12px !important;
+    /* width: 100%; */
   }
 
   .days-container {
