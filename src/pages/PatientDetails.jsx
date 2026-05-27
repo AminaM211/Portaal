@@ -3,6 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import "../components/ExerciseCard.css";
+import ExerciseMediaThumb from "../components/ExerciseMediaThumb";
+import { getExerciseImageSrc, isVideoFileUrl } from "../utils/helpers";
 import "../assets/css/exercises.css";
 import "../assets/css/patient-details.css";
 import "../assets/css/kine-dashboard.css";
@@ -1278,14 +1280,20 @@ export default function PatientDetails() {
           </div>
         </section>
 
-        <button
-          type="button"
-          className="patientAddExerciseBtn"
-          onClick={() => navigate(`/patient/${id}/oefening-toevoegen`)}
-        >
-          Oefening toevoegen
-          <img src="/images/plus.svg" alt="" />
-        </button>
+        <div className="patientAddActionTabs exerciseTabs" aria-label="Toevoegen">
+          <button
+            type="button"
+            onClick={() => navigate(`/patient/${id}/oefening-toevoegen`)}
+          >
+            Oefening toevoegen
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`/patient/${id}/oefenschema-toevoegen`)}
+          >
+            Oefenschema toevoegen
+          </button>
+        </div>
 
         <section className="patientStatsSection">
           <div className="patientStatsHeader">
@@ -1555,8 +1563,8 @@ export default function PatientDetails() {
                           <p>Voltooid</p>
                         </div>
                       )}
-                      <img
-                        className="programExerciseThumb"
+                      <ExerciseMediaThumb
+                        className="programExerciseThumb programExerciseVideoThumb"
                         src={exercise.image}
                         alt={exercise.title}
                       />
@@ -1982,9 +1990,9 @@ export default function PatientDetails() {
                               className={`exerciseLibraryCard schemeSelectableCard ${isSelected ? "is-selected" : ""}`}
                               onClick={() => toggleExerciseSelection(exercise)}
                             >
-                              <img
+                              <ExerciseMediaThumb
                                 className="exerciseLibraryThumb"
-                                src={exercise.image_url || "/images/exercise-1.png"}
+                                src={exercise.image_url}
                                 alt={exercise.title}
                               />
 
@@ -2112,9 +2120,9 @@ export default function PatientDetails() {
                         {selectedExercises.map((exercise) => (
                           <div key={exercise.id} className="schemeAssignedCard">
                             <div className="exerciseLibraryCard">
-                              <img
+                              <ExerciseMediaThumb
                                 className="exerciseLibraryThumb"
-                                src={exercise.image_url || "/images/exercise-1.png"}
+                                src={exercise.image_url}
                                 alt={exercise.title}
                               />
 

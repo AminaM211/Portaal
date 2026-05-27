@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
+import ExerciseMediaThumb from "../components/ExerciseMediaThumb";
 import "../assets/css/exercises.css";
 import "../assets/css/patient-details.css";
 import "../assets/css/kine-dashboard.css";
@@ -386,9 +387,9 @@ export default function PatientExerciseAssignmentPage() {
                       className={`exerciseLibraryCard schemeSelectableCard ${isSelected ? "is-selected" : ""}`}
                       onClick={() => toggleExerciseSelection(exercise)}
                     >
-                      <img
-                        className="exerciseLibraryThumb"
-                        src={exercise.image_url || "/images/exercise-1.png"}
+                      <ExerciseMediaThumb
+                        className="exerciseLibraryThumb exerciseLibraryVideoThumb"
+                        src={exercise.image_url}
                         alt={exercise.title}
                       />
 
@@ -517,9 +518,9 @@ export default function PatientExerciseAssignmentPage() {
                 {selectedExercises.map((exercise) => (
                   <div key={exercise.id} className="schemeAssignedCard">
                     <div className="exerciseLibraryCard">
-                      <img
-                        className="exerciseLibraryThumb"
-                        src={exercise.image_url || "/images/exercise-1.png"}
+                      <ExerciseMediaThumb
+                        className="exerciseLibraryThumb exerciseLibraryVideoThumb"
+                        src={exercise.image_url}
                         alt={exercise.title}
                       />
 

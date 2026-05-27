@@ -2,17 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
-import { isVideoFileUrl, getExerciseImageSrc } from "../utils/helpers";
+import ExerciseMediaThumb from "../components/ExerciseMediaThumb";
+import { isVideoFileUrl } from "../utils/helpers";
 import "../components/ExerciseCard.css";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
-
-function getMediaSrc(value) {
-  if (!value) return "/images/exercise-1.png";
-  if (value.startsWith("http")) return value;
-  if (value.startsWith("/")) return value;
-  return `/images/${value}`;
-}
 
 function getCategoryClass(categoryName) {
   if (categoryName === "Mobiliteit") return "exerciseTag--yellow";
@@ -187,6 +181,20 @@ export default function ExercisesPage() {
     });
   }, [activeDataset, search, category, favoriteIds]);
 
+  function getSchemeExerciseCount(exerciseScheme) {
+    const parsed = (() => {
+      if (!exerciseScheme?.description) return null;
+      try {
+        return JSON.parse(exerciseScheme.description);
+      } catch {
+        return null;
+      }
+    })();
+
+    if (Array.isArray(parsed?.exercises)) return parsed.exercises.length;
+    return exerciseScheme.exercise_scheme_items?.length || 0;
+  }
+
   if (loading) {
     return (
       <div className="kineDash">
@@ -323,21 +331,11 @@ export default function ExercisesPage() {
                       />
                     </div>
 
-                    {isVideoFileUrl(exercise.image_url) ? (
-                      <video
-                        className="exerciseLibraryThumb exerciseLibraryVideoThumb"
-                        src={getMediaSrc(exercise.image_url)}
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
-                    ) : (
-                      <img
-                        className="exerciseLibraryThumb"
-                        src={getExerciseImageSrc(exercise.image_url)}
-                        alt={exercise.title}
-                      />
-                    )}
+                    <ExerciseMediaThumb
+                      className="exerciseLibraryThumb exerciseLibraryVideoThumb"
+                      src={exercise.image_url}
+                      alt={exercise.title}
+                    />
 
                     <div className="exerciseLibraryInfo">
                       <strong>{exercise.title}</strong>
@@ -431,22 +429,12 @@ export default function ExercisesPage() {
                       </div>
 
                       <div className="myExerciseImageWrap">
-                        {isVideoFileUrl(exercise.image_url) ? (
-                          <video
-                            src={getMediaSrc(exercise.image_url)}
-                            muted
-                            playsInline
-                            preload="metadata"
-                          />
-                        ) : (
-                          <img
-                            src={getExerciseImageSrc(exercise.image_url)}
-                            alt={exercise.title}
-                          />
-                        )}
-                        {isVideoFileUrl(exercise.image_url) && (
-                          <div className="myExercisePlayOverlay">▶</div>
-                        )}
+                        <ExerciseMediaThumb
+                          className="exerciseLibraryThumb exerciseLibraryVideoThumb"
+                          src={exercise.image_url}
+                          alt={exercise.title}
+                        />
+                        <div className="myExercisePlayOverlay">▶</div>
                       </div>
 
                       <div className="exerciseCardMetaRow">
@@ -513,20 +501,12 @@ export default function ExercisesPage() {
 
                     <div className="exerciseSchemeInner">
                       <strong>{exerciseScheme.title}</strong>
-                      {isVideoFileUrl(exerciseScheme.image_url) ? (
-                        <video
-                          src={getMediaSrc(exerciseScheme.image_url)}
-                          muted
-                          playsInline
-                          preload="metadata"
-                        />
-                      ) : (
-                        <img
-                          src={getExerciseImageSrc(exerciseScheme.image_url)}
-                          alt={exerciseScheme.title}
-                        />
-                      )}
-                      <p>{exerciseScheme.exercise_scheme_items?.length || 0} oefeningen</p>
+                      <ExerciseMediaThumb
+                        className="exerciseSchemeThumb"
+                        src={exerciseScheme.image_url}
+                        alt={exerciseScheme.title}
+                      />
+                      <p>{getSchemeExerciseCount(exerciseScheme)} oefeningen</p>
                     </div>
                   </button>
                 ))

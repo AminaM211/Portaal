@@ -5,6 +5,7 @@ import ParentSidebar from "../components/ParentSidebar";
 import UpcomingExercises from "../components/UpcomingExercises";
 import RecentExercises from "../components/RecentExercises";
 import { getCategoryClass, getDifficultyIcon, getExerciseImageSrc } from "../utils/helpers";
+import ExerciseMediaThumb from "../components/ExerciseMediaThumb";
 import "../assets/css/parent-dashboard.css";
 import "../components/ExerciseCard.css";
 
@@ -228,7 +229,7 @@ return (
                                     onClick={() => navigate(`/kinesist/oefeningen/${item.exercise?.id}`)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                <img src={getExerciseImageSrc(item.exercise?.image_url)} alt="" />
+                                <ExerciseMediaThumb src={item.exercise?.image_url} alt={item.exercise?.title || "Oefening"} />
                                     <div className="planningExInfo">
                                         <strong>{item.exercise?.title}</strong>
                                         <div className="parentUpcomingMeta">

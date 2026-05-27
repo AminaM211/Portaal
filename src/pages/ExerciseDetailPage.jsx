@@ -3,7 +3,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import ParentSidebar from "../components/ParentSidebar";
-import { isVideoFileUrl } from "../utils/helpers";
 import "../components/ExerciseCard.css";
 import "../assets/css/exercise-detail.css";
 import "../assets/css/kine-dashboard.css";
@@ -382,24 +381,12 @@ export default function ExerciseDetailPage() {
         {errorMessage && <p className="kineError">{errorMessage}</p>}
 
         <div className="exerciseVideoHero">
-          {isVideoFileUrl(exercise.image_url) ? (
-            (() => {
-              const src = exercise.image_url?.startsWith("http")
-                ? exercise.image_url
-                : `/images/${exercise.image_url}`;
-              return (
-                <video
-                  controls
-                  style={{ width: "100%", height: "auto", maxHeight: "500px" }}
-                  onError={() => setVideoError(true)}
-                >
-                  <source src={src} />
-                </video>
-              );
-            })()
-          ) : (
-            <img src={exercise.image_url || "/images/exercise-1.png"} alt={exercise.title} />
-          )}
+          <video
+            controls
+            style={{ width: "100%", height: "auto", maxHeight: "500px" }}
+            src={exercise.image_url?.startsWith("http") ? exercise.image_url : `/images/${exercise.image_url}`}
+            onError={() => setVideoError(true)}
+          />
         </div>
 
         {videoError && exercise.image_url && (

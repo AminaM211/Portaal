@@ -27,6 +27,7 @@ export default function ExerciseScreen() {
   const patientId = location.state?.patientId || null;
   const [markedComplete, setMarkedComplete] = useState(false);
   const [totalXPEarned, setTotalXPEarned] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const detailMediaSrc = (() => {
     const mediaUrl = exerciseData?.image_url;
@@ -128,10 +129,6 @@ export default function ExerciseScreen() {
   })();
 
   const isDefaultExercise = exercisePreset === "guided-sequence";
-  const isKinesistUploadedVideo = Boolean(
-    exerciseData?.created_by && isVideoFileUrl(exerciseData?.image_url)
-  );
-
   const guidedExercises = [
     {
       key: "jumping-jacks",
@@ -230,22 +227,20 @@ export default function ExerciseScreen() {
   
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const demoVideoRef = useRef(null);
   const poseRef = useRef(null);
   const cameraRef = useRef(null);
   const trackingActiveRef = useRef(false);
   const trackingReadyRef = useRef(false);
   const [progress, setProgress] = useState(0);
-  const [videoDurationSeconds, setVideoDurationSeconds] = useState(null);
 
   const configuredDurationSeconds = Math.max(1, (exerciseData.duration_minutes || 5) * 60);
-  const activeDurationSeconds =
-    isKinesistUploadedVideo && videoDurationSeconds
-      ? videoDurationSeconds
-      : configuredDurationSeconds;
+  const activeDurationSeconds = configuredDurationSeconds;
+  const hasDemoVideo = isVideoFileUrl(exerciseData?.image_url);
+  const activeInstruction = currentExercise?.instruction || exerciseData.description || "Volg de oefening rustig.";
   
   // Timer gebaseerd op database duration
-  const [timeLeft, setTimeLeft] = useState((exerciseData.duration_minutes || 5) * 60);
-  const [isPaused, setIsPaused] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(configuredDurationSeconds);
 
   // Timer logica (gaat na 0 seconden automatisch naar 'success')
   useEffect(() => {
@@ -256,33 +251,36 @@ export default function ExerciseScreen() {
   }, [step, isPaused, timeLeft]);
 
   useEffect(() => {
+    const demoVideo = demoVideoRef.current;
+    if (!demoVideo) return;
+
+    if (isPaused) {
+      demoVideo.pause();
+      return;
+    }
+
+    if (step === "active" && hasDemoVideo) {
+      demoVideo.play().catch(() => {});
+    }
+  }, [isPaused, step, hasDemoVideo]);
+
+  useEffect(() => {
+    trackingActiveRef.current = step === "active" && !isPaused;
+  }, [step, isPaused]);
+
+  useEffect(() => {
     setTimeLeft(activeDurationSeconds);
   }, [activeDurationSeconds, currentExerciseIndex]);
 
   useEffect(() => {
-    if (step !== "active" || timeLeft > 0) return;
-    setProgress(100);
-  }, [step, timeLeft]);
-
-  useEffect(() => {
-    if (step !== "active" || !isKinesistUploadedVideo) return;
-
-    const totalSeconds = activeDurationSeconds;
-    const elapsedSeconds = Math.max(0, totalSeconds - timeLeft);
-    const timerProgress = Math.min(100, (elapsedSeconds / totalSeconds) * 100);
-    setProgress(timerProgress);
-  }, [step, isKinesistUploadedVideo, timeLeft, activeDurationSeconds]);
+    if (step !== "active" || timeLeft > 0 || progress >= 100) return;
+    setFeedback("info", "Tijd op", "Probeer opnieuw en maak de beweging echt duidelijk.");
+  }, [step, timeLeft, progress]);
 
   useEffect(() => {
     if (step !== "active") return;
     setIsPaused(false);
   }, [step, currentExerciseIndex]);
-
-  useEffect(() => {
-    if (!isKinesistUploadedVideo) {
-      setVideoDurationSeconds(null);
-    }
-  }, [isKinesistUploadedVideo, exerciseData.id]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -373,10 +371,6 @@ export default function ExerciseScreen() {
   const getExerciseProgressLabel = () => {
     if (!currentExercise) return "";
 
-    if (isKinesistUploadedVideo) {
-      return `${Math.max(0, Math.ceil(timeLeft))}`;
-    }
-
     if (currentExercise.mode === "hold") {
       return `${Math.max(0, Math.ceil((currentExercise.target || 0) * (1 - progress / 100)))}`; 
     }
@@ -446,14 +440,14 @@ export default function ExerciseScreen() {
 
     setFeedback(
       'info',
-      isKinesistUploadedVideo ? 'Kijk en doe mee' : 'Klaar?',
-      isKinesistUploadedVideo
-        ? 'Goed bezig! Kijk naar de video en doe rustig mee tot de timer op is.'
+      hasDemoVideo ? 'Kijk en doe mee' : 'Klaar?',
+      hasDemoVideo
+        ? 'Kijk naar het voorbeeld en vergelijk tegelijk met je eigen beweging.'
         : currentExercise.mode === 'hold'
         ? 'Kijk naar jezelf en houd je lichaam rustig recht.'
         : 'Kijk naar jezelf en doe de beweging rustig na.'
     );
-  }, [step, currentExerciseIndex, isKinesistUploadedVideo]);
+  }, [step, currentExerciseIndex, hasDemoVideo, activeInstruction]);
 
   function checkMovement(landmarks) {
     if (!currentExercise) return;
@@ -475,13 +469,24 @@ export default function ExerciseScreen() {
 
     if (currentExercise.key === "jumping-jacks") {
       if (!leftAnkle || !rightAnkle || !leftWrist || !rightWrist) return;
+      if (!landmarks[0]) return;
+
+      const visibleEnough = [leftAnkle, rightAnkle, leftWrist, rightWrist, leftShoulder, rightShoulder].every(
+        (landmark) => (landmark?.visibility ?? 0) >= 0.55
+      );
+
+      if (!visibleEnough) {
+        setFeedback("info", "Kom helemaal in beeld", "Ik moet je armen en voeten goed kunnen zien.");
+        return;
+      }
 
       const shoulderWidth = Math.abs(leftShoulder.x - rightShoulder.x);
       const ankleWidth = Math.abs(leftAnkle.x - rightAnkle.x);
-      const handsUp = leftWrist.y < leftShoulder.y && rightWrist.y < rightShoulder.y;
+      const wristsHigh = leftWrist.y < landmarks[0].y - 0.02 && rightWrist.y < landmarks[0].y - 0.02;
+      const wristsDown = leftWrist.y > leftShoulder.y + 0.08 && rightWrist.y > rightShoulder.y + 0.08;
 
-      const openPose = ankleWidth > shoulderWidth * 1.5 && handsUp;
-      const closePose = ankleWidth < shoulderWidth * 1.15;
+      const openPose = ankleWidth > shoulderWidth * 1.8 && wristsHigh;
+      const closePose = ankleWidth < shoulderWidth * 1.1 && wristsDown;
 
       if (openPose && motionRef.current.jjPhase === "closed") {
         motionRef.current.jjPhase = "open";
@@ -492,6 +497,8 @@ export default function ExerciseScreen() {
         setFeedback("good", "Super!", "Goed gedaan. Sluit rustig weer en doe nog eentje.");
       } else if (motionRef.current.jjPhase === "closed") {
         setFeedback("info", "Probeer het zo", "Spring open met benen en armen tegelijk.");
+      } else {
+        setFeedback("info", "Volg de beweging", "Maak eerst een duidelijke sprong open en kom dan weer dicht.");
       }
       return;
     }
@@ -697,9 +704,7 @@ export default function ExerciseScreen() {
 
   // MediaPipe AI Logica
   useEffect(() => {
-    trackingActiveRef.current = step === 'active' && !isKinesistUploadedVideo;
-
-    if (step !== 'active' || isKinesistUploadedVideo) return undefined;
+    if (step !== 'active') return undefined;
 
     let cancelled = false;
 
@@ -759,7 +764,7 @@ export default function ExerciseScreen() {
     return () => {
       cancelled = true;
     };
-  }, [step, isKinesistUploadedVideo]);
+  }, [step]);
 
   useEffect(() => {
     return () => {
@@ -913,6 +918,9 @@ export default function ExerciseScreen() {
                 </div>
                 <span>{exerciseData.stance || "Staand"}</span>
               </div>
+              <button onClick={() => setStep('active')} className="primary-button">
+                  Start oefening
+                </button>
             </div>
           </div>
         </div>
@@ -921,80 +929,87 @@ export default function ExerciseScreen() {
       {/* STAP 2: ACTIVE SCHERM */}
       {step === 'active' && (
         <div className="active-shell">
-              {/* <div className="active-body">
-              <div className="active-copy">
+          <div className="active-topbar">
+            <div className="active-topbarCopy">
+              <p className="active-kicker">{getStepLabel()}</p>
+              <h1 className="active-shellTitle">{currentExercise?.title}</h1>
+            </div>
+
+            <div className="active-step-pill">
+              Stap {currentExerciseIndex + 1} van {exercisePlan.length}
+            </div>
+          </div>
+
+          <div className="active-card active-card--coach">
+            <div className="active-liveColumn">
+              <div className="video-container video-container--coach">
+                <div className={`feedback-badge feedback-badge--${liveFeedback.tone}`}>
+                  <span>{liveFeedback.title}</span>
+                  <p>{liveFeedback.message}</p>
+                </div>
+
+                <div className="active-progress-badge">
+                  <div className="progress-ring" style={{ ["--progress"]: `${getCircularProgress()}%` }}>
+                    <div className="progress-ring-inner">
+                      <strong>{getExerciseProgressLabel()}</strong>
+                      <span>{currentExercise?.mode === "hold" ? "seconden" : "herhalingen"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mirror-stage">
+                  <Webcam
+                    ref={webcamRef}
+                    className="webcam-view mirror-view"
+                    videoConstraints={{
+                      facingMode: { ideal: "user" },
+                      width: { ideal: 1280 },
+                      height: { ideal: 720 },
+                    }}
+                  />
+                  <canvas ref={canvasRef} width={1280} height={720} className="canvas-overlay mirror-view" />
+                </div>
+              </div>
+            </div>
+
+            <aside className="active-coachPanel">
+              <div className="active-demoCard">
+                <span className="active-demoLabel">Voorbeeld</span>
+                <div className="active-demoMedia">
+                  {hasDemoVideo ? (
+                    <video
+                      src={detailMediaSrc}
+                      ref={demoVideoRef}
+                      className="active-demoVideo"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      controls={false}
+                    />
+                  ) : (
+                    <img src={getExerciseImageSrc(exerciseData?.image_url)} alt={exerciseData.title || "Oefening"} className="active-demoImage" />
+                  )}
+                </div>
+              </div>
+
+              {/* <div className="active-coachCopy">
                 <p className="active-kicker">{getStepLabel()}</p>
                 <h1 className="active-title">{currentExercise?.title}</h1>
-                <p className="active-description">{currentExercise?.instruction}</p>
+                <p className="active-description">{activeInstruction}</p>
                 <div className="active-meta-row">
                   <span className="active-meta-chip">{exerciseData.category || "Mobiliteit"}</span>
                   <span className="active-meta-chip">{exerciseData.difficulty || "Makkelijk"}</span>
                   <span className="active-meta-chip">{exerciseData.duration_minutes || 5} min</span>
                 </div>
-              </div>
+              </div> */}
 
+              <div className="active-actionRow">
                 <button className="pause-button pause-button--wide" onClick={() => setIsPaused(!isPaused)}>
                   {isPaused ? "Doorgaan" : "Pauze"}
                 </button>
-            </div> */}
-          <div className="active-card">
-            
-            <div className="video-container">
-              <div className={`feedback-badge feedback-badge--${liveFeedback.tone}`}>
-                <span>{liveFeedback.title}</span>
-                <p>{liveFeedback.message}</p>
               </div>
-
-              <div className="active-progress-badge">
-                <div className="progress-ring" style={{ ["--progress"]: `${getCircularProgress()}%` }}>
-                  <div className="progress-ring-inner">
-                    <strong>{getExerciseProgressLabel()}</strong>
-                    <span>{isKinesistUploadedVideo || currentExercise?.mode === "hold" ? "seconden" : "herhalingen"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mirror-stage">
-                {isKinesistUploadedVideo ? (
-                  <video
-                    src={detailMediaSrc}
-                    className="webcam-view"
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    onPlay={() => setIsPaused(false)}
-                    onPause={() => setIsPaused(true)}
-                    onLoadedMetadata={(e) => {
-                      const duration = e.currentTarget.duration;
-                      if (!Number.isFinite(duration) || duration <= 0) return;
-                      const roundedDuration = Math.max(1, Math.ceil(duration));
-                      setVideoDurationSeconds(roundedDuration);
-                      setTimeLeft((prev) => {
-                        if (step !== "active") return roundedDuration;
-                        return Math.min(prev, roundedDuration);
-                      });
-                    }}
-                  />
-                ) : (
-                  <>
-                    <Webcam
-                      ref={webcamRef}
-                      className="webcam-view mirror-view"
-                      videoConstraints={{
-                        facingMode: { ideal: "user" },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
-                      }}
-                    />
-                    <canvas ref={canvasRef} width={1280} height={720} className="canvas-overlay mirror-view" />
-                  </>
-                )}
-              </div>
-
-              {/* video-hint-strip removed for 'active' step: no title, tags or stats shown during active exercise */}
-            </div>
+            </aside>
           </div>
         </div>      
       )}

@@ -186,6 +186,15 @@
   gap: 8px;
 }
 
+.patientAddActionTabs {
+  margin-top: 16px;
+  max-width: 470px;
+}
+
+.patientAddActionTabs button {
+  white-space: nowrap;
+}
+
 .patientStatsSection {
   margin-top: 44px;
   max-width: 1000px;

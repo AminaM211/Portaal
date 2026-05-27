@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
 import "../components/ExerciseCard.css";
+import ExerciseMediaThumb from "../components/ExerciseMediaThumb";
 import "../assets/css/exercises.css";
 import "../assets/css/kine-dashboard.css";
 
@@ -156,9 +157,19 @@ export default function CreateExerciseSchemePage() {
       const metadata = JSON.stringify({
         repeat_type: repeat,
         apply_to_all: applyToAll,
+        exercises: selectedExercises.map((exercise, index) => ({
+          id: exercise.id,
+          title: exercise.title,
+          category: exercise.category,
+          difficulty: exercise.difficulty,
+          duration_minutes: exercise.duration_minutes,
+          repetitions: exercise.repetitions,
+          image_url: exercise.image_url,
+          sort_order: index,
+        })),
       });
 
-      const { data: createdScheme, error: schemeError } = await supabase
+      const { error: schemeError } = await supabase
         .from("exercise_schemes")
         .insert({
           title: trimmedTitle,
@@ -166,22 +177,9 @@ export default function CreateExerciseSchemePage() {
           image_url: schemeImage,
           created_by: userId,
         })
-        .select("id")
-        .single();
+        ;
 
       if (schemeError) throw schemeError;
-
-      const items = selectedExercises.map((exercise, index) => ({
-        exercise_scheme_id: createdScheme.id,
-        exercise_id: exercise.id,
-        sort_order: index,
-      }));
-
-      const { error: itemsError } = await supabase
-        .from("exercise_scheme_items")
-        .insert(items);
-
-      if (itemsError) throw itemsError;
 
       navigate("/kinesist/oefeningen");
     } catch (error) {
@@ -324,9 +322,9 @@ export default function CreateExerciseSchemePage() {
                       }`}
                       onClick={() => toggleExercise(exercise)}
                     >
-                      <img
+                      <ExerciseMediaThumb
                         className="exerciseLibraryThumb"
-                        src={exercise.image_url || "/images/exercise-1.png"}
+                        src={exercise.image_url}
                         alt={exercise.title}
                       />
 
@@ -447,9 +445,9 @@ export default function CreateExerciseSchemePage() {
                 {selectedExercises.map((exercise) => (
                   <div key={exercise.id} className="schemeAssignedCard">
                     <div className="exerciseLibraryCard">
-                      <img
+                      <ExerciseMediaThumb
                         className="exerciseLibraryThumb"
-                        src={exercise.image_url || "/images/exercise-1.png"}
+                        src={exercise.image_url}
                         alt={exercise.title}
                       />
 

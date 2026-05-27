@@ -3,8 +3,8 @@ import {
   formatDate,
   getCategoryClass,
   getDifficultyIcon,
-  getExerciseImageSrc,
 } from "../utils/helpers";
+import ExerciseMediaThumb from "./ExerciseMediaThumb";
 import "./ExerciseCard.css";
 
 export default function ExerciseCard({ item, todayKey, onClick }) {
@@ -15,8 +15,8 @@ export default function ExerciseCard({ item, todayKey, onClick }) {
       className="parentUpcomingCard"
       onClick={onClick}
     >
-      <img
-        src={getExerciseImageSrc(item.exercise?.image_url)}
+      <ExerciseMediaThumb
+        src={item.exercise?.image_url}
         alt={item.exercise?.title || "Oefening"}
       />
       <div className="parentUpcomingInfo">
