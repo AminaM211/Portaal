@@ -297,16 +297,21 @@
 
 .exerciseSchemesGrid {
   max-width: 960px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
+  gap: 20px;
   width: 100%;
+}
+
+.patientBack {
+  margin: 0 !important;
 }
 
 .exerciseSchemeCard {
   position: relative;
   width: 100%;
-  min-height: 320px;
+  max-width: 280px;
+  min-height: 0;
   padding: 0;
   border: none;
   background: transparent;
@@ -338,32 +343,36 @@
   border-radius: 12px;
   background: #fff;
   padding: 24px;
-  min-height: 320px;
+  min-height: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .exerciseSchemeInner strong {
   display: block;
-  margin-bottom: 18px;
+  margin-bottom: 0;
   color: #111827;
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.25;
 }
 
-.exerciseSchemeInner img {
+.exerciseSchemeThumb {
   width: 100%;
-  height: 158px;
+  height: 164px;
   object-fit: cover;
   border-radius: 8px;
   display: block;
-  margin-bottom: 14px;
+  background: #eef2f7;
 }
 
 .exerciseSchemeInner p {
   margin: 0;
   color: #4b5563;
   font-size: 1rem;
+  margin-top: auto;
 }
 
 .exerciseEmptyState {
@@ -439,7 +448,6 @@
 
   .exerciseSchemeCard {
     width: 100%;
-    max-width: 300px;
   }
 }
 

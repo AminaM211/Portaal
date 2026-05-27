@@ -487,7 +487,7 @@ export default function ChildScreen() {
                                     <h4 className="exerciseTitle">{ex.exercises?.title || `Oefening ${idx + 1}`}</h4>
                                     <div className="exerciseTags">
                                       <span className="exerciseMetaTag">
-                                        <img src="/images/star-outline.svg" alt="XP" /> 20 XP
+                                        <img src="/images/star-outline.svg" alt="XP" /> {ex.exercises?.xp_reward || 20} XP
                                       </span>
                                       <span className="exerciseMetaTag">
                                         {/* Haal de duur op (optioneel, of laat de hardcoded 5 min staan) */}

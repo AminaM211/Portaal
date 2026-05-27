@@ -324,7 +324,7 @@ export default function CreateExerciseSchemePage() {
                     >
                       <ExerciseMediaThumb
                         className="exerciseLibraryThumb"
-                        src={exercise.image_url}
+                        src={exercise.image_url || exercise.thumbnail_url || exercise.media_url}
                         alt={exercise.title}
                       />
 

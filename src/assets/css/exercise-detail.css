@@ -13,7 +13,7 @@
   .exerciseDetailTopbar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center !important;
     gap: 20px;
     margin-bottom: 34px;
     max-width: 720px;
@@ -92,7 +92,7 @@
     font-family: "Nunito", sans-serif;
     font-size: 28px;
     line-height: 34px;
-    font-weight: 800;
+    font-weight: 700;
     color: #000000;
   }
   
@@ -107,7 +107,7 @@
     font-family: "Nunito", sans-serif;
     font-size: 18px;
     line-height: 24px;
-    font-weight: 800;
+    font-weight: 600;
     color: #000000;
   }
   
@@ -167,6 +167,162 @@
     font-weight: 700;
     color: #000000;
   }
+
+    .exerciseSchemeDetailMain {
+      max-width: 760px;
+    }
+
+    .exerciseSchemeHero {
+      height: 420px;
+      border-radius: 4px;
+    }
+
+    .exerciseSchemeHero img,
+    .exerciseSchemeHero video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .exerciseSchemeHeader {
+      align-items: flex-end;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .exerciseSchemeHeader p {
+      margin: 10px 0 0;
+      max-width: 560px;
+      color: #4b5563;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .exerciseSchemeDurationPill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      color: #111827;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .exerciseSchemeDurationPill img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .exerciseSchemeSummaryRow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .exerciseSchemeSummaryRow strong {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .schemeDeleteBtn,
+    .schemeEditBtn {
+      border: 1.5px solid #2bb39b;
+      background: #fff;
+      color: #2bb39b;
+      border-radius: 4px;
+      padding: 8px 16px;
+      min-height: 36px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .schemeDeleteBtn:hover,
+    .schemeEditBtn:hover {
+      background: rgba(43, 179, 155, 0.06);
+    }
+
+    .exerciseSchemeMetaStrip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 12px;
+      align-items: center;
+    }
+
+    .exerciseSchemeMetaText {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .exerciseSchemeExerciseList {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 360px;
+    }
+
+    .schemeExerciseCard {
+      border: 1px solid #dce2e8;
+      border-radius: 6px;
+      background: #fff;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .schemeExerciseThumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+
+    .schemeExerciseInfo {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .schemeExerciseInfo strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #111827;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .schemeExerciseBadgesRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .schemeExerciseDifficulty {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    .schemeExerciseInfo p {
+      margin: 0;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    .exerciseSchemeIntroText {
+      margin: 0;
+    }
   
   @media (max-width: 960px) {
     .exerciseDetailMain {
@@ -210,6 +366,20 @@
       max-width: 100%;
       min-width: 0;
     }
+
+    .exerciseSchemeHeader {
+      align-items: flex-start;
+    }
+
+    .exerciseSchemeHero {
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+
+    .exerciseSchemeSummaryRow {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 
   .modalOverlay {
@@ -242,7 +412,7 @@
   .editModalHeader h2 {
     margin: 0;
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 400 !important;
   }
   
   .modalCloseBtn {
@@ -415,6 +585,12 @@
   .exerciseIconBtn {
     width: 38px;
     height: 38px;
+  }
+
+  .schemeDeleteBtn,
+  .schemeEditBtn {
+    width: 100%;
+    justify-content: center;
   }
 
   .exerciseDetailHeader h1 {

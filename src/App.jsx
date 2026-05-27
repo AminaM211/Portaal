@@ -11,6 +11,7 @@ import InstellingenPage from "./pages/InstellingenPage";
 import TeamUpgradeFlow from "./pages/TeamUpgradeFlow";
 import ExercisesPage from "./pages/ExercisesPage";
 import ExerciseDetailPage from "./pages/ExerciseDetailPage";
+import ExerciseSchemeDetailPage from "./pages/ExerciseSchemeDetailPage";
 import CreateExerciseSchemePage from "./pages/CreateExerciseSchemePage";
 import CreateExercisePage from "./pages/CreateExercisePage";
 import ParentActivationFlow from "./pages/ParentActivationFlow";
@@ -71,6 +72,10 @@ export default function App() {
       <Route
         path="/kinesist/oefeningen/:id"
         element={<ExerciseDetailPage />}
+      />
+      <Route
+        path="/kinesist/oefeningen/schema/:id"
+        element={<ExerciseSchemeDetailPage />}
       />
       <Route path="/kinesist/instellingen/team-upgrade" element={<TeamUpgradeFlow />} />
 

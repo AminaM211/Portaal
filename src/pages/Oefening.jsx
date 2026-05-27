@@ -120,6 +120,7 @@ export default function ExerciseScreen() {
   const exercisePreset = (() => {
     if (/jumping jacks?|sterrensprong|spring open/.test(normalizedExerciseText)) return "jumping-jacks";
     if (/knie|high knees?|afwisselend.*lucht|ter plaatse.*knie/.test(normalizedExerciseText)) return "high-knees";
+    if (/stretch|sterren|naar de sterren|boven je ogen|ellebogen.*ogen/.test(normalizedExerciseText)) return "stretch-stars";
     if (/plank|planken|ellebogen.*voeten|steun op.*ellebogen/.test(normalizedExerciseText)) return "plank";
     if (/armheffingen|arm heffen|arm til|schouders omhoog|shoulder/.test(normalizedExerciseText)) return "shoulder-raises";
     if (/heuplift|heupliften|glute|heupen omhoog|brug|heupbrug/.test(normalizedExerciseText)) return "glute-bridges";
@@ -145,6 +146,14 @@ export default function ExerciseScreen() {
         "Loop ter plaatse en hef je knieën om de beurt richting heuphoogte. Wissel links en rechts duidelijk af.",
       mode: "reps",
       target: 20,
+    },
+    {
+      key: "stretch-stars",
+      title: "Stretch naar de sterren",
+      instruction:
+        "Breng je ellebogen omhoog tot boven je ogen, laat ze terug zakken en herhaal. Elke keer dat je opnieuw boven je ogen komt telt als 1 herhaling.",
+      mode: "reps",
+      target: 10,
     },
     {
       key: "plank",
@@ -188,6 +197,8 @@ export default function ExerciseScreen() {
             ? "jumping-jacks"
             : exercisePreset === "high-knees"
             ? "high-knees"
+            : exercisePreset === "stretch-stars"
+            ? "stretch-stars"
             : exercisePreset === "plank"
             ? "plank"
             : "arm-raise",
@@ -197,6 +208,8 @@ export default function ExerciseScreen() {
               ? "Spring open met benen wijd en breng tegelijk je armen boven je hoofd. Spring daarna terug naar gesloten houding."
               : exercisePreset === "high-knees"
               ? "Loop ter plaatse en hef je knieën om de beurt richting heuphoogte. Wissel links en rechts duidelijk af."
+              : exercisePreset === "stretch-stars"
+              ? "Breng je ellebogen omhoog tot boven je ogen, laat ze terug zakken en herhaal. Elke keer dat je opnieuw boven je ogen komt telt als 1 herhaling."
               : exercisePreset === "plank"
               ? "Steun op je ellebogen en tenen, houd je lichaam in een rechte lijn van schouders tot enkels."
               : exerciseData.description ||
@@ -211,6 +224,7 @@ export default function ExerciseScreen() {
   const motionRef = useRef({
     jjPhase: "closed",
     highKneePhase: "neutral",
+    stretchStarsPhase: "below",
     plankHoldSeconds: 0,
     plankLastAwardedSecond: 0,
     lastTimestamp: null,
@@ -301,6 +315,7 @@ export default function ExerciseScreen() {
         motionRef.current = {
           jjPhase: "closed",
           highKneePhase: "neutral",
+          stretchStarsPhase: "below",
           plankHoldSeconds: 0,
           plankLastAwardedSecond: 0,
           lastTimestamp: null,
@@ -540,6 +555,37 @@ export default function ExerciseScreen() {
       }
 
       setFeedback("info", "Til je knie op", "Breng één knie omhoog tot ongeveer heuphoogte.");
+      return;
+    }
+
+    if (currentExercise.key === "stretch-stars") {
+      if (!leftElbow || !rightElbow) return;
+
+      const leftEye = landmarks[2];
+      const rightEye = landmarks[5];
+      const eyeLine = [leftEye, rightEye].filter(Boolean).reduce((highest, eye) => Math.min(highest, eye.y), 1);
+      const elbowsAboveEyes = leftElbow.y < eyeLine - 0.02 && rightElbow.y < eyeLine - 0.02;
+      const elbowsBelowEyes = leftElbow.y > eyeLine + 0.03 && rightElbow.y > eyeLine + 0.03;
+
+      if (elbowsBelowEyes) {
+        motionRef.current.stretchStarsPhase = "below";
+        setFeedback("info", "Armen omlaag", "Laat je ellebogen weer zakken tot onder je ogen en breng ze daarna opnieuw omhoog.");
+        return;
+      }
+
+      if (elbowsAboveEyes && motionRef.current.stretchStarsPhase === "below") {
+        motionRef.current.stretchStarsPhase = "above";
+        updateRepProgress(1);
+        setFeedback("good", "Goed zo!", "Je ellebogen zijn boven je ogen. Laat ze nu terug zakken voor de volgende herhaling.");
+        return;
+      }
+
+      if (!elbowsAboveEyes && motionRef.current.stretchStarsPhase === "above") {
+        setFeedback("info", "Nog even terug", "Zak eerst omlaag en kom daarna weer boven je ogen.");
+        return;
+      }
+
+      setFeedback("info", "Til je ellebogen", "Breng je ellebogen omhoog tot boven je ogen.");
       return;
     }
 
