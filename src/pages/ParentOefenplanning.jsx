@@ -229,7 +229,11 @@ return (
                                     onClick={() => navigate(`/kinesist/oefeningen/${item.exercise?.id}`)}
                                     style={{ cursor: "pointer" }}
                                 >
-                                <ExerciseMediaThumb src={item.exercise?.image_url} alt={item.exercise?.title || "Oefening"} />
+                                <ExerciseMediaThumb
+                                  src={item.exercise?.image_url || item.exercise?.thumbnail_url || item.exercise?.media_url}
+                                  alt={item.exercise?.title || "Oefening"}
+                                  className="planningExerciseThumb"
+                                />
                                     <div className="planningExInfo">
                                         <strong>{item.exercise?.title}</strong>
                                         <div className="parentUpcomingMeta">

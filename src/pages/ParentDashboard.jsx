@@ -395,7 +395,7 @@ if (loading) {
               </div>
             </div>
 
-            <div className="parentCategoryCard">
+            {/* <div className="parentCategoryCard">
               <div className="parentCategoryHeader">
                 <h2>Voortgang per categorie</h2>
                 <span>Laatste 30 dagen</span>
@@ -426,7 +426,7 @@ if (loading) {
                   ))
                 )}
               </div>
-            </div>
+            </div> */}
           </section>
 
           <aside className="parentDashboardRight">

@@ -18,6 +18,7 @@ export default function ExerciseCard({ item, todayKey, onClick }) {
       <ExerciseMediaThumb
         src={item.exercise?.image_url || item.exercise?.thumbnail_url || item.exercise?.media_url}
         alt={item.exercise?.title || "Oefening"}
+        className="parentUpcomingThumb"
       />
       <div className="parentUpcomingInfo">
         <strong>{item.exercise?.title || "Oefening"}</strong>

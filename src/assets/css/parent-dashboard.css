@@ -813,6 +813,15 @@
   position: relative;
 }
 
+.planningExerciseThumb {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  display: block;
+}
+
 .flex-two {
   display: flex;
   flex-direction: row;
@@ -841,13 +850,6 @@
 
 .planningExerciseCard.completed {
   border-color: #2DC07F;
-}
-
-.planningExerciseCard img {
-  width: 72px;
-  height: 72px;
-  border-radius: 8px;
-  object-fit: cover;
 }
 
 .planningExInfo {
