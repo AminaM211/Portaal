@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
@@ -10,6 +10,8 @@ export default function NewPatientFlow() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [profilePlan, setProfilePlan] = useState("starter");
+  const [patientCount, setPatientCount] = useState(0);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -19,6 +21,49 @@ export default function NewPatientFlow() {
   });
 
   const [activationCode, setActivationCode] = useState("");
+
+  const starterLimitReached = profilePlan !== "team" && patientCount >= 3;
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadAccessInfo() {
+      try {
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
+
+        if (authError || !user) return;
+
+        const [{ data: profileData }, { count }] = await Promise.all([
+          supabase
+            .from("profiles")
+            .select("plan")
+            .eq("id", user.id)
+            .maybeSingle(),
+          supabase
+            .from("patients")
+            .select("id", { count: "exact", head: true })
+            .eq("kinesist_id", user.id)
+            .eq("is_archived", false),
+        ]);
+
+        if (!mounted) return;
+
+        setProfilePlan(profileData?.plan || "starter");
+        setPatientCount(count || 0);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadAccessInfo();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function updateField(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -84,6 +129,11 @@ export default function NewPatientFlow() {
         return;
       }
 
+      if (starterLimitReached) {
+        setErrorMessage("Starter plan ondersteunt maximaal 3 patiënten. Upgrade eerst naar Team.");
+        return;
+      }
+
       const code = await generateUniqueActivationCode();
 
       const { error } = await supabase.from("patients").insert({
@@ -128,6 +178,12 @@ export default function NewPatientFlow() {
           <div className="flowContent">
             <h1>Nieuwe patiënt toevoegen</h1>
 
+            {starterLimitReached && (
+              <p className="kineError">
+                Je starter plan ondersteunt maximaal 3 patiënten. Je hebt er al {patientCount}.
+              </p>
+            )}
+
             <h3>Basisgegevens</h3>
 
             <label>
@@ -166,7 +222,7 @@ export default function NewPatientFlow() {
               />
             </label>
 
-            <button className="btn-primary" onClick={nextStep}>
+            <button className="btn-primary" onClick={nextStep} disabled={starterLimitReached}>
               Volgende
             </button>
           </div>

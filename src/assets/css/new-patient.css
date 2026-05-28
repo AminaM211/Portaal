@@ -34,7 +34,7 @@
   .stepBar {
     display: flex;
     gap: 12px;
-    margin-bottom: 16px;
+    margin: 24px 0;
   }
   
   .step {

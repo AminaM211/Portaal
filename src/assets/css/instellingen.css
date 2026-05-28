@@ -5,7 +5,7 @@
    .teamUpgradePage {
      display: flex;
      gap: 16px;
-     padding: 48px 40px;
+     padding: 48px 40px 48px 0px;
      min-height: 100vh;
      box-sizing: border-box;
      max-width: 1400px;
@@ -15,7 +15,7 @@
    .InstellingenPage{
     display: flex;
     gap: 80px;
-    padding: 48px 32px;
+    padding: 48px 32px 48px 0px;
     min-height: 100vh;
     box-sizing: border-box;
    }
@@ -504,7 +504,7 @@
      border-radius: 4px;
      font-size: 16px;
      line-height: 1.45;
-     font-weight: 600;
+     font-weight: 400;
    }
    
    .kineError {
@@ -536,11 +536,15 @@
      .InstellingenPage {
        flex-direction: column;
      }
-   
+
      .instellingenMainBlock {
        max-width: 100%;
      }
    
+     h1, .teamUpgradeActions{ 
+      margin: 0 !important;
+      margin-bottom: 12px !important;
+     }
      .instellingenSideBlock {
        width: 100%;
        max-width: 420px;
@@ -549,6 +553,9 @@
      .teamUpgradeGrid {
        grid-template-columns: 1fr;
        max-width: 760px;
+     }
+     .teamUpgradeCheckbox, .teamUpgradeCard--small {
+      display: none;
      }
    }
    

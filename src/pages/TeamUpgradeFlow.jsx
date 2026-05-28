@@ -328,6 +328,13 @@ export default function TeamUpgradeFlow() {
         if (inviteError) throw inviteError;
       }
 
+        const { error: profileUpdateError } = await supabase
+          .from("profiles")
+          .update({ plan: "team" })
+          .eq("id", user.id);
+
+        if (profileUpdateError) throw profileUpdateError;
+
       navigate("/kinesist/instellingen");
         } catch (error) {
       console.error(error);

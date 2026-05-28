@@ -97,7 +97,7 @@
 }
 
 .kineDashMain {
-  padding: 48px 40px 48px 24px !important;
+  padding: 48px 40px 48px 0px !important;
 }
 
 .kineDashTop {
@@ -306,14 +306,17 @@
   background: #ffffff;
 }
 
-.kinePatientsHead,
-.kinePatientRow {
-  display: grid;
-  grid-template-columns: minmax(170px, 1.4fr) 140px minmax(290px, 1.7fr);
-  align-items: center;
+.kinePatientsHead div:first-child {
+  width: 140px;
+
 }
 
+.kinePatientRow,
 .kinePatientsHead {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   min-height: 54px;
   border-bottom: 1px solid #dddddd;
   padding: 0px 50px 0px 24px;

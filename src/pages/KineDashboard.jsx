@@ -106,7 +106,7 @@ export default function KineDashboard() {
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("id, full_name, role")
+        .select("id, full_name, role, plan")
         .eq("id", user.id)
         .single();
 
@@ -234,6 +234,16 @@ export default function KineDashboard() {
     }
   }
 
+  function handleAddPatientClick() {
+    if (starterLimitReached) {
+      setErrorMessage("Starter plan ondersteunt maximaal 3 patiënten. Upgrade naar Team om meer patiënten toe te voegen.");
+      return;
+    }
+
+    setErrorMessage("");
+    navigate("/kinesist/patient/new");
+  }
+
   const filteredPatients = useMemo(() => {
     const term = search.trim().toLowerCase();
 
@@ -249,6 +259,7 @@ export default function KineDashboard() {
   const patientCount = patients.length;
   const averageTherapy = patientCount > 0 ? "25%" : "0%";
   const complianceRate = patientCount > 0 ? "87%" : "0%";
+  const starterLimitReached = profile?.plan !== "team" && patientCount >= 3;
 
   if (loading) {
     return (
@@ -331,7 +342,7 @@ export default function KineDashboard() {
               <button
                 type="button"
                 className="btn-primary-small"
-                onClick={() => navigate("/kinesist/patient/new")}
+                onClick={handleAddPatientClick}
               >
                 Patiënt toevoegen
               </button>
@@ -356,7 +367,7 @@ export default function KineDashboard() {
                 <button
                 type="button"
                 className="btn-outline-small btn-smaller"
-                onClick={() => navigate("/kinesist/patient/new")}
+                onClick={handleAddPatientClick}
               >
                 Patiënt toevoegen
               </button>

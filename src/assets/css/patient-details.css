@@ -1,5 +1,5 @@
 .patientDetailsMain {
-  padding: 48px 40px 48px 24px;
+  padding: 48px 40px 48px 0px;
   background: #ffffff;
   min-height: 100vh;
   max-width: 1400px;
@@ -926,7 +926,7 @@
   color: #c94a43;
   border: 1px solid #ffd7d3;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .kineModalOverlay {
