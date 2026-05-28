@@ -4,7 +4,6 @@ import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
 import PatientExerciseAssignmentPage from "./pages/PatientExerciseAssignmentPage";
-import PatientSchemeAssignmentPage from "./pages/PatientSchemeAssignmentPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NewPatientFlow from "./pages/NewPatientFlow";
 import InstellingenPage from "./pages/InstellingenPage";
@@ -99,7 +98,7 @@ export default function App() {
         path="/patient/:id/oefenschema-toevoegen"
         element={
           <ProtectedRoute allowedRole="kinesist">
-            <PatientSchemeAssignmentPage />
+            <PatientExerciseAssignmentPage />
           </ProtectedRoute>
         }
       />

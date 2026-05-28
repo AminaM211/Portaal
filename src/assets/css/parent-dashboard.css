@@ -86,7 +86,7 @@
     flex-shrink: 0;
     color: #7aa9d8;
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
   }
   
   .parentChildAvatar img {
@@ -370,56 +370,32 @@
     color: black !important;
     font-size: 16px !important;
   }
+
+      .kineSidebar {
+      height: 100vh !important;
+    }
   
   @media (max-width: 1200px) {
-    .parentDashboardGrid {
-      grid-template-columns: 1fr;
-      gap: 24px;
+    .parentDashboardPage {
+      display: flex !important;
+      flex-direction: row !important;
     }
-  
     .parentDashboardRight {
-      max-width: 100%;
-      width: 100%;
+      display: none;
     }
 
-    .parentDashboardLeft,
-    .parentStatusBlock,
-    .parentProfileCard,
-    .parentCategoryCard {
-      width: 100%;
-      max-width: 100%;
+    .parentDashboardGrid {
+      display: block !important;
+      min-width: 480px ;
     }
+
   }
   
   @media (max-width: 768px) {
-    .parentDashboardMain {
-      padding: 20px;
-    }
-  
-    .parentKinesistRow {
-      flex-direction: column;
-    }
-  
-    .parentKinesistMeta {
-      align-items: flex-start;
-    }
-  
     .parentStatusGrid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
-
-    .planningGrid {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    /* .planningHeaderRow,
-    .planningCalendarTop {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    } */
 
     .planningCalendarCard {
       padding: 18px;
@@ -428,9 +404,7 @@
     .planningDateRange {
       flex-wrap: wrap;
     }
-  }
 
-  @media (max-width: 768px) {
     .kineSidebar {
       display: none !important;
     }
@@ -442,22 +416,13 @@
     .parentDashboardMain {
       padding: 20px;
     }
-  }
-
-  @media (max-width: 768px) {
-    .parentDashboardMain {
-      padding: 20px;
-    }
-
-    .parentDashboardPage {
-      grid-template-columns: 1fr;
-    }
 
     .parentDashboardGrid {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100%;
-      max-width: 100%;
+      min-width: 90vw !important;
+    }
+
+    .planningGrid {
+      min-width: 92vw !important;
     }
 
     .parentProfileCard,
@@ -474,22 +439,31 @@
     .planningCalendarCard {
       padding: 18px;
     }
-
-    .planningGrid {
-      display: flex !important;
-      flex-direction: column !important;
-
-    }
   }
 
   @media (max-width: 640px) {
     .parentDashboardMain {
-      padding: 12px;
+      padding: 0px !important;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
     }
 
+    .parentDashboardPage {
+      padding: 16px !important;
+    }
+
+    .planningGrid {
+      min-width: 92vw !important;
+    }
+        .parentKinesistRow {
+      flex-direction: column;
+    }
+  
+    .parentKinesistMeta {
+      align-items: flex-start;
+    }
+  
     .parentDashboardGrid {
-      display: flex !important;
-      flex-direction: column !important;
       gap: 16px;
       width: 100%;
       max-width: 100%;
@@ -499,6 +473,8 @@
     .parentCategoryCard {
       padding: 14px !important;
     }
+
+
 
     .parentChildAvatar {
       width: 52px;
@@ -525,7 +501,7 @@
 
     .parentStatusGrid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      justify-content: space-between;
     }
 
     .parentStatTop {
@@ -554,14 +530,9 @@
     }
 
     .planningCalendarCard {
-      padding: 12px;
+      padding-top: 12px !important;
+      padding-bottom: 6px !important;
     }
-
-    /* .planningCalendarTop {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    } */
 
     .planningCalendarTop h4 {
       font-size: 16px;
@@ -611,28 +582,13 @@
       right: 10px;
     }
 
-    /* .planningHeaderRow {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 16px;
-    } */
-
     .goToTodayBtn {
-      /* width: 100%; */
       padding: 8px 12px;
       font-size: 12px;
-    }
-
-    .planningGrid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
     }
   }
 
 
-  
 
 /* OEFENPLANNING PAGE */
 
@@ -704,7 +660,7 @@
   box-shadow: 0px 2px 0px #1E7A6A;
   border-radius: 4px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   color: #2BB39B;
   margin-top: 12px;
 }
@@ -773,7 +729,7 @@
   color: #FFF;
 }
 
-/* planningdaysell selected and today dan groene background*/
+
 .planningDayCell.selected.is-today .dayNumber {
   background: #2BB39B !important;
   color: #FFF;
@@ -784,16 +740,19 @@
   gap: 3px;
   margin-top: 4px;
   height: 6px;
+  margin-left: 6px;
 }
 
 .dayDots .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-radius: 100%;
+  margin-left: -8px;
 }
 
 .dot-green { background-color: #2DC07F; }
-.dot-white { background-color: #FFFFFF; } /* Optioneel: wit als hij in black circle valt, maar in design vallen ze onder de circle */
+.dot-white { background-color: #FFFFFF; } 
 
 /* Oefening Kaarten Lokaal */
 .planningExerciseList {
@@ -835,7 +794,7 @@
   border: none;
   border-radius: 4px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
   display: flex;
   color: black;
@@ -879,31 +838,4 @@
   position: absolute;
   top: 16px;
   right: 16px;
-}
-
-@media (max-width: 1200px) {
-  .parentDashboardGrid.planningGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
-  }
-
-  .parentPlanningLeft,
-  .parentDashboardRight {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .parentDashboardGrid.planningGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
-  }
-}
-
-@media (max-width: 640px) {
-  .parentDashboardGrid.planningGrid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-  }
 }

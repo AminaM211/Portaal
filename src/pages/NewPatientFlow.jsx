@@ -251,7 +251,7 @@ export default function NewPatientFlow() {
             </div>
 
             <button className="btn-primary" onClick={() => navigate("/kinesist/dashboard")}>
-              Terug naar dashboard
+              Terug
             </button>
           </div>
         )}

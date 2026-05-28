@@ -137,6 +137,7 @@ async function handleCreateParentAccount() {
 const { error: profileError } = await supabase.from("profiles").upsert({
   id: user.id,
   full_name: fullName.trim(),
+  email: user.email || email.trim(),
   role: "ouder", // Zorg dat het profiel als "ouder" gemarkeerd is
 });
 
@@ -223,7 +224,7 @@ if (profileError) throw profileError;
                 />
               ))}
 
-              <span className="activationDash">—</span>
+              {/* <span className="activationDash">—</span> */}
 
               {codeDigits.slice(3, 6).map((digit, index) => {
                 const realIndex = index + 3;
@@ -297,9 +298,7 @@ if (profileError) throw profileError;
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
                 />
                 <span>
-                  Ik ga akkoord met de <strong>gebruiksvoorwaarden</strong> en
-                  <br />
-                  <strong>privacy overeenkomsten.</strong>
+                  Ik ga akkoord met de gebruiksvoorwaarden en privacy overeenkomsten.
                 </span>
               </label>
 

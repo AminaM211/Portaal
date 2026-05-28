@@ -353,9 +353,9 @@ export default function CreateExerciseSchemePage() {
                         </p>
                       </div>
 
-                      <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                      <div className="schemeDotsBtn" tabIndex={-1} role="button">
                         <img src="/images/dots.svg" alt="" />
-                      </button>
+                      </div>
                     </button>
                   </div>
                 );
@@ -476,9 +476,9 @@ export default function CreateExerciseSchemePage() {
                         </p>
                       </div>
 
-                      <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                      <div className="schemeDotsBtn" tabIndex={-1} role="button">
                         <img src="/images/dots.svg" alt="" />
-                      </button>
+                      </div>
                     </div>
                   </div>
                 ))}

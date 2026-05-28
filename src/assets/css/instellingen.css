@@ -182,7 +182,7 @@
     font-family: "Nunito", sans-serif;
     font-size: 14px;
     line-height: 20px;
-    font-weight: 800;
+    font-weight: 700;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -331,7 +331,7 @@
    .teamAddMemberBtn,
    .teamRemoveMemberBtn {
     border-radius: 4px;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
     padding: 8px 24px;
     transition: all 0.18s ease;
@@ -351,7 +351,7 @@
    
    .teamRemoveMemberBtn {
      border-radius: 4px;
-     font-weight: 800;
+     font-weight: 700;
      cursor: pointer;
      padding: 8px 24px;
      transition: all 0.18s ease;
@@ -377,6 +377,10 @@
      gap: 6px;
      padding: 16px 0;
      border-bottom: 1px solid #ececec;
+   }
+
+   .instellingenSideBlock button-help {
+    color: black;
    }
    
    .teamReviewItem:first-of-type {
@@ -579,6 +583,11 @@
 
      .instellingenMainBlock {
        max-width: 100%;
+       order: 1 !important;
+     }
+
+     .instellingenSideBlock {
+      order: 2 !important;
      }
 
      .instellingenSideBlock {

@@ -62,13 +62,21 @@
 }
 
 .exerciseLibraryInfo strong {
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: Nunito, sans-serif;
 }
 
 .exerciseLibraryInfo {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.exerciseLibraryInfo p {
+  margin: 0;
+  color: #7C7C7C;
+  font-size: 14px;
 }
 
 .exerciseTag {

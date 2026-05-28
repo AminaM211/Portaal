@@ -22,7 +22,7 @@
   @font-face {
     font-family: "Cabinet Grotesk";
     src: url("/fonts/CabinetGrotesk-Extrabold.woff2") format("woff2");
-    font-weight: 800;
+    font-weight: 700;
     font-display: swap;
   }
 
@@ -57,6 +57,13 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
+    max-width: 1400px;
+  }
+
+  label, span, strong {
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    color: black;
   }
   
   a {
@@ -68,7 +75,7 @@
   button,
   .btn,
   .topnav__link {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
   }
   
   .page {
@@ -120,7 +127,7 @@
     border-radius: 4px;
     background: var(--brand);
     color: white;
-    font-weight: 800;
+    font-weight: 700;
     cursor: pointer;
   }
 
@@ -174,10 +181,9 @@
       padding: 24px 20px !important;
     }
 
-    .kineDashMain,
-    .parentDashboardMain {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
+    .kineDashMain {
+      padding-left: 20px;
+      padding-right: 20px;
     }
   }
 
@@ -206,7 +212,7 @@
       right: 12px;
       bottom: 12px;
       height: 76px;
-      border-radius: 14px;
+      border-radius: 4px;
       border: 1px solid #e7e7e7;
       background: #ffffff;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -224,7 +230,7 @@
       gap: 4px;
       min-width: 74px;
       padding: 6px 10px;
-      border-radius: 10px;
+      border-radius: 4px;
       color: #4b4b4b;
       text-decoration: none;
       font-family: "Cabinet Grotesk", sans-serif;
@@ -241,8 +247,8 @@
     }
 
     .mobileBottomNavLink.is-active {
-      background: #eaf8f4;
-      color: #17967f;
+      background: #f5f5f5;
+      color: #000000;
       font-weight: 700;
     }
 

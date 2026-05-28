@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import KineSidebar from "../components/KineSidebar";
@@ -495,7 +496,6 @@ export default function ExercisesPage() {
                     key={exerciseScheme.id}
                     type="button"
                     className="exerciseSchemeCard"
-                    onClick={() => navigate(`/kinesist/oefeningen/schema/${exerciseScheme.id}`)}
                   >
                     <div className="exerciseSchemeStack stack-1"></div>
                     <div className="exerciseSchemeStack stack-2"></div>

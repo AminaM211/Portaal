@@ -180,7 +180,6 @@ export default function ChildProfilePage() {
                 {[
                   { icon: "⭐", name: "7 dagen streak", desc: "Voltooi 7 dagen achtereen" },
                   { icon: "👆", name: "Eerste stap", desc: "Voer je eerste oefening uit" },
-                  { icon: "🏃", name: "Beweging!", desc: "Voltooi 20 oefeningen" },
                 ].map((trophy, idx) => (
                   <div key={idx} className="childTrophyCard">
                     <div className="childTrophyIcon">{trophy.icon}</div>

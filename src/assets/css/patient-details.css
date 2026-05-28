@@ -3,6 +3,7 @@
   background: #ffffff;
   min-height: 100vh;
   max-width: 1400px;
+  color: #000000;
 }
 
 
@@ -22,7 +23,7 @@
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -39,11 +40,34 @@
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  max-height: 40px;
+}
+
+.patientEditBtn {
+  padding: 8px 24px;
+  border-radius: 4px;
+  min-height: 38px;
+  border: 2px solid #0da68b;
+  background: #2bb39b;
+  color: white !important;
+  box-shadow: 0 4px 0 #1f826f;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.patientEditBtn span {
+  color: white;
 }
 
 .patientHeroCard {
@@ -178,7 +202,7 @@
   font-family: "Nunito", sans-serif;
   font-size: 14px;
   line-height: 20px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -188,12 +212,11 @@
 
 .patientAddActionTabs {
   margin-top: 16px;
-  max-width: 470px;
 }
 
-.patientAddActionTabs button {
+/* .patientAddActionTabs button {
   white-space: nowrap;
-}
+} */
 
 .patientStatsSection {
   margin-top: 44px;
@@ -240,7 +263,7 @@
   display: block;
   font-size: 18px;
   line-height: 22px;
-  font-weight: 800;
+  font-weight: 700;
   color: #000000;
   margin-top: 3px;
 }
@@ -412,7 +435,6 @@
   display: flex;
   gap: 12px;
   align-items: center;
-
 }
 
 .exerciseCard p {
@@ -428,25 +450,44 @@
     padding: 24px 20px 28px;
   }
 
-  .patientDetailsTopbar,
-  .patientHeroBottom,
-  .patientStatsGrid,
-  .patientStatsHeader,
-  .patientSectionHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .patientTopActions {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
   .patientAddExerciseBtn,
   .patientArchiveBtn,
+  .patientEditBtn ,
   .btn-primary-small {
     width: 100%;
     justify-content: center;
+  }
+
+  .patientArchiveBtn,
+  .patientEditBtn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 999px;
+    gap: 0;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .patientArchiveBtn span,
+  .patientEditBtn span {
+    display: none;
+  }
+
+  .patientArchiveBtn img,
+  .patientEditBtn img {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .patientTopActions {
+    justify-content: flex-start;
+  }
+
+  .patientTopActions .patientEditBtn,
+  .patientTopActions .patientArchiveBtn {
+    margin-right: 8px;
   }
 
   .patientTabs {
@@ -491,7 +532,7 @@
 .patientLogbookTop {
   display: flex;
   align-items: flex-start;
-  gap: 15vw;
+  gap: 16px;
   margin-bottom: 18px;
 }
 
@@ -608,7 +649,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: "Cabinet Grotesk", sans-serif;
   font-size: 16px;
   line-height: 20px;
   color: #000000;
@@ -814,7 +854,7 @@
   border-radius: 4px;
   font-family: "Nunito", sans-serif;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -981,7 +1021,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .kineEditIntro span {
@@ -1152,12 +1192,15 @@
     padding: 24px 18px 28px;
   }
 
-  .patientDetailsTopbar,
-  .patientHeroTop,
-  .patientHeroBottom,
-  .patientStatsHeader,
+  .patientHeroNameRow span, .patientAvatarBig {
+    display: none;
+  }
+
+  .patientProgramMonth {
+    display: none;
+  }
+
   .patientSectionHeader,
-  .patientProgramHeader,
   .patientLogbookTop {
     flex-direction: column;
     align-items: flex-start;
@@ -1189,15 +1232,6 @@
     padding: 18px 14px 24px;
   }
 
-  .patientHeroCard,
-  .patientStatsSection,
-  .patientProgressSection,
-  .patientExercisesSection,
-  .patientProgramSection,
-  .patientLogbookSection {
-    padding: 18px;
-    border-radius: 16px;
-  }
 
   .patientHeroNameRow h1 {
     font-size: 24px;
@@ -1250,13 +1284,6 @@
   .kineArchiveActions {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .btn-primary-large,
-  .btn-archive,
-  .patientNewNoteBtn,
-  .patientAddExerciseBtn {
-    width: 100%;
   }
 
   .kineModal--exerciseWizard {
@@ -1349,4 +1376,12 @@
 
 .exerciseCompletedBadge p {
   margin: 0;
+}
+
+
+@media (max-width: 460px) {
+  .patientStatsGrid {
+    gap: 0;
+    justify-content: space-between !important;
+  }
 }

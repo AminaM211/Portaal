@@ -73,6 +73,7 @@
   border-radius: 999px;
   border: 1.5px solid #E8EAEE;
   background: #fff;
+  color: black;
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -120,6 +121,7 @@
   border: none;
   background: transparent;
   font-size: 16px;
+  color: black;
   font-weight: 500;
   padding: 12px 16px;
   border-radius: 4px;
@@ -354,7 +356,7 @@
   display: block;
   margin-bottom: 0;
   color: #111827;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -372,7 +374,6 @@
   margin: 0;
   color: #4b5563;
   font-size: 1rem;
-  margin-top: auto;
 }
 
 .exerciseEmptyState {
@@ -518,7 +519,6 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
 }
 
 .schemeStepLabel {
@@ -670,7 +670,7 @@
 .schemeAssignedList {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
 }
 
 .schemeAssignedCard {
@@ -688,11 +688,11 @@
 
 .schemePreviewCard {
   width: 100%;
-  max-width: 420px;
+  max-width: 320px;
 }
 
 .schemePreviewCard .exerciseSchemeInner {
-  min-height: 360px;
+  min-height: 0px;
 }
 
 .schemePreviewCard .exerciseSchemeThumb {
@@ -703,6 +703,12 @@
 
 .schemeSelectableCard {
   border-color: #dce2e8;
+}
+
+.exerciseLibraryCard.schemeSelectableCard.is-selected,
+.exerciseSchemeCard.schemeSelectableCard.is-selected {
+  border-color: #2bb39b;
+  box-shadow: 0 0 0 3px rgba(43, 179, 155, 0.14);
 }
 
 .schemeSelectableCard.is-selected {
@@ -734,6 +740,7 @@
 
 .schemeLibraryCardWrap {
   min-width: 0;
+  max-width: 480px;
 }
 
 @media (max-width: 1100px) {

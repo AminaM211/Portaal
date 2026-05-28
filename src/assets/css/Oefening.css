@@ -6,13 +6,13 @@
   flex-direction: column;
   font-family: sans-serif;
   font-family: 'Cabinet Grotesk', sans-serif;
+  max-width: 1400px;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 40px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -51,8 +51,7 @@
 }
 
 .detail-container {
-  padding: 24px 40px;
-  max-width: 1200px;
+  padding: 24px 0px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -84,7 +83,7 @@
 
 .tags-container {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   margin-top: 16px;
   font-weight: bold;
 }
@@ -126,7 +125,7 @@
   font-family: "Nunito", sans-serif;
   font-size: 16px;
   line-height: 20px;
-  font-weight: 800;
+  font-weight: 700;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -138,11 +137,6 @@
   border: 2px solid #2bb39b;
   box-shadow: 0 4px 0 #1e7a6a;
 }
-
-  .header {
-    justify-content: space-between;
-  }
-
 
 .tags-flex {
   display: flex;
@@ -218,7 +212,7 @@
   gap: 10px;
   border: none;
   background: transparent;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 16px;
   color: #2d3748;
   cursor: pointer;
@@ -233,7 +227,7 @@
   border-radius: 999px;
   background: #f3f4f6;
   color: #4b5563;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
 }
 
@@ -263,7 +257,7 @@
   font-size: 24px;
   line-height: 1.12;
   color: #111827;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .active-card {
@@ -276,7 +270,7 @@
   gap: 24px;
   align-items: stretch;
   padding: 20px;
-  border-radius: 24px;
+  border-radius: 18px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
@@ -292,6 +286,7 @@
   gap: 18px;
   min-width: 0;
   position: relative;
+  justify-content: space-between;
 
 }
 
@@ -306,16 +301,16 @@
   background: #e6f6f3;
   color: #177e6b;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .active-demoMedia {
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   background: #000;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4 / 3;
 
 }
 
@@ -464,7 +459,6 @@
   .video-container {
     aspect-ratio: auto;
     height: calc(100vh - 72px);
-    border-radius: 0;
     padding: 0;
   }
 
@@ -632,7 +626,7 @@
 .active-kicker {
   margin: 0 0 8px;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #2BB39B;
@@ -726,21 +720,15 @@
     padding: 24px;
   }
 
-  /* .header {
-    padding: 12px 0;
-    gap: 12px;
-    flex-wrap: wrap;
-  } */
-     .header {
-    justify-content: space-between;
-  }
-
-
   .stats-container {
-    width: 100%;
+    width: fit-content !important;
     justify-content: flex-start;
     flex-wrap: wrap;
     gap: 12px;
+  }
+
+  header {
+    padding: 0 !important;
   }
 
   .active-body {
@@ -837,6 +825,10 @@
     padding: 20px 16px !important;
     margin: 0 24px !important;
   }
+
+    .mobile-btn-start {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -864,9 +856,6 @@
     padding: 8px;
   }
 
-  .header {
-    justify-content: space-between !important;
-  }
 
   .exercise-counter-value {
     font-size: 24px;
@@ -903,7 +892,7 @@
 
   .tags-container {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 16px;
   }
 
   .tag-highlight {
@@ -995,8 +984,7 @@
   }
 
   .feedback-badge {
-    max-width: 200px;
-    padding: 12px 14px;
+    display: none;
   }
 
   .video-container {

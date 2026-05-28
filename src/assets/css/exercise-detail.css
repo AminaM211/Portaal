@@ -337,11 +337,11 @@
       max-width: 100%;
     }
   
-    .exerciseDetailTopbar {
+    /* .exerciseDetailTopbar {
       flex-direction: column;
       align-items: flex-start;
       margin-bottom: 24px;
-    }
+    } */
   
     .exerciseVideoHero {
       height: auto;
@@ -353,11 +353,7 @@
       flex-direction: column;
       gap: 14px;
     }
-  
-    .exerciseTagInfoGrid {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
+
 
     .exerciseDetailTopbar,
     .exerciseDetailHeader,
@@ -484,7 +480,7 @@
   font-family: "Nunito", sans-serif;
   font-size: 16px;
   line-height: 20px;
-  font-weight: 800;
+  font-weight: 700;
   /* display: inline-flex; */
   align-items: center;
   justify-content: center;

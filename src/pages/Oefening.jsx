@@ -910,11 +910,11 @@ export default function ExerciseScreen() {
                   <span>{exerciseData.difficulty || "Makkelijk"}</span>
                 </div>
                 <div className="tags-flex">
-                  <img src="/images/clock.svg" alt="" />
+                  <img src="/images/Clock.svg" alt="" />
                   <span>{exerciseData.duration_minutes || 5} min</span>
                 </div>
                 <div className="tags-flex">
-                  <img src="/images/repeat.svg" alt="" />
+                  <img src="/images/Repeat.svg" alt="" />
                   <span>{exerciseData.repetitions || 10}x herhalen</span>
                 </div>
                 <span className="tag-highlight">{exerciseData.category || "Mobiliteit"}</span>
@@ -934,7 +934,7 @@ export default function ExerciseScreen() {
               )}
               
               <div className="action-container">
-                <button onClick={() => setStep('active')} className="primary-button">
+                <button onClick={() => setStep('active')} className="mobile-btn-start primary-button">
                   Start oefening
                 </button>
                 <div className="earnings">
@@ -964,7 +964,7 @@ export default function ExerciseScreen() {
                 </div>
                 <span>{exerciseData.stance || "Staand"}</span>
               </div>
-              <button onClick={() => setStep('active')} className="primary-button">
+              <button onClick={() => setStep('active')} className=" primary-button">
                   Start oefening
                 </button>
             </div>
@@ -979,10 +979,6 @@ export default function ExerciseScreen() {
             <div className="active-topbarCopy">
               <p className="active-kicker">{getStepLabel()}</p>
               <h1 className="active-shellTitle">{currentExercise?.title}</h1>
-            </div>
-
-            <div className="active-step-pill">
-              Stap {currentExerciseIndex + 1} van {exercisePlan.length}
             </div>
           </div>
 

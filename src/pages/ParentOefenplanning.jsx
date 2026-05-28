@@ -183,13 +183,14 @@ return (
                             {calendarDays.map((d) => {
                                 const key = formatDateKey(d);
                                 const isSelected = key === selectedDateKey;
+                              const isToday = key === todayKey;
                                 const dots = getDotsForDate(key);
                                 const isCurrentMonth = d.getMonth() === currentViewDate.getMonth();
                                 
                                 return (
                                     <div 
                                         key={key} 
-                                        className={`planningDayCell ${isSelected ? "selected" : ""} ${!isCurrentMonth && isExpanded ? "faded" : ""}`}
+                                  className={`planningDayCell ${isSelected ? "selected" : ""} ${isToday ? "is-today" : ""} ${!isCurrentMonth && isExpanded ? "faded" : ""}`}
                                         onClick={() => {
                                             setSelectedDate(d);
                                             setCurrentViewDate(d);
@@ -197,7 +198,7 @@ return (
                                     >
                                         <div className="dayNumber">{d.getDate()}</div>
                                         <div className="dayDots">
-                                            {dots.map((_, i) => <span key={i} className={`dot ${isSelected ? "dot-white" : "dot-green"}`}></span>)}
+                                    {dots.map((_, i) => <span key={i} className="dot dot-green"></span>)}
                                         </div>
                                     </div>
                                 );

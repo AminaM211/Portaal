@@ -217,12 +217,7 @@ export default function Kineinstellingen() {
   }
 
   if (loading) {
-    return 
-    <div className="kineDashLoading">
-            <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
-
-            <p>laden . . .</p>
-          </div>(
+    return (
       <div className="kineDashLoading">
             <img src="/images/monkey-load.png" style={{ width: "100px" }} alt="" />
 
@@ -251,7 +246,7 @@ export default function Kineinstellingen() {
             onClick={() => navigate("/kinesist/dashboard")}
           >
             <img src="/images/back-icon.svg" alt="back" />
-            <span>Terug naar dashboard</span>
+            <span>Terug</span>
           </button>
 
           <h1>Instellingen</h1>

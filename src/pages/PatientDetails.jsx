@@ -746,7 +746,29 @@ export default function PatientDetails() {
         }))
       );
 
-      const { error } = await supabase.from("patient_exercises").insert(rows);
+      // Deduplicate client-side to avoid unique constraint conflicts
+      const seen = new Set();
+      const dedupedRows = rows.filter((r) => {
+        const key = `${r.patient_id}|${r.exercise_id}|${r.scheduled_date}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      // Ensure all rows reference a valid exercise id; skip invalid rows
+      const invalidRows = dedupedRows.filter((r) => !r.exercise_id);
+      if (invalidRows.length > 0) {
+        console.warn("Some rows missing exercise_id; they will be skipped:", invalidRows);
+        setErrorMessage("Sommige geselecteerde oefeningen bestaan niet meer en werden overgeslagen.");
+      }
+
+      const validRows = dedupedRows.filter((r) => r.exercise_id);
+      if (validRows.length === 0) {
+        setErrorMessage("Geen geldige oefeningen om toe te voegen.");
+        return;
+      }
+
+      const { error } = await supabase.from("patient_exercises").insert(validRows);
 
       if (error) throw error;
 
@@ -1218,13 +1240,13 @@ export default function PatientDetails() {
             onClick={() => navigate("/kinesist/dashboard")}
           >
             <img src="/images/back-icon.svg" alt="back" />
-            <span>Terug naar overzicht</span>
+            <span>Terug</span>
           </button>
 
           <div className="patientTopActions">
             <button
               type="button"
-              className="btn-primary-small"
+              className="patientEditBtn"
               onClick={openEditModal}
             >
               <img src="/images/edit.svg" alt="" />
@@ -1280,18 +1302,13 @@ export default function PatientDetails() {
           </div>
         </section>
 
-        <div className="patientAddActionTabs exerciseTabs" aria-label="Toevoegen">
+        <div className="patientAddActionTabs" aria-label="Toevoegen">
           <button
             type="button"
+            className="btn-primary-small"
             onClick={() => navigate(`/patient/${id}/oefening-toevoegen`)}
           >
             Oefening toevoegen
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate(`/patient/${id}/oefenschema-toevoegen`)}
-          >
-            Oefenschema toevoegen
           </button>
         </div>
 
@@ -2016,9 +2033,9 @@ export default function PatientDetails() {
                                 </p>
                               </div>
 
-                              <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                              <div className="schemeDotsBtn" tabIndex={-1} role="button">
                                 <img src="/images/dots.svg" alt="" />
-                              </button>
+                              </div>
                             </button>
                           </div>
                         );
@@ -2146,9 +2163,9 @@ export default function PatientDetails() {
                                 </p>
                               </div>
 
-                              <button type="button" className="schemeDotsBtn" tabIndex={-1}>
+                              <div className="schemeDotsBtn" tabIndex={-1} role="button">
                                 <img src="/images/dots.svg" alt="" />
-                              </button>
+                              </div>
                             </div>
                           </div>
                         ))}

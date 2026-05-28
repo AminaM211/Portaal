@@ -659,6 +659,9 @@
   section {
     order: 2 !important;
   }
+  .childProfilePage {
+  max-width: 540px !important;
+}
 }
 
 
@@ -753,6 +756,8 @@
   .childProfileBtn img{
     width: 60px;
 } 
+
+
 
   .dayPopover.empty {
     max-width: 280px;

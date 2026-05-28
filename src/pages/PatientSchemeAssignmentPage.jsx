@@ -431,11 +431,6 @@ export default function PatientSchemeAssignmentPage() {
               </div>
 
               <div className="schemeFormGroup">
-                <label>Schema</label>
-                <input type="text" value={selectedScheme?.title || "-"} disabled readOnly />
-              </div>
-
-              <div className="schemeFormGroup">
                 <label htmlFor="schemeStartDate">Start</label>
                 <input
                   id="schemeStartDate"
