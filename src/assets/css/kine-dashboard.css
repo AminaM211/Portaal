@@ -13,12 +13,14 @@
   padding: 48px 24px 36px 32px;
   display: flex;
   flex-direction: column;
-    position: sticky !important;
+  position: sticky !important;
   left: 0;
   top: 0;
-  bottom: 0;
   width: 298px;
+  height: auto;
+  max-height: 100vh;
   overflow-y: auto;
+  align-self: flex-start;
   z-index: 50;
 }
 
@@ -599,7 +601,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kineDash {
     grid-template-columns: 1fr;
   }
@@ -703,7 +705,7 @@
 }
 
 /* Mobile: convert table-like rows into stacked cards for better readability */
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kinePatientsTable {
     overflow-x: visible;
     background: transparent;
@@ -1005,7 +1007,7 @@
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kinePatientRowWrap {
     grid-template-columns: 1fr 40px;
     min-width: 760px;
@@ -1275,7 +1277,7 @@
   .kinePatientAge, .kinePatientGoal { font-size: 13px; }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kinePatientRowWrap {
     margin-bottom: 12px;
   }

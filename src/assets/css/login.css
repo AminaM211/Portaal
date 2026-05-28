@@ -262,7 +262,7 @@
   }
   
   /* TABLET */
-  @media (max-width: 960px) {
+  @media (max-width: 768px) {
     .login-header {
       padding: 24px 24px 0;
       gap: 20px;
@@ -285,7 +285,16 @@
     .login-main {
       grid-template-columns: 1fr;
       gap: 36px;
-      padding: 24px 24px 24px;
+      padding: 80px 24px 24px;
+      align-items: flex-start !important;
+    }
+
+    .login-right {
+      display: none;
+    }
+
+    h1 {
+      text-align: left !important;
     }
   
     .login-left {

@@ -366,7 +366,8 @@ export default function ChildScreen() {
     <div className="childApp">
       <ChildSidebar onLogout={handleLogout} />
 
-          <main className="childPathArea">
+      <div className="dashboard-container">
+      <main className="childPathArea">
              <div 
                className="pathWrapper" 
                style={{ 
@@ -527,7 +528,7 @@ export default function ChildScreen() {
                  })}
                </div>
              </div>
-          </main>
+      </main>
 
       <aside className="childRightPanel">
 
@@ -558,6 +559,7 @@ export default function ChildScreen() {
           </div>
         </div>
       </aside>
+      </div>
     </div>
   );
 }

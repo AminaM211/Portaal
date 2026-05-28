@@ -157,7 +157,7 @@
   
   /* RESPONSIVE */
   
-  @media (max-width: 960px) {
+  @media (max-width: 768px) {
     .flowMain {
       padding: 24px;
     }

@@ -391,7 +391,7 @@
     }
   }
   
-  @media (max-width: 900px) {
+  @media (max-width: 768px) {
     .parentDashboardMain {
       padding: 20px;
     }
@@ -894,7 +894,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .parentDashboardGrid.planningGrid {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;

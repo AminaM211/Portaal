@@ -245,8 +245,8 @@ export default function ChildMissionsPage() {
     <div className="childApp">
       <ChildSidebar onLogout={handleLogout} />
 
-      <main style={{ flex: 1, display: "grid", gridTemplateColumns: "minmax(0, 0.85fr) 340px", gap: "40px", padding: "40px 48px 40px 40px", overflowY: "auto" }}>
-        <section style={{ minWidth: 0}}>
+      <main className="mission-main" style={{ flex: 1, display: "grid", gridTemplateColumns: "minmax(0, 0.85fr) 340px", gap: "40px", padding: "40px 48px 40px 40px", overflowY: "auto" }}>
+        <section className="mission-section" style={{ minWidth: 0}}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', marginBottom: '12px' }}>
             <h1 style={{ margin: 0, fontFamily: "Nunito, sans-serif", fontSize: "20px", lineHeight: "31px", fontWeight: 700, color: "#000" }}>
               Dagelijkse missies

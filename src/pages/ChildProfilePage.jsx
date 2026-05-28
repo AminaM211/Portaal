@@ -234,6 +234,20 @@ export default function ChildProfilePage() {
             </button>
           </div>
         </aside>
+         <div className="childProfileActions mobile">
+            <button
+              className="btn-primary-large full"
+              onClick={handleChangeProfile}
+            >
+              Verander van profiel
+            </button>
+            <button
+              className="btn-outline-large full"
+              onClick={handleLogout}
+            >
+              Log uit
+            </button>
+          </div>
       </main>
     </div>
   );

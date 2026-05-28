@@ -423,7 +423,7 @@
   color: #757575;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .patientDetailsMain {
     padding: 24px 20px 28px;
   }
@@ -1147,7 +1147,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .patientDetailsMain {
     padding: 24px 18px 28px;
   }

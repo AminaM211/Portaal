@@ -110,7 +110,7 @@ box-shadow: 0 4px 0 #1e7a6a;
 }
 
 /* Responsive adjustments centralized */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .btn-outline-small,
   .btn-primary-small,
   .schemePrimaryBtn,
@@ -128,7 +128,7 @@ box-shadow: 0 4px 0 #1e7a6a;
   }
 }
 
-@media (max-width: 960px) {
+@media (max-width: 768px) {
   .kineModalActions .btn-outline-small,
   .kineModalActions .btn-primary-small {
     width: 100%;

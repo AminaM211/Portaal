@@ -324,7 +324,7 @@
       margin: 0;
     }
   
-  @media (max-width: 960px) {
+  @media (max-width: 768px) {
     .exerciseDetailMain {
       margin-left: 0;
       padding: 24px 20px 40px;

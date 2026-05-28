@@ -327,10 +327,28 @@ color: #000000;
   background: #20a06a;
 }
 
+  .childProfileCardLarge {
+    align-self: first baseline !important;
+  }
+
+  .mobile {
+    display: none;
+  }
+
 /* Responsive */
 @media (max-width: 1200px) {
+  .childApp {
+    flex-direction: row;
+  }
+
+    .mobile {
+    display: flex;
+    padding: 0 24px;
+  }
+
   .childProfilePage {
     flex-direction: column;
+    width: 100%;
   }
 
   .childRightPanel {
@@ -340,6 +358,14 @@ color: #000000;
 
   .childProfileSection {
     padding: 30px;
+  }
+    .childRightPanel {
+    margin: 28px !important;
+    width: 93% !important;
+  }
+
+  .childTopStatsRow {
+    margin: -28px;
   }
 }
 
@@ -364,9 +390,8 @@ color: #000000;
   .childStatRowValue {
     font-size: 20px;
   }
-}
 
-@media (max-width: 768px) {
+
   .childProfilePage {
     flex-direction: column;
   }
@@ -415,9 +440,17 @@ color: #000000;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
   }
+      .mobile {
+    padding: 16px;
+  }
 }
 
 @media (max-width: 640px) {
+
+  .mission-main {
+    padding: 24px !important;
+  }
+
   .childProfileSection {
     padding: 16px 12px;
   }
@@ -452,7 +485,7 @@ color: #000000;
   }
 
   .childStatRowValue {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .childTrophiesList {
@@ -490,4 +523,13 @@ color: #000000;
     padding: 10px 16px;
     font-size: 13px;
   }
+    .childRightPanel {
+    margin: 16px !important;
+    width: 90% !important;
+  }
+
+    .childTopStatsRow {
+    margin: -18px;
+  }
 }
+

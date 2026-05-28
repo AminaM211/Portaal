@@ -5,6 +5,20 @@
   font-family: 'Cabinet Grotesk', sans-serif;
 }
 
+/* Ensure sidebar stays visible while the path area scrolls: fix it to viewport on child screens */
+.childApp > .kineSidebar {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 120;
+}
+
+.childProfilePage, .mission-main, .dashboard-container {
+  margin-left: 240px;
+}
+
 /* SIDEBAR */
 .ChildSidebarBrand img {
   width: 120px ;
@@ -42,6 +56,7 @@
   display: flex;
   justify-content: center;
   padding: 40px 0;
+  min-width: 420px;
 }
 
 .pathWrapper {
@@ -126,6 +141,19 @@
   flex-direction: column;
   gap: 40px;
   background: white;
+  position: fixed !important;
+  right: 0;
+
+}
+
+.dashboard-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 40px;
+  max-width: 1800px;
 }
 
 /* Missions page layout */
@@ -447,6 +475,11 @@
   flex-shrink: 0;
 }
 
+.kineSidebar {
+  min-width: 240px;
+  max-width: 240px;
+}
+
 .popoverEmpty {
   margin: 0;
   color: #718096;
@@ -511,6 +544,10 @@
   font-size: 13px;
 }
 
+.mission-section {
+  max-width: 500px;
+}
+
 
 .exerciseMetaTag img {
   height: 18px;
@@ -560,47 +597,46 @@
   font-size: 18px;
 }
 
+@media (min-width: 1400px) {
+.childRightPanel {
+  position: fixed !important;
+  left: 900px;
+  max-width: 400px;
+}
+/* .dashboard-container {
+  max-width: 1400px !important;
+  justify-content: start;
+  gap: 80px;
+} */
+}
+
 @media (max-width: 1200px) {
-     .parentSideSection, .parentWeekCard{
+  .childRightPanel {
     display: none !important;
   }
 
-  .childApp {
+  /* .childApp {
     height: auto;
     min-height: 100vh;
     flex-direction: column;
-    /* display: block; */
+  } */
+
+  .kineSidebar {
+    width: 420px !important;
   }
 
   .childPathArea {
     padding: 16px 8px 24px;
     justify-content: flex-start;
-    height: 260px !important;
     order: 2;
   }
 
-    /* .pathWrapper {
-      width: 100vw;
-      max-width: none;
-      margin: 0;
-      height: auto;
-      aspect-ratio: unset;
-      display: block;
-    } */
-
-    .childPathArea {
+  .childPathArea {
       overflow-x: auto;
       justify-content: flex-start;
-      margin-left: 400px;
-      margin-top: -1400px;
-    }
-
-  /* .childRightPanel {
-    min-width: 0;
-    padding: 28px 20px 40px;
-    gap: 28px;
-    width: 100%;
-  } */
+      /* margin-left: 400px;
+      margin-top: -1400px; */
+  }
 
   .parentDashboardPage {
     grid-template-columns: 1fr;
@@ -609,21 +645,28 @@
   .parentDashboardMain {
     padding: 32px 20px 40px 20px;
   }
+
+  .mission-main {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .childRightPanel {
+    padding: 0 !important;
+    order: 1 !important;
+  }
+
+  section {
+    order: 2 !important;
+  }
 }
 
-@media (max-width: 1000px) {
-    .childPathArea {
-      overflow-x: auto;
-      justify-content: flex-start;
-      margin-left: 300px;
-      margin-top: -1400px;
-    }
-      .kineSidebar {
-    display: block;
-  }
-  }
 
 @media (max-width: 768px) {
+    .childProfilePage, .mission-main, .dashboard-container {
+  margin-left: 0px;
+}
+
   .kineSidebar {
     display: none;
   }
@@ -644,26 +687,6 @@
     flex-direction: column;
   }
 
-  .childPathArea {
-    padding: 16px 8px 24px;
-    justify-content: flex-start;
-    height: 260px !important;
-    order: 2;
-  }
-
-    .pathWrapper {
-      width: 100vw;
-      max-width: none;
-      margin: 0;
-      height: auto;
-      aspect-ratio: unset;
-      display: block;
-    }
-
-    .childPathArea {
-      overflow-x: auto;
-      justify-content: flex-start;
-    }
   .childRightPanel {
     min-width: 0;
     padding: 28px 20px 40px;
@@ -684,14 +707,7 @@
     padding: 18px 12px 24px;
   }
 
-  .childPathArea {
-    padding: 10px 4px 16px;
-    height: 180px !important;
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .pathBubble {
+  /* .pathBubble {
     width: 76px;
     height: 62px;
   }
@@ -702,12 +718,12 @@
 
   .bubbleLabel {
     font-size: 12px;
-  }
+  } */
 
-
+/* 
    .pathWrapper {
     width: 80vw;
-  }
+  } */
 
   .childRightPanel {
     padding: 20px 12px 28px;
