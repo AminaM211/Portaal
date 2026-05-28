@@ -135,7 +135,7 @@
 .exerciseTabs button.is-active {
   background: #8dbce8;
   color: #fff;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* button styles moved to src/assets/css/buttons.css */
@@ -519,6 +519,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  margin: 16px 0;
 }
 
 .schemeStepLabel {
