@@ -134,6 +134,7 @@ export default function CreateExercisePage() {
             age_range: ageRange,
             created_by: user.id,
             is_public: isPublic,
+            uploaded: true,
           }
         ])
         .select();

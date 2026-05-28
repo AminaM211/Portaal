@@ -57,7 +57,7 @@ export default function ChildScreen() {
   async function refetchScheduledExercises(patientId) {
     const { data: ex } = await supabase
       .from("patient_exercises")
-      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes, is_public, uploaded)")
       .eq("patient_id", patientId);
 
     setScheduledExercises(ex || []);

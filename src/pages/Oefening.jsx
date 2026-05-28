@@ -25,6 +25,9 @@ export default function ExerciseScreen() {
   const scheduledExercises = location.state?.scheduledExercises || [];
   const patientExerciseId = location.state?.patientExerciseId || null;
   const patientId = location.state?.patientId || null;
+  const isUploadedExercise = exerciseData?.uploaded === true || initialExerciseData?.uploaded === true;
+  const isLibraryExercise = exerciseData?.is_public === true || initialExerciseData?.is_public === true;
+  const supportsPoseDetection = isLibraryExercise || !isUploadedExercise;
   const [markedComplete, setMarkedComplete] = useState(false);
   const [totalXPEarned, setTotalXPEarned] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -88,7 +91,9 @@ export default function ExerciseScreen() {
               created_by,
               space_needed,
               materials,
-              stance
+              stance,
+              uploaded,
+              is_public
             )
           `)
           .eq("id", patientExerciseId)
@@ -118,6 +123,7 @@ export default function ExerciseScreen() {
   const normalizedExerciseText = `${exerciseData.title || ""} ${exerciseData.description || ""}`.toLowerCase();
 
   const exercisePreset = (() => {
+    if (!supportsPoseDetection) return "custom";
     if (/jumping jacks?|sterrensprong|spring open/.test(normalizedExerciseText)) return "jumping-jacks";
     if (/knie|high knees?|afwisselend.*lucht|ter plaatse.*knie/.test(normalizedExerciseText)) return "high-knees";
     if (/stretch|sterren|naar de sterren|boven je ogen|ellebogen.*ogen/.test(normalizedExerciseText)) return "stretch-stars";
@@ -129,7 +135,7 @@ export default function ExerciseScreen() {
     return "custom";
   })();
 
-  const isDefaultExercise = exercisePreset === "guided-sequence";
+  const isDefaultExercise = supportsPoseDetection && exercisePreset === "guided-sequence";
   const guidedExercises = [
     {
       key: "jumping-jacks",
@@ -214,8 +220,8 @@ export default function ExerciseScreen() {
               ? "Steun op je ellebogen en tenen, houd je lichaam in een rechte lijn van schouders tot enkels."
               : exerciseData.description ||
                 "Hef je linkerarm boven schouderhoogte en laat gecontroleerd zakken.",
-          mode: exercisePreset === "plank" ? "hold" : "reps",
-          target: exercisePreset === "plank" ? 30 : exercisePreset === "high-knees" ? 20 : 10,
+          mode: isUploadedExercise ? "hold" : (exercisePreset === "plank" ? "hold" : "reps"),
+          target: isUploadedExercise ? 180 : (exercisePreset === "plank" ? 30 : 10),
         },
       ];
 
@@ -248,10 +254,13 @@ export default function ExerciseScreen() {
   const trackingReadyRef = useRef(false);
   const [progress, setProgress] = useState(0);
 
-  const configuredDurationSeconds = Math.max(1, (exerciseData.duration_minutes || 5) * 60);
+  const configuredDurationSeconds = isUploadedExercise
+    ? 180
+    : Math.max(1, (exerciseData.duration_minutes || 5) * 60);
   const activeDurationSeconds = configuredDurationSeconds;
   const hasDemoVideo = isVideoFileUrl(exerciseData?.image_url);
   const activeInstruction = currentExercise?.instruction || exerciseData.description || "Volg de oefening rustig.";
+  const showPoseDetectionUI = supportsPoseDetection && exercisePreset === "guided-sequence";
   
   // Timer gebaseerd op database duration
   const [timeLeft, setTimeLeft] = useState(configuredDurationSeconds);
@@ -287,9 +296,18 @@ export default function ExerciseScreen() {
   }, [activeDurationSeconds, currentExerciseIndex]);
 
   useEffect(() => {
-    if (step !== "active" || timeLeft > 0 || progress >= 100) return;
+    if (step !== "active") return;
+
+    if (isUploadedExercise) {
+      if (timeLeft > 0) return;
+      setProgress(100);
+      setStep('success');
+      return;
+    }
+
+    if (timeLeft > 0 || progress >= 100) return;
     setFeedback("info", "Tijd op", "Probeer opnieuw en maak de beweging echt duidelijk.");
-  }, [step, timeLeft, progress]);
+  }, [step, timeLeft, progress, isUploadedExercise]);
 
   useEffect(() => {
     if (step !== "active") return;
@@ -386,8 +404,8 @@ export default function ExerciseScreen() {
   const getExerciseProgressLabel = () => {
     if (!currentExercise) return "";
 
-    if (currentExercise.mode === "hold") {
-      return `${Math.max(0, Math.ceil((currentExercise.target || 0) * (1 - progress / 100)))}`; 
+    if (isUploadedExercise || currentExercise.mode === "hold") {
+      return formatTime(Math.max(0, timeLeft));
     }
 
     return `${Math.round(((currentExercise?.target || 1) * progress) / 100)}/${currentExercise?.target || 1}`;
@@ -748,9 +766,9 @@ export default function ExerciseScreen() {
     canvasCtx.restore();
   }
 
-  // MediaPipe AI Logica
   useEffect(() => {
     if (step !== 'active') return undefined;
+    if (!supportsPoseDetection) return undefined;
 
     let cancelled = false;
 
@@ -911,12 +929,9 @@ export default function ExerciseScreen() {
                 </div>
                 <div className="tags-flex">
                   <img src="/images/Clock.svg" alt="" />
-                  <span>{exerciseData.duration_minutes || 5} min</span>
+                    <span>{isUploadedExercise ? "3 min" : `${exerciseData.repetitions || 10}x herhalen`}</span>
                 </div>
-                <div className="tags-flex">
-                  <img src="/images/Repeat.svg" alt="" />
-                  <span>{exerciseData.repetitions || 10}x herhalen</span>
-                </div>
+                  {isUploadedExercise && <span className="tag-highlight tag-highlight--uploaded">Geüpload</span>}
                 <span className="tag-highlight">{exerciseData.category || "Mobiliteit"}</span>
               </div>
 
@@ -925,7 +940,7 @@ export default function ExerciseScreen() {
               <p className="exercise-description">
                 {exerciseData.description || "Geen beschrijving beschikbaar voor deze oefening."}
               </p>
-              {exercisePreset === "guided-sequence" && (
+              {showPoseDetectionUI && exercisePreset === "guided-sequence" && (
                 <div className="exercise-description">
                   <p>1. Jumping jacks: open en sluit in een vloeiende sprong.</p>
                   <p>2. Knieen afwisselend in de lucht: links en rechts om de beurt.</p>
@@ -985,16 +1000,11 @@ export default function ExerciseScreen() {
           <div className="active-card active-card--coach">
             <div className="active-liveColumn">
               <div className="video-container video-container--coach">
-                <div className={`feedback-badge feedback-badge--${liveFeedback.tone}`}>
-                  <span>{liveFeedback.title}</span>
-                  <p>{liveFeedback.message}</p>
-                </div>
-
                 <div className="active-progress-badge">
-                  <div className="progress-ring" style={{ ["--progress"]: `${getCircularProgress()}%` }}>
+                  <div className={`progress-ring ${isUploadedExercise ? 'progress-ring--uploaded' : ''}`} style={{ ["--progress"]: `${getCircularProgress()}%` }}>
                     <div className="progress-ring-inner">
                       <strong>{getExerciseProgressLabel()}</strong>
-                      <span>{currentExercise?.mode === "hold" ? "seconden" : "herhalingen"}</span>
+                      <span>{currentExercise?.mode === "hold" ? "tijd" : "herhalingen"}</span>
                     </div>
                   </div>
                 </div>
@@ -1009,7 +1019,12 @@ export default function ExerciseScreen() {
                       height: { ideal: 720 },
                     }}
                   />
-                  <canvas ref={canvasRef} width={1280} height={720} className="canvas-overlay mirror-view" />
+                  <canvas
+                    ref={canvasRef}
+                    className="canvas-overlay mirror-view"
+                    width={1280}
+                    height={720}
+                  />
                 </div>
               </div>
             </div>

@@ -95,6 +95,11 @@
   color: #000;
 }
 
+.tag-highlight--uploaded {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
 .exercise-title {
   font-size: 32px;
   margin-top: 24px;
@@ -663,6 +668,10 @@
   padding: 8px;
 }
 
+.progress-ring--uploaded {
+  background: conic-gradient(#3b82f6 var(--progress), #dbeafe 0);
+}
+
 .progress-ring-inner {
   width: 100%;
   height: 100%;
@@ -673,6 +682,10 @@
   align-items: center;
   justify-content: center;
   box-shadow: inset 0 0 0 1px #f1f5f9;
+}
+
+.progress-ring--uploaded .progress-ring-inner {
+  box-shadow: inset 0 0 0 1px #bfdbfe;
 }
 
 .progress-ring-inner strong {
