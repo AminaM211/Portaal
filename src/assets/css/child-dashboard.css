@@ -606,7 +606,7 @@
     height: auto;
     min-height: 100vh;
     flex-direction: column;
-  } */
+  }
 
   .kineSidebar {
     width: 420px !important;
@@ -621,9 +621,7 @@
   .childPathArea {
       overflow-x: visible;
       justify-content: flex-start;
-      /* margin-left: 400px;
-      margin-top: -1400px; */
-  }
+  } */
 
   .parentDashboardPage {
     grid-template-columns: 1fr;
@@ -646,6 +644,7 @@
   section {
     order: 2 !important;
   }
+
   .childProfilePage {
   max-width: 540px !important;
 }
