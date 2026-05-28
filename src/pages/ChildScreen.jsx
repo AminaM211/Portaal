@@ -401,22 +401,20 @@ export default function ChildScreen() {
                    
                    // De SVG start rechts, dus i=0 is rechts (100%), i=1 is links (0%)
                    const isLeft = (i % 2 !== 0); 
-
-                  //  let popoverTypeClass = "popover-exercises"; // Standaard breed (lijst)
-                  //  if (day.key < todayKey) {
-                  //    popoverTypeClass = "popover-past";
-                  //  } else if (day.key > todayKey && day.exercises.length === 0) {
-                  //    popoverTypeClass = "popover-future-empty";
-                  //  } else if (day.key === todayKey && day.exercises.length === 0) {
-                  //    popoverTypeClass = "popover-today-empty";
-                  //  }
     
                    return (
-                     <div 
-                       key={day.key} 
-                       ref={day.isToday ? scrollRef : null}
-                       className={`pathBubbleWrap ${selectedDay === day.key ? 'clicked' : ''}`}
-                       onClick={() => setSelectedDay(selectedDay === day.key ? null : day.key)}
+                    <div 
+                      key={day.key} 
+                      ref={day.isToday ? scrollRef : null}
+                      className={`pathBubbleWrap ${selectedDay === day.key ? 'clicked' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newSelected = selectedDay === day.key ? null : day.key;
+                        setSelectedDay(newSelected);
+                        if (newSelected) {
+                          try { e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' }); } catch (err) {}
+                        }
+                      }}
                        style={{
                          position: 'absolute',
                          top: `${100 + (i * 166.25)}px`, 
@@ -481,28 +479,26 @@ export default function ChildScreen() {
                             ) : 
                              /* SITUATIE 4: LIJST MET OEFENINGEN (Voor Vandaag en de Toekomst) */
                              (
-                              day.exercises.map((ex, idx) => (
+                              // Toon eerst onvoltooide oefeningen, dan de voltooide (stabiele volgorde)
+                              [...day.exercises.filter(e => !e.is_completed), ...day.exercises.filter(e => e.is_completed)]
+                                .map((ex, idx) => (
                                 <div key={ex.id} className={`exerciseItem ${ex.is_completed ? 'completed' : ''}`}>
                                   <div className="exerciseInfo">
-                                    {/* Haal de titel uit de gekoppelde table via ex.exercises?.title */}
                                     <h4 className="exerciseTitle">{ex.exercises?.title || `Oefening ${idx + 1}`}</h4>
                                     <div className="exerciseTags">
                                       <span className="exerciseMetaTag">
                                         <img src="/images/star-outline.svg" alt="XP" /> {ex.exercises?.xp_reward || 20} XP
                                       </span>
                                       <span className="exerciseMetaTag">
-                                        {/* Haal de duur op (optioneel, of laat de hardcoded 5 min staan) */}
                                         <img src="/images/Clock.svg" alt="Tijd" /> {ex.exercises?.duration_minutes || 5} min
                                       </span>
                                     </div>
                                   </div>
                                    
-                                   {/* De knop is 'disabled' als de dag níét vandaag is (dus in de toekomst) OF als oefening al voltooid is */}
                                    <button 
                                      className={`startButton ${(!day.isToday || ex.is_completed) ? 'disabled' : ''} ${ex.is_completed ? 'completed' : ''}`} 
                                      onClick={() => {
                                        if (day.isToday && !ex.is_completed) {
-                                         // Stuur de huidige oefening mee in de 'state'
                                         navigate('/kind/oefening', {
                                           state: {
                                             exercise: ex.exercises,
