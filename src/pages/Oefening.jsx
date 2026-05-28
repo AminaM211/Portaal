@@ -26,8 +26,7 @@ export default function ExerciseScreen() {
   const patientExerciseId = location.state?.patientExerciseId || null;
   const patientId = location.state?.patientId || null;
   const isUploadedExercise = exerciseData?.uploaded === true || initialExerciseData?.uploaded === true;
-  const isLibraryExercise = exerciseData?.is_public === true || initialExerciseData?.is_public === true;
-  const supportsPoseDetection = isLibraryExercise || !isUploadedExercise;
+  const supportsPoseDetection = !isUploadedExercise;
   const [markedComplete, setMarkedComplete] = useState(false);
   const [totalXPEarned, setTotalXPEarned] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
