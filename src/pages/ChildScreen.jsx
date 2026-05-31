@@ -57,7 +57,7 @@ export default function ChildScreen() {
   async function refetchScheduledExercises(patientId) {
     const { data: ex } = await supabase
       .from("patient_exercises")
-      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes, is_public, uploaded)")
+      .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes, xp_reward, is_public, uploaded)")
       .eq("patient_id", patientId);
 
     setScheduledExercises(ex || []);
@@ -105,13 +105,14 @@ export default function ChildScreen() {
   const pathDates = useMemo(() => getPathDates(), []);
   
   const pathData = useMemo(() => {
-    // We filteren de Zondagen even eruit voor het zigzag pad, optioneel maar houdt het strak:
-    return pathDates.filter(d => d.getDay() !== 0).map((date, i) => {
+    // Houd Zondagen mee in de data zodat er geen visuele gap ontstaat
+    return pathDates.map((date, i) => {
       const key = formatDateKey(date);
       const isToday = key === todayKey;
       const isPast = key < todayKey;
       const itemsForDay = scheduledExercises.filter(e => e.scheduled_date === key);
       const isDone = itemsForDay.length > 0 && itemsForDay.every(e => e.is_completed);
+      const isSunday = date.getDay() === 0;
       
       let pathState = "moon"; 
 
@@ -139,18 +140,66 @@ export default function ChildScreen() {
         longLabel: isToday ? "VANDAAG" : ["MA", "DI", "WO", "DO", "VR", "ZA", "ZO"][(date.getDay() + 6) % 7],
         pathState,
         isToday,
+        isSunday,
         exercises: itemsForDay 
       };
     });
   }, [pathDates, scheduledExercises, todayKey]);
+  
+  // Bepaal welk dag-item we moeten auto-scrollen.
+  // Soms filteren we zondagen uit `pathData`; als vandaag een zondag is, zoek een nabijgelegen niet-zondag.
+  const autoScrollKey = useMemo(() => {
+    const foundToday = pathData.find((p) => p.isToday);
+    if (foundToday) return foundToday.key;
 
-  // Scroll naar "Vandaag" alleen bij eerste load
+    const today = new Date();
+    // zoek oplopend naar een dichtbijzijnde niet-zondag (max 7 dagen)
+    for (let offset = 1; offset <= 7; offset++) {
+      const prev = new Date(today);
+      prev.setDate(today.getDate() - offset);
+      if (prev.getDay() !== 0) {
+        const prevKey = formatDateKey(prev);
+        if (pathData.some((p) => p.key === prevKey)) return prevKey;
+      }
+
+      const next = new Date(today);
+      next.setDate(today.getDate() + offset);
+      if (next.getDay() !== 0) {
+        const nextKey = formatDateKey(next);
+        if (pathData.some((p) => p.key === nextKey)) return nextKey;
+      }
+    }
+
+    return pathData[0]?.key || null;
+  }, [pathData, todayKey]);
+
+  // Scroll naar het gekozen item alleen bij eerste load
   useEffect(() => {
-    if (!loading && scrollRef.current && !hasAutoScrolled) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (!loading && scrollRef.current && !hasAutoScrolled && autoScrollKey) {
+      try {
+        scrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (e) {
+        try { scrollRef.current.scrollIntoView(); } catch (err) {}
+      }
       setHasAutoScrolled(true);
     }
-  }, [loading, pathData, hasAutoScrolled]);
+  }, [loading, autoScrollKey, hasAutoScrolled]);
+
+  const completedTodayExercises = useMemo(
+    () =>
+      scheduledExercises.filter(
+        (item) => normalizeDateKey(item.scheduled_date) === todayKey && item.is_completed
+      ),
+    [scheduledExercises, todayKey]
+  );
+  const completedTodayXp = useMemo(
+    () => completedTodayExercises.reduce((total, item) => total + getExerciseXp(item), 0),
+    [completedTodayExercises]
+  );
+  const currentStreak = useMemo(
+    () => getConsecutiveDayStreak(scheduledExercises, todayKey),
+    [scheduledExercises, todayKey]
+  );
 
   const stats = useMemo(() => {
     const totalCompleted = scheduledExercises.filter(e => e.is_completed).length;
@@ -216,7 +265,7 @@ export default function ChildScreen() {
       try {
         const { data } = await supabase
           .from("patient_exercises")
-          .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes)")
+          .select("id, scheduled_date, is_completed, exercises(title, description, category, repetitions, duration_minutes, xp_reward)")
           .eq("patient_id", activePatientId);
 
         if (mounted) setScheduledExercises(data || []);
@@ -295,18 +344,14 @@ export default function ChildScreen() {
   useEffect(() => {
     if (!missions.length || loading) return;
 
-    const completedTodayExercises = scheduledExercises.filter(
-      (e) => normalizeDateKey(e.scheduled_date) === todayKey && e.is_completed
-    );
     const completedToday = completedTodayExercises.length;
-    const completedTodayXp = completedTodayExercises.reduce(
-      (total, item) => total + getExerciseXp(item),
-      0
-    );
+    // Count how many other DAILY missions assigned today are completed (exclude the 'complete_daily_missions' aggregator itself)
     const completedTodayMissionCount = missions.filter(
-      (mission) => mission.is_completed && normalizeDateKey(mission.assigned_date) === todayKey
+      (mission) =>
+        mission.is_completed &&
+        normalizeDateKey(mission.assigned_date) === todayKey &&
+        mission.missions?.type !== "complete_daily_missions"
     ).length;
-    const currentStreak = getConsecutiveDayStreak(scheduledExercises, todayKey);
     const completedThisWeekXp = scheduledExercises
       .filter((item) => {
         const itemDate = new Date(normalizeDateKey(item.scheduled_date));
@@ -405,7 +450,7 @@ export default function ChildScreen() {
                    return (
                     <div 
                       key={day.key} 
-                      ref={day.isToday ? scrollRef : null}
+                      ref={day.key === autoScrollKey ? scrollRef : null}
                       className={`pathBubbleWrap ${selectedDay === day.key ? 'clicked' : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -527,6 +572,14 @@ export default function ChildScreen() {
       </main>
 
       <aside className="childRightPanel">
+
+         <ChildStatsRow
+                    stats={[
+                      { label: "Voltooid", value: stats.totalCompleted, icon: "/images/wins-stat.png", background: "#F8AE49" },
+                      { label: "XP", value: completedTodayXp, icon: "/images/xp-stat.png", background: "#84C5ED" },
+                      { label: "Streak", value: currentStreak, icon: "/images/streak-stat.png", background: "#B388FF" },
+                    ]}
+                  />
 
         <WeekStreak scheduledExercises={scheduledExercises} />
 

@@ -137,6 +137,7 @@
 .childRightPanel {
   min-width: 460px;
   padding: 40px;
+  padding-top: 24px !important;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -361,7 +362,7 @@
 
 .seeAllLink {
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
   text-decoration: underline !important;
 }
 

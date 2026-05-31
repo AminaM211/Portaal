@@ -111,8 +111,12 @@ export default function ChildMissionsPage() {
     );
     const completedToday = completedTodayExercises.length;
     const completedTodayXp = completedTodayExercises.reduce((total, item) => total + getExerciseXp(item), 0);
+    // Count how many other DAILY missions assigned today are completed (exclude the 'complete_daily_missions' aggregator itself)
     const completedTodayMissionCount = missions.filter(
-      (mission) => mission.is_completed && normalizeDateKey(mission.assigned_date) === todayKey
+      (mission) =>
+        mission.is_completed &&
+        normalizeDateKey(mission.assigned_date) === todayKey &&
+        mission.missions?.type !== "complete_daily_missions"
     ).length;
     const currentStreak = getConsecutiveDayStreak(scheduledExercises);
     const completedThisWeekXp = scheduledExercises

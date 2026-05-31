@@ -88,9 +88,10 @@
   align-items: center;
   justify-content: center;
   width: 220px;
-  margin-top: 28px !important;
   overflow: visible;
   z-index: 2;
+  position: absolute;
+  bottom: 0;
 }
 
 .childProfileMascot img {
@@ -139,11 +140,11 @@
   font-weight: 700;
 }
 
-/* Trophies Section */
 .childProfileTrophies {
   width: 100%;
   padding-top: 48px;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  max-width: 500px;
 }
 
 .childProfileTrophiesHeader {
@@ -163,7 +164,7 @@
 .childTrophiesLink {
 font-family: 'Cabinet Grotesk';
 font-style: normal;
-font-weight: 700;
+font-weight: 400;
 font-size: 14px;
 line-height: 20px;
 text-decoration-line: underline;
