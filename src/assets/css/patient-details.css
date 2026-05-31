@@ -158,6 +158,7 @@
     font-size: 18px;
     padding: 12px;
     box-sizing: border-box;  
+    font-family: "Nunito", sans-serif;
 }
 
 .patientHeroBottom {
@@ -401,6 +402,15 @@
   height: 75px;
   border-radius: 4px;
   object-fit: cover;
+}
+
+.exerciseCard .exerciseCardThumb {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  object-fit: cover;
+  display: block;
 }
 
 .exerciseCard strong {
@@ -705,8 +715,8 @@
 }
 
 .programExerciseThumb {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;

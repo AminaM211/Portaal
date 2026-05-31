@@ -1,5 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
+import ScrollToTop from './components/ScrollToTop';
 import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import PatientDetails from "./pages/PatientDetails";
@@ -25,6 +26,7 @@ import ExerciseScreen from "./pages/Oefening";
 export default function App() {
   return (
     <>
+      <ScrollToTop />
       <Routes>
       <Route path="/" element={<LoginPage />} />
 

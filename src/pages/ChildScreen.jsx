@@ -121,10 +121,14 @@ export default function ChildScreen() {
       } else if (isToday) {
         pathState = "current"; 
       } else if (isPast) {
-        if (itemsForDay.length > 0) {
-          pathState = "notdone";
+        // Voorbije dagen zonder oefeningen tellen als 'done' (groen).
+        // Alleen als er oefeningen gepland waren en niet voltooid is, tonen we 'notdone' (rood).
+        if (itemsForDay.length === 0) {
+          pathState = "done";
+        } else if (itemsForDay.every(e => e.is_completed)) {
+          pathState = "done";
         } else {
-          pathState = "locked"; 
+          pathState = "notdone";
         }
       } else {
         if (itemsForDay.length === 0) {
@@ -196,6 +200,12 @@ export default function ChildScreen() {
     () => completedTodayExercises.reduce((total, item) => total + getExerciseXp(item), 0),
     [completedTodayExercises]
   );
+  // Total XP earned across all completed exercises (past + today)
+  const totalXpEarned = useMemo(() => {
+    return scheduledExercises
+      .filter((item) => item.is_completed)
+      .reduce((sum, item) => sum + getExerciseXp(item), 0);
+  }, [scheduledExercises]);
   const currentStreak = useMemo(
     () => getConsecutiveDayStreak(scheduledExercises, todayKey),
     [scheduledExercises, todayKey]
@@ -228,7 +238,11 @@ export default function ChildScreen() {
     { label: "Streak", value: stats.streak, icon: "/images/streak-stat.png", background: "#B388FF" },
   ];
 
-  const previewMissions = useMemo(() => missions.slice(0, 3), [missions]);
+  // Only show daily missions in the quick preview (exclude weekly/monthly types like 'xp_weekly')
+  const previewMissions = useMemo(
+    () => missions.filter((m) => m.missions?.type !== "xp_weekly").slice(0, 3),
+    [missions]
+  );
   const hasMoreMissions = missions.length > previewMissions.length;
   const hoursUntilReset = getHoursUntilReset();
 
@@ -576,7 +590,7 @@ export default function ChildScreen() {
          <ChildStatsRow
                     stats={[
                       { label: "Voltooid", value: stats.totalCompleted, icon: "/images/wins-stat.png", background: "#F8AE49" },
-                      { label: "XP", value: completedTodayXp, icon: "/images/xp-stat.png", background: "#84C5ED" },
+                        { label: "XP", value: totalXpEarned, icon: "/images/xp-stat.png", background: "#84C5ED" },
                       { label: "Streak", value: currentStreak, icon: "/images/streak-stat.png", background: "#B388FF" },
                     ]}
                   />

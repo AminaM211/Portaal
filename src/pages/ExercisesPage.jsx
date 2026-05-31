@@ -61,7 +61,7 @@ export default function ExercisesPage() {
 
       setUserId(user.id);
 
-      const [libraryRes, myRes, favoritesRes, schemesRes] = await Promise.all([
+      const [libraryRes, myRes, favoritesRes, publicSchemesRes, ownSchemesRes] = await Promise.all([
         supabase
           .from("exercises")
           .select("*")
@@ -79,6 +79,7 @@ export default function ExercisesPage() {
           .select("exercise_id")
           .eq("user_id", user.id),
 
+        // fetch public schemes separately so RLS / filters can't hide them behind a combined query
         supabase
           .from("exercise_schemes")
           .select(`
@@ -86,6 +87,22 @@ export default function ExercisesPage() {
             title,
             description,
             image_url,
+            created_by,
+            is_public,
+            exercise_scheme_items ( id )
+          `)
+          .eq("is_public", true)
+          .order("created_at", { ascending: false }),
+
+        supabase
+          .from("exercise_schemes")
+          .select(`
+            id,
+            title,
+            description,
+            image_url,
+            created_by,
+            is_public,
             exercise_scheme_items ( id )
           `)
           .eq("created_by", user.id)
@@ -95,12 +112,21 @@ export default function ExercisesPage() {
       if (libraryRes.error) throw libraryRes.error;
       if (myRes.error) throw myRes.error;
       if (favoritesRes.error) throw favoritesRes.error;
-      if (schemesRes.error) throw schemesRes.error;
+      if (publicSchemesRes.error) throw publicSchemesRes.error;
+      if (ownSchemesRes.error) throw ownSchemesRes.error;
 
       setLibraryExercises(libraryRes.data || []);
       setMyExercises(myRes.data || []);
       setFavoriteIds((favoritesRes.data || []).map((item) => item.exercise_id));
-      setExerciseSchemes(schemesRes.data || []);
+      // dedupe schemes by id (user-created first)
+      const schemesMap = new Map();
+      (ownSchemesRes.data || []).forEach((s) => {
+        if (!schemesMap.has(s.id)) schemesMap.set(s.id, s);
+      });
+      (publicSchemesRes.data || []).forEach((s) => {
+        if (!schemesMap.has(s.id)) schemesMap.set(s.id, s);
+      });
+      setExerciseSchemes(Array.from(schemesMap.values()));
     } catch (error) {
       console.error(error);
       setErrorMessage("Oefeningen konden niet geladen worden.");
@@ -281,13 +307,6 @@ export default function ExercisesPage() {
             </button>
           </div>
 
-          <button
-            type="button"
-            className="btn-outline-small"
-          >
-            <img src="/images/check-square.png" alt="" />
-            <span>Selecteer</span>
-          </button>
         </div>
 
         {tab === "bibliotheek" && (
@@ -376,7 +395,7 @@ export default function ExercisesPage() {
                     className="btn-primary exerciseCreateBtn"
                     onClick={() => navigate("/kinesist/oefeningen/nieuw")}
                   >
-                    Oefening toevoegen +
+                    + Oefening toevoegen
                   </button>
 
             <div className="myExercisesGrid">
@@ -474,7 +493,7 @@ export default function ExercisesPage() {
                 className="exerciseCreateBtn btn-primary"
                 onClick={() => navigate("/kinesist/oefeningen/schema/nieuw")}
               >
-                Nieuw oefenschema maken
+                + Nieuw oefenschema maken
               </button>
             </div>
 

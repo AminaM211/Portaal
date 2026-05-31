@@ -94,6 +94,7 @@ export default function ChildMissionsPage() {
     (item) => normalizeDateKey(item.scheduled_date) === todayKey && item.is_completed
   );
   const completedTodayXp = completedTodayExercises.reduce((total, item) => total + getExerciseXp(item), 0);
+  const totalXpEarned = scheduledExercises.filter((item) => item.is_completed).reduce((sum, item) => sum + getExerciseXp(item), 0);
   const currentStreak = getConsecutiveDayStreak(scheduledExercises);
   const hoursUntilReset = getHoursUntilReset();
 
@@ -294,7 +295,7 @@ export default function ChildMissionsPage() {
           <ChildStatsRow
             stats={[
               { label: "Voltooid", value: totalCompleted, icon: "/images/wins-stat.png", background: "#F8AE49" },
-              { label: "XP", value: completedTodayXp, icon: "/images/xp-stat.png", background: "#84C5ED" },
+              { label: "XP", value: totalXpEarned, icon: "/images/xp-stat.png", background: "#84C5ED" },
               { label: "Streak", value: currentStreak, icon: "/images/streak-stat.png", background: "#B388FF" },
             ]}
           />

@@ -488,7 +488,9 @@ export default function PatientDetails() {
           difficulty,
           duration_minutes,
           repetitions,
-          image_url
+          image_url,
+          thumbnail_url,
+          media_url
         )
       `)
       .eq("patient_id", id)
@@ -1308,7 +1310,7 @@ export default function PatientDetails() {
             className="btn-primary-small"
             onClick={() => navigate(`/patient/${id}/oefening-toevoegen`)}
           >
-            Oefening toevoegen
+            + Oefening toevoegen
           </button>
         </div>
 
@@ -1428,9 +1430,10 @@ export default function PatientDetails() {
                 ) : (
                   recentCompletedExercises.map((item) => (
                     <div key={item.id} className="exerciseCard">
-                      <img
-                        src={item.exercise?.image_url || "/images/exercise-1.png"}
-                        alt=""
+                      <ExerciseMediaThumb
+                        className="exerciseCardThumb"
+                        src={item.exercise}
+                        alt={item.exercise?.title || "Oefening"}
                       />
                       <div>
                         <strong>{item.exercise?.title || "Oefening"}</strong>

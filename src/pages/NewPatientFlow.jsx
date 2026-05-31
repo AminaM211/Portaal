@@ -272,11 +272,7 @@ export default function NewPatientFlow() {
                 <li>Open het Nimbli portaal.</li>
                 <li>Kies “Aanmelden met code”.</li>
                 <li>
-                  Voer de activatiecode{" "}
-                  <span className="code">
-                    {activationCode.slice(0, 3)}-{activationCode.slice(3, 6)}
-                  </span>{" "}
-                  in.
+                  Voer de activatiecode <strong>{activationCode.slice(0, 3)}-{activationCode.slice(3, 6)}</strong> in.
                 </li>
               </ol>
             </div>
@@ -284,18 +280,6 @@ export default function NewPatientFlow() {
             <div className="share">
               <h4>Delen</h4>
               <div className="share-options">
-                <button
-                  className="btn-secondary"
-                  onClick={() =>
-                    navigator.clipboard.writeText(
-                      `${activationCode.slice(0, 3)}-${activationCode.slice(3, 6)}`
-                    )
-                  }
-                >
-                  <img src="/images/copy.svg" alt="" />
-                  Kopieer code
-                </button>
-
                 <a
                   href={`mailto:?subject=Activatiecode voor Nimbli&body=Gebruik deze activatiecode om het profiel van ${form.firstName} te activeren in de Nimbli app: ${activationCode.slice(0, 3)}-${activationCode.slice(3, 6)}`}
                   className="btn-secondary"
@@ -307,7 +291,7 @@ export default function NewPatientFlow() {
             </div>
 
             <button className="btn-primary" onClick={() => navigate("/kinesist/dashboard")}>
-              Terug
+              Terug naar dashboard
             </button>
           </div>
         )}

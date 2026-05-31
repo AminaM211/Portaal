@@ -39,25 +39,20 @@ export default function WeekStreak({ scheduledExercises }) {
       const isToday = key === todayKey;
       const completedCount = items.filter((item) => item.is_completed).length;
       const isDone = items.length > 0 && completedCount === items.length;
-
-      if (isDone) {
-        return { key, type: "done" };
-      }
-      if (isToday) {
-        return { key, type: "today" };
-      }
-      
-      const isSunday = date.getDay() === 0;
-      if (isSunday) {
-        return { key, type: "sunday" };
-      }
-  
-      if (items.length === 0) {
-        return { key, type: "empty" };
-      }
-  
       const isPast = key < todayKey;
-      return { key, type: isPast ? "missed" : "pending" };
+
+      // Als voorbij en geen items -> done
+      if (isPast && items.length === 0) return { key, type: 'done' };
+
+      if (isDone) return { key, type: 'done' };
+      if (isToday) return { key, type: 'today' };
+
+      const isSunday = date.getDay() === 0;
+      if (isSunday) return { key, type: 'sunday' };
+
+      if (items.length === 0) return { key, type: 'empty' };
+
+      return { key, type: isPast ? 'missed' : 'pending' };
     });
   }, [weekDates, scheduledExercises, todayKey]);
 

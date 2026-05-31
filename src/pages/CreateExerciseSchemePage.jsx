@@ -41,6 +41,7 @@ export default function CreateExerciseSchemePage() {
   const [schemeTitle, setSchemeTitle] = useState("");
   const [repeat, setRepeat] = useState("Elke dag");
   const [applyToAll, setApplyToAll] = useState(true);
+  const [isPublic, setIsPublic] = useState(false);
   const [savingScheme, setSavingScheme] = useState(false);
 
   useEffect(() => {
@@ -176,6 +177,7 @@ export default function CreateExerciseSchemePage() {
           description: metadata,
           image_url: schemeImage,
           created_by: userId,
+          is_public: isPublic,
         })
         ;
 
@@ -413,6 +415,15 @@ export default function CreateExerciseSchemePage() {
                   onChange={(e) => setApplyToAll(e.target.checked)}
                 />
                 <span>Voor alle oefeningen</span>
+              </label>
+
+              <label className="schemeCheckboxRow" style={{ marginTop: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={isPublic}
+                  onChange={(e) => setIsPublic(e.target.checked)}
+                />
+                <span>Maak schema publiek (zichtbaar in bibliotheek)</span>
               </label>
 
               <div className="schemeActionRow">

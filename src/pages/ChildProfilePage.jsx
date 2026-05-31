@@ -125,22 +125,24 @@ export default function ChildProfilePage() {
     (item) => normalizeDateKey(item.scheduled_date) === todayKey && item.is_completed
   );
   const completedTodayXp = completedTodayExercises.reduce((total, item) => total + getExerciseXp(item), 0);
+  const totalXpEarned = scheduledExercises.filter((item) => item.is_completed).reduce((sum, item) => sum + getExerciseXp(item), 0);
   const currentStreak = getConsecutiveDayStreak(scheduledExercises);
   const hoursUntilReset = getHoursUntilReset();
 
   const dashboardStats = [
     { label: "Patiënten", value: Math.floor(totalCompleted / 5), icon: "/images/troffee.svg", background: "#F8AE49" },
-    { label: "Trofeeën", value: totalCompleted, icon: "/images/star-blue.svg", background: "#84C5ED" },
+    { label: "XP", value: totalXpEarned, icon: "/images/xp-stat.png", background: "#84C5ED" },
     { label: "Streak", value: currentStreak, icon: "/images/streak.svg", background: "#B388FF" },
   ];
 
   const rightPanelStats = [
     { label: "Patiënten", value: Math.floor(totalCompleted / 5), icon: "/images/wins-stat.png", background: "#F8AE49" },
-    { label: "XP", value: completedTodayXp, icon: "/images/xp-stat.png", background: "#84C5ED" },
+    { label: "XP", value: totalXpEarned, icon: "/images/xp-stat.png", background: "#84C5ED" },
     { label: "Streak", value: currentStreak, icon: "/images/streak-stat.png", background: "#B388FF" },
   ];
 
-  const previewMissions = missions.slice(0, 3);
+  // Only show daily missions in the profile preview (exclude weekly/monthly types like 'xp_weekly')
+  const previewMissions = missions.filter((m) => m.missions?.type !== "xp_weekly").slice(0, 3);
 
   return (
     <div className="childApp">

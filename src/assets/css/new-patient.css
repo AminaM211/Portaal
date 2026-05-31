@@ -270,8 +270,11 @@ margin: 40px 0;
 
 .instructions li {
     margin-bottom: 8px;
-    white-space: nowrap !important;
- 
+}
+
+.instructions strong {
+    font-weight: 600;
+    color: #6BAFDF;
 }
 
 .instructions h4 {

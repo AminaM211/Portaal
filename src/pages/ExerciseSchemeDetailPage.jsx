@@ -62,6 +62,7 @@ export default function ExerciseSchemeDetailPage() {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState([]);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     loadScheme();
@@ -93,6 +94,7 @@ export default function ExerciseSchemeDetailPage() {
           title,
           description,
           image_url,
+          is_public,
           created_by,
           created_at,
           exercise_scheme_items (
@@ -113,11 +115,18 @@ export default function ExerciseSchemeDetailPage() {
 
       if (error) throw error;
 
-      if (!data || data.created_by !== user.id) {
+      if (!data) {
         navigate("/kinesist/oefeningen");
         return;
       }
 
+      // allow viewing public schemes by non-owners; editing restricted to owner
+      if (data.created_by !== user.id && !data.is_public) {
+        navigate("/kinesist/oefeningen");
+        return;
+      }
+
+      setIsOwner(data.created_by === user.id);
       setScheme(data);
       console.log("[SchemeDetail] loaded scheme:", data);
     } catch (error) {
@@ -191,9 +200,10 @@ export default function ExerciseSchemeDetailPage() {
         })),
       });
 
+      const updatePayload = { description: metadata, image_url: schemeImage };
       const { error } = await supabase
         .from("exercise_schemes")
-        .update({ description: metadata, image_url: schemeImage })
+        .update(updatePayload)
         .eq("id", scheme.id);
 
       if (error) throw error;
@@ -262,16 +272,20 @@ export default function ExerciseSchemeDetailPage() {
           </button>
 
           <div className="exerciseDetailActions">
-            <button type="button" className="btn-outline-small" onClick={handleDeleteScheme}>
-              Verwijder oefenschema
-            </button>
+              {isOwner && (
+                <button type="button" className="btn-outline-small" onClick={handleDeleteScheme}>
+                  Verwijder oefenschema
+                </button>
+              )}
 
-            <button type="button" className="exerciseIconBtn" onClick={toggleFavorite} aria-label="Favoriet">
-              <img
-                src={isFavorited ? "/images/favorite-filled.svg" : "/images/favorite.svg"}
-                alt=""
-              />
-            </button>
+              {/* Public toggle removed from detail page per UX: only set on creation */}
+
+              <button type="button" className="exerciseIconBtn" onClick={toggleFavorite} aria-label="Favoriet">
+                <img
+                  src={isFavorited ? "/images/favorite-filled.svg" : "/images/favorite.svg"}
+                  alt=""
+                />
+              </button>
           </div>
         </div>
 
