@@ -408,22 +408,13 @@ export default function CreateExerciseSchemePage() {
                 </select>
               </div>
 
-              <label className="schemeCheckboxRow">
-                <input
-                  type="checkbox"
-                  checked={applyToAll}
-                  onChange={(e) => setApplyToAll(e.target.checked)}
-                />
-                <span>Voor alle oefeningen</span>
-              </label>
-
               <label className="schemeCheckboxRow" style={{ marginTop: 8 }}>
                 <input
                   type="checkbox"
                   checked={isPublic}
                   onChange={(e) => setIsPublic(e.target.checked)}
                 />
-                <span>Maak schema publiek (zichtbaar in bibliotheek)</span>
+                <span>Maak schema publiek (Iedereen kan dit zien en gebruiken)</span>
               </label>
 
               <div className="schemeActionRow">

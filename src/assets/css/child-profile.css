@@ -199,8 +199,10 @@ color: #000000;
 }
 
 .childTrophyIcon {
-  font-size: 32px;
-  line-height: 1;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  display: block;
 }
 
 .childTrophyName {

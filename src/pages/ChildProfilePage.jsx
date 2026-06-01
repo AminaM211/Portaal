@@ -180,11 +180,11 @@ export default function ChildProfilePage() {
               </div>
               <div className="childTrophiesList">
                 {[
-                  { icon: "⭐", name: "7 dagen streak", desc: "Voltooi 7 dagen achtereen" },
-                  { icon: "👆", name: "Eerste stap", desc: "Voer je eerste oefening uit" },
+                  { image: "/images/streak_badge.png", name: "7 dagen streak", desc: "Voltooi 7 dagen achtereen" },
+                  { image: "/images/first_badge.png", name: "Eerste stap", desc: "Voer je eerste oefening uit" },
                 ].map((trophy, idx) => (
                   <div key={idx} className="childTrophyCard">
-                    <div className="childTrophyIcon">{trophy.icon}</div>
+                    <img className="childTrophyIcon" src={trophy.image} alt="" />
                     <p className="childTrophyName">{trophy.name}</p>
                     <p className="childTrophyDesc">{trophy.desc}</p>
                   </div>

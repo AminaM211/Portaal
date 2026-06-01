@@ -336,10 +336,22 @@ export default function PatientDetails() {
   }, [location.state]);
 
   useEffect(() => {
-    if (userId) {
+    if (userId && activeTab === "logboek" && notesEnabled && notes.length === 0) {
       loadNotesSafe(userId);
     }
-  }, [profile, userId]);
+  }, [userId, activeTab, notesEnabled, notes.length]);
+
+  useEffect(() => {
+    if (!showAddExerciseModal || !userId) return;
+
+    if (exerciseLibrary.length === 0 && myExercises.length === 0) {
+      loadExerciseLibrary(userId);
+    }
+
+    if (favoriteExerciseIds.length === 0) {
+      loadFavorites(userId);
+    }
+  }, [showAddExerciseModal, userId, exerciseLibrary.length, myExercises.length, favoriteExerciseIds.length]);
 
   useEffect(() => {
     setOpenProgramMenuId(null);
@@ -382,9 +394,6 @@ export default function PatientDetails() {
       await Promise.all([
         loadPatient(user.id),
         loadPatientExercises(),
-        loadExerciseLibrary(user.id),
-        loadNotesSafe(user.id),
-        loadFavorites(user.id),
       ]);
     } catch (error) {
       console.error(error);
@@ -488,9 +497,7 @@ export default function PatientDetails() {
           difficulty,
           duration_minutes,
           repetitions,
-          image_url,
-          thumbnail_url,
-          media_url
+          image_url
         )
       `)
       .eq("patient_id", id)
@@ -1430,11 +1437,13 @@ export default function PatientDetails() {
                 ) : (
                   recentCompletedExercises.map((item) => (
                     <div key={item.id} className="exerciseCard">
-                      <ExerciseMediaThumb
-                        className="exerciseCardThumb"
-                        src={item.exercise}
-                        alt={item.exercise?.title || "Oefening"}
-                      />
+                      <div className="exerciseCardThumbWrap">
+                        <ExerciseMediaThumb
+                          className="exerciseCardThumb"
+                          src={item.exercise?.image_url}
+                          alt={item.exercise?.title || "Oefening"}
+                        />
+                      </div>
                       <div>
                         <strong>{item.exercise?.title || "Oefening"}</strong>
                         <span>{item.exercise?.category || "Overig"}</span>
