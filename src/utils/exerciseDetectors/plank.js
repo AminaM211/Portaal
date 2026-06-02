@@ -1,69 +1,151 @@
-import { getPlankSide, isVisible } from './utils';
-
 export default function createPlankDetector(config = {}) {
-  const cfg = { visThreshold: 0.55, bodyFlatAngle: 140, bodyWidthSpread: 0.14, ...config };
+  const cfg = {
+    bodyAngle: 148,
+    maxHipLineDistance: 0.12,
+    minHorizontalSpan: 0.22,
+    minHorizontalRatio: 1.05,
+    ...config,
+  };
+
+  const hasPoint = (landmark) => {
+    return landmark && Number.isFinite(landmark.x) && Number.isFinite(landmark.y);
+  };
+
+  const getAngle = (a, b, c) => {
+    const ab = { x: a.x - b.x, y: a.y - b.y };
+    const cb = { x: c.x - b.x, y: c.y - b.y };
+    const dot = ab.x * cb.x + ab.y * cb.y;
+    const abMag = Math.hypot(ab.x, ab.y);
+    const cbMag = Math.hypot(cb.x, cb.y);
+    if (!abMag || !cbMag) return 0;
+    const cosine = Math.min(1, Math.max(-1, dot / (abMag * cbMag)));
+    return (Math.acos(cosine) * 180) / Math.PI;
+  };
+
+  const distanceToLine = (point, lineStart, lineEnd) => {
+    const dx = lineEnd.x - lineStart.x;
+    const dy = lineEnd.y - lineStart.y;
+    const length = Math.hypot(dx, dy);
+    if (!length) return 1;
+    return Math.abs(dy * point.x - dx * point.y + lineEnd.x * lineStart.y - lineEnd.y * lineStart.x) / length;
+  };
+
   return {
     init: () => ({ plankHoldSeconds: 0, plankLastAwardedSecond: 0, lastTimestamp: null }),
     update: (landmarks, state = {}) => {
-      const plankSide = getPlankSide(landmarks, cfg.visThreshold);
-      if (!plankSide) {
-        return { progressDelta: 0, feedback: { tone: 'info', title: 'Iets verder achteruit', message: 'Ik moet je schouders, heupen en voeten kunnen zien. Draai ook een beetje zijwaarts voor de plank.' }, newState: state };
+      const sides = [
+        {
+          shoulder: landmarks[11],
+          elbow: landmarks[13],
+          hip: landmarks[23],
+          ankle: landmarks[27],
+        },
+        {
+          shoulder: landmarks[12],
+          elbow: landmarks[14],
+          hip: landmarks[24],
+          ankle: landmarks[28],
+        },
+      ].filter((side) => [side.shoulder, side.elbow, side.hip, side.ankle].every(hasPoint));
+
+      if (!sides.length) {
+        return {
+          progressDelta: 0,
+          feedback: {
+            tone: 'info',
+            title: 'Kom helemaal in beeld',
+            message: 'Ik moet je schouder, elleboog, heup en voet kunnen zien voor de plank.',
+          },
+          newState: { ...state, plankHoldSeconds: 0, lastTimestamp: Date.now() },
+          setProgress: 0,
+        };
       }
 
-      const useLeftSide = plankSide === 'left';
-      const leftShoulder = landmarks[11];
-      const rightShoulder = landmarks[12];
-      const leftHip = landmarks[23];
-      const rightHip = landmarks[24];
-      const leftAnkle = landmarks[27];
-      const rightAnkle = landmarks[28];
-      const leftElbow = landmarks[13];
-      const rightElbow = landmarks[14];
+      const plankSides = sides.map((side) => {
+        const horizontalSpan = Math.abs(side.shoulder.x - side.ankle.x);
+        const verticalSpan = Math.abs(side.shoulder.y - side.ankle.y);
+        const horizontalBody =
+          horizontalSpan >= cfg.minHorizontalSpan &&
+          horizontalSpan >= verticalSpan * cfg.minHorizontalRatio;
+        const bodyAngle = getAngle(side.shoulder, side.hip, side.ankle);
+        const hipLineDistance = distanceToLine(side.hip, side.shoulder, side.ankle);
+        const elbowUnderShoulder = side.elbow.y >= side.shoulder.y - 0.04;
 
-      const shoulder = useLeftSide ? leftShoulder : rightShoulder;
-      const hip = useLeftSide ? leftHip : rightHip;
-      const ankle = useLeftSide ? leftAnkle : rightAnkle;
-      const elbow = useLeftSide ? leftElbow : rightElbow;
+        return {
+          ...side,
+          bodyAngle,
+          hipLineDistance,
+          horizontalBody,
+          elbowUnderShoulder,
+          score: bodyAngle - hipLineDistance * 250 + (horizontalBody ? 20 : 0) + (elbowUnderShoulder ? 10 : 0),
+        };
+      });
 
-      if (!shoulder || !hip || !ankle || !elbow) {
-        return { progressDelta: 0, feedback: { tone: 'info', title: 'Kom helemaal in beeld', message: 'Ik moet je hele lijf zien: schouders, heupen, ellebogen en voeten.' }, newState: state };
+      const bestSide = plankSides.sort((a, b) => b.score - a.score)[0];
+
+      if (!bestSide.horizontalBody) {
+        return {
+          progressDelta: 0,
+          feedback: {
+            tone: 'info',
+            title: 'Draai zijwaarts',
+            message: 'Voor de plank moet ik je lichaam van schouder tot voet zijwaarts kunnen zien.',
+          },
+          newState: { ...state, plankHoldSeconds: 0, lastTimestamp: Date.now() },
+          setProgress: 0,
+        };
       }
 
-      const bodyHeightSpread = Math.max(shoulder.y, hip.y, ankle.y) - Math.min(shoulder.y, hip.y, ankle.y);
-      const bodyWidthSpread = Math.abs(shoulder.x - ankle.x);
-      const bodyLineAngle = (function getAngle(a, b, c) {
-        const ab = { x: a.x - b.x, y: a.y - b.y };
-        const cb = { x: c.x - b.x, y: c.y - b.y };
-        const dot = ab.x * cb.x + ab.y * cb.y;
-        const abMag = Math.hypot(ab.x, ab.y);
-        const cbMag = Math.hypot(cb.x, cb.y);
-        if (!abMag || !cbMag) return 0;
-        const cosine = Math.min(1, Math.max(-1, dot / (abMag * cbMag)));
-        return (Math.acos(cosine) * 180) / Math.PI;
-      })(shoulder, hip, ankle);
+      const bodyStraight = bestSide.bodyAngle >= cfg.bodyAngle && bestSide.hipLineDistance <= cfg.maxHipLineDistance;
 
-      const bodyFlat = bodyHeightSpread < 0.1 && bodyWidthSpread > cfg.bodyWidthSpread && bodyLineAngle > cfg.bodyFlatAngle;
-      const elbowBelowShoulder = elbow.y > shoulder.y;
-      const feetVisibleLow = ankle.y > hip.y - 0.1;
-      const elbowSupport = isVisible(elbow, 0.35);
+      if (!bodyStraight) {
+        return {
+          progressDelta: 0,
+          feedback: {
+            tone: 'info',
+            title: 'Maak je lichaam recht',
+            message: 'Hou schouders, heupen en voeten op één rechte lijn.',
+          },
+          newState: { ...state, plankHoldSeconds: 0, lastTimestamp: Date.now() },
+          setProgress: 0,
+        };
+      }
+
+      if (!bestSide.elbowUnderShoulder) {
+        return {
+          progressDelta: 0,
+          feedback: {
+            tone: 'info',
+            title: 'Steun op je ellebogen',
+            message: 'Plaats je elleboog onder je schouder en hou je lichaam recht.',
+          },
+          newState: { ...state, plankHoldSeconds: 0, lastTimestamp: Date.now() },
+          setProgress: 0,
+        };
+      }
 
       const now = Date.now();
       const last = state.lastTimestamp || now;
+      const deltaSeconds = Math.min((now - last) / 1000, 0.2);
+      const plankHoldSeconds = (state.plankHoldSeconds || 0) + deltaSeconds;
+      const target = state.target || 30;
+      const progress = Math.min((plankHoldSeconds / target) * 100, 100);
 
-      if (bodyFlat && elbowBelowShoulder && feetVisibleLow && elbowSupport) {
-        const deltaSeconds = Math.min((now - last) / 1000, 0.2);
-        state.plankHoldSeconds = (state.plankHoldSeconds || 0) + deltaSeconds;
-        const wholeSeconds = Math.floor(state.plankHoldSeconds);
-        const holdProgress = (wholeSeconds / (state.target || 30)) * 100;
-        const progress = Math.min(holdProgress, 100);
-        state.plankLastAwardedSecond = wholeSeconds > (state.plankLastAwardedSecond || 0) ? wholeSeconds : (state.plankLastAwardedSecond || 0);
-        state.lastTimestamp = now;
-        return { progressDelta: 0, feedback: { tone: 'good', title: 'Sterk!', message: 'Blijf stil hangen met een rechte rug en kijk naar de vloer.' }, newState: state, setProgress: progress };
-      } else {
-        state.plankHoldSeconds = 0;
-        state.lastTimestamp = now;
-        return { progressDelta: 0, feedback: { tone: 'info', title: 'Nog even goed zetten', message: 'Steun op je ellebogen en voeten en hou je lichaam als een rechte plank.' }, newState: state };
-      }
+      return {
+        progressDelta: 0,
+        feedback: {
+          tone: 'good',
+          title: 'Sterk!',
+          message: 'Blijf zo recht en rustig hangen.',
+        },
+        newState: {
+          ...state,
+          plankHoldSeconds,
+          plankLastAwardedSecond: Math.max(state.plankLastAwardedSecond || 0, Math.floor(plankHoldSeconds)),
+          lastTimestamp: now,
+        },
+        setProgress: progress,
+      };
     },
   };
 }

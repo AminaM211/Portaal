@@ -1,7 +1,7 @@
 export default function createSingleLegStandDetector(config = {}) {
   const cfg = { kneeUpGap: 0.1, kneeDownGap: 0.05, ...config };
   return {
-    init: () => ({ phase: 'neutral', holdSeconds: 0, lastTimestamp: null }),
+    init: () => ({ singleLegStandPhase: 'neutral', holdSeconds: 0, lastTimestamp: null }),
     update: (landmarks, state = {}) => {
       const leftKnee = landmarks[25];
       const rightKnee = landmarks[26];
@@ -17,12 +17,12 @@ export default function createSingleLegStandDetector(config = {}) {
       const leftLegDown = leftKnee.y > leftHip.y - cfg.kneeDownGap;
       const rightLegDown = rightKnee.y > rightHip.y - cfg.kneeDownGap;
 
-      const oneLegUp = (leftLegUp && leftLegDown) || (rightLegUp && rightLegDown);
+      const oneLegUp = (leftLegUp && rightLegDown) || (rightLegUp && leftLegDown);
       const bothLegsDown = leftLegDown && rightLegDown;
       const shoulderHip = Math.abs(leftShoulder.x - leftHipPt.x) < 0.1;
       const bodyUpright = shoulderHip;
 
-      const curr = state.highKneePhase || 'neutral';
+      const curr = state.singleLegStandPhase || 'neutral';
       let newPhase = curr;
       let progressDelta = 0;
       let feedback = null;
@@ -54,7 +54,7 @@ export default function createSingleLegStandDetector(config = {}) {
         feedback = { tone: 'info', title: 'Til één been', message: 'Til één been op en hou je balans.' };
       }
 
-      return { progressDelta, feedback, newState: { ...state, highKneePhase: newPhase, holdSeconds: state.holdSeconds, lastTimestamp: state.lastTimestamp } };
+      return { progressDelta, feedback, newState: { ...state, singleLegStandPhase: newPhase, holdSeconds: state.holdSeconds, lastTimestamp: state.lastTimestamp } };
     },
   };
 }

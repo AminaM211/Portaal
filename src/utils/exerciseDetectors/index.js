@@ -5,6 +5,7 @@ import createStretchStarsDetector from './stretchStars';
 import createShoulderRaisesDetector from './shoulderRaises';
 import createGluteBridgesDetector from './gluteBridges';
 import createSingleLegStandDetector from './singleLegStand';
+import createLungesDetector from './lunges';
 import createGuidedSequenceDetector from './guidedSequence';
 
 const registry = {
@@ -15,6 +16,7 @@ const registry = {
   'shoulder-raises': (cfg) => createShoulderRaisesDetector(cfg),
   'glute-bridges': (cfg) => createGluteBridgesDetector(cfg),
   'single-leg-stand': (cfg) => createSingleLegStandDetector(cfg),
+  'lunges': (cfg) => createLungesDetector(cfg),
   'guided-sequence': (cfg) => createGuidedSequenceDetector(cfg),
 };
 

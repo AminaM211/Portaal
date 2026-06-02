@@ -20,11 +20,15 @@ export default function createGluteBridgesDetector(config = {}) {
 
       if (hipsUp && curr === 'closed') {
         newPhase = 'open';
-        feedback = { tone: 'info', title: 'Heupen omhoog', message: 'Til je heupen goed omhoog.' };
+        feedback = { tone: 'good', title: 'Heupen hoog!', message: 'Je heupen zijn goed omhoog. Laat ze nu rustig zakken.' };
       } else if (hipsDown && curr === 'open') {
         newPhase = 'closed';
         progressDelta = 1;
         feedback = { tone: 'good', title: 'Supergoed!', message: 'Nog eentje!' };
+      } else if (hipsUp) {
+        feedback = { tone: 'good', title: 'Goed hoog', message: 'Hou even vast en laat je heupen daarna rustig zakken.' };
+      } else if (curr === 'open') {
+        feedback = { tone: 'info', title: 'Rustig zakken', message: 'Laat je heupen gecontroleerd terug naar beneden.' };
       } else if (curr === 'closed') {
         feedback = { tone: 'info', title: 'Til je heupen', message: 'Breng je heupen omhoog en span je billen.' };
       }

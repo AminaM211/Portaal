@@ -1,9 +1,7 @@
-import { isVisible } from './utils';
-
 export default function createHighKneesDetector(config = {}) {
   const cfg = { visibility: 0.5, liftGap: 0.08, neutralGap: 0.03, ...config };
   return {
-    init: () => ({ phase: 'neutral' }),
+    init: () => ({ highKneePhase: 'neutral' }),
     update: (landmarks, state = {}) => {
       const leftKnee = landmarks[25];
       const rightKnee = landmarks[26];

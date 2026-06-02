@@ -37,9 +37,11 @@ export default function createJumpingJacksDetector(config = {}) {
       const ankleWidth = Math.abs(leftAnkle.x - rightAnkle.x);
       const wristsHigh = leftWrist.y < landmarks[0].y - cfg.wristAboveHeadGap && rightWrist.y < landmarks[0].y - cfg.wristAboveHeadGap;
       const wristsDown = leftWrist.y > leftShoulder.y + cfg.wristBelowShoulderGap && rightWrist.y > rightShoulder.y + cfg.wristBelowShoulderGap;
+      const legsOpen = ankleWidth > shoulderWidth * cfg.ankleRatioOpen;
+      const legsClosed = ankleWidth < shoulderWidth * cfg.ankleRatioClose;
 
-      const openPose = ankleWidth > shoulderWidth * cfg.ankleRatioOpen && wristsHigh;
-      const closePose = ankleWidth < shoulderWidth * cfg.ankleRatioClose && wristsDown;
+      const openPose = legsOpen && wristsHigh;
+      const closePose = legsClosed && wristsDown;
 
       const currPhase = state.phase || 'closed';
       let newPhase = currPhase;
@@ -48,15 +50,23 @@ export default function createJumpingJacksDetector(config = {}) {
 
       if (openPose && currPhase === 'closed') {
         newPhase = 'open';
-        feedback = { tone: 'info', title: 'Armen open', message: 'Spring nu breed open met armen boven je hoofd.' };
+        feedback = { tone: 'good', title: 'Goed open!', message: 'Je armen en benen zijn open. Spring nu terug dicht.' };
       } else if (closePose && currPhase === 'open') {
         newPhase = 'closed';
         progressDelta = 1;
         feedback = { tone: 'good', title: 'Super!', message: 'Goed gedaan. Sluit rustig weer en doe nog eentje.' };
+      } else if (currPhase === 'closed' && legsOpen && !wristsHigh) {
+        feedback = { tone: 'info', title: 'Armen hoger', message: 'Je benen zijn open. Breng ook je armen boven je hoofd.' };
+      } else if (currPhase === 'closed' && wristsHigh && !legsOpen) {
+        feedback = { tone: 'info', title: 'Benen wijder', message: 'Je armen zijn hoog. Spring met je voeten wat verder open.' };
       } else if (currPhase === 'closed') {
-        feedback = { tone: 'info', title: 'Probeer het zo', message: 'Spring open met benen en armen tegelijk.' };
+        feedback = { tone: 'info', title: 'Spring open', message: 'Spring met je voeten wijd en breng je armen boven je hoofd.' };
+      } else if (!legsClosed && wristsDown) {
+        feedback = { tone: 'info', title: 'Voeten dicht', message: 'Je armen zijn al beneden. Breng ook je voeten terug bij elkaar.' };
+      } else if (legsClosed && !wristsDown) {
+        feedback = { tone: 'info', title: 'Armen omlaag', message: 'Je voeten zijn al dicht. Laat ook je armen rustig zakken.' };
       } else {
-        feedback = { tone: 'info', title: 'Volg de beweging', message: 'Maak eerst een duidelijke sprong open en kom dan weer dicht.' };
+        feedback = { tone: 'info', title: 'Spring terug dicht', message: 'Breng je armen omlaag en je voeten terug bij elkaar.' };
       }
 
       return { progressDelta, feedback, newState: { ...state, phase: newPhase } };

@@ -206,6 +206,7 @@
 
 .active-topbar {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
@@ -251,10 +252,6 @@
   justify-content: space-between;
   gap: 16px;
   padding: 0 4px;
-}
-
-.active-topbarCopy {
-  min-width: 0;
 }
 
 .active-shellTitle {
@@ -325,6 +322,53 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.active-liveFeedback {
+  padding: 16px 18px;
+  border-radius: 8px;
+  border: 2px solid #b8eee5;
+  background: #f1fbf9;
+  color: #123d36;
+  box-shadow: 0 4px 0 rgba(43, 179, 155, 0.18);
+}
+
+.active-liveFeedbackLabel {
+  display: block;
+  margin-bottom: 6px;
+  color: #177e6b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.active-liveFeedback strong {
+  display: block;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.active-liveFeedback p {
+  margin: 6px 0 0;
+  color: #35524d;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.active-liveFeedback--good {
+  border-color: #86efac;
+  background: #f0fdf4;
+  box-shadow: 0 4px 0 rgba(22, 101, 52, 0.16);
+}
+
+.active-liveFeedback--good .active-liveFeedbackLabel,
+.active-liveFeedback--good strong {
+  color: #166534;
+}
+
+.active-liveFeedback--info {
+  border-color: #b8eee5;
 }
 
 .active-coachCopy {
@@ -624,17 +668,6 @@
   align-items: start;
   justify-content: space-between;
   padding: 0 32px;
-}
-
-
-
-.active-kicker {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #2BB39B;
 }
 
 .active-title {

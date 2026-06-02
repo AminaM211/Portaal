@@ -126,12 +126,13 @@ export default function ExerciseScreen() {
   const exercisePreset = (() => {
     if (!supportsPoseDetection) return "custom";
     if (/jumping jacks?|sterrensprong|spring open/.test(normalizedExerciseText)) return "jumping-jacks";
-    if (/knie|high knees?|afwisselend.*lucht|ter plaatse.*knie/.test(normalizedExerciseText)) return "high-knees";
     if (/stretch|sterren|naar de sterren|boven je ogen|ellebogen.*ogen/.test(normalizedExerciseText)) return "stretch-stars";
     if (/plank|planken|ellebogen.*voeten|steun op.*ellebogen/.test(normalizedExerciseText)) return "plank";
     if (/armheffingen|arm heffen|arm til|schouders omhoog|shoulder/.test(normalizedExerciseText)) return "shoulder-raises";
     if (/heuplift|heupliften|glute|heupen omhoog|brug|heupbrug/.test(normalizedExerciseText)) return "glute-bridges";
-    if (/balans|één been|eenbeen|proprioceptie|standduur|single leg/.test(normalizedExerciseText)) return "single-leg-stand";
+    if (/lunges?|uitvalspas|uitvalspassen|reuzenstap|reuzenstappen|grote stappen/.test(normalizedExerciseText)) return "lunges";
+    if (/balans op één been|balans op een been|één been|eenbeen|proprioceptie|standduur|single leg/.test(normalizedExerciseText)) return "single-leg-stand";
+    if (/high knees?|knieën afwisselend|knieen afwisselend|afwisselend.*lucht|ter plaatse.*knie/.test(normalizedExerciseText)) return "high-knees";
     if (/arm omhoog|vrije oefening/.test(normalizedExerciseText)) return "guided-sequence";
     return "custom";
   })();
@@ -190,9 +191,17 @@ export default function ExerciseScreen() {
       key: "single-leg-stand",
       title: "Balans op één been",
       instruction:
-        "Til één been op en hou je balance. Houd je romp recht en kijk recht vooruit.",
-      mode: "hold",
-      target: 20,
+        "Til één knie op naar je borst, zet je voet terug neer en wissel daarna van been.",
+      mode: "reps",
+      target: 10,
+    },
+    {
+      key: "lunges",
+      title: "Reuzenstappen",
+      instruction:
+        "Maak een grote reuzenstap naar voren, zak rustig een beetje door je knie en kom terug recht. Wissel daarna van been.",
+      mode: "reps",
+      target: 10,
     },
   ];
 
@@ -208,6 +217,14 @@ export default function ExerciseScreen() {
             ? "stretch-stars"
             : exercisePreset === "plank"
             ? "plank"
+            : exercisePreset === "shoulder-raises"
+            ? "shoulder-raises"
+            : exercisePreset === "glute-bridges"
+            ? "glute-bridges"
+            : exercisePreset === "single-leg-stand"
+            ? "single-leg-stand"
+            : exercisePreset === "lunges"
+            ? "lunges"
             : "arm-raise",
           title: exerciseData.title || "Oefening",
           instruction:
@@ -219,6 +236,14 @@ export default function ExerciseScreen() {
               ? "Breng je ellebogen omhoog tot boven je ogen, laat ze terug zakken en herhaal. Elke keer dat je opnieuw boven je ogen komt telt als 1 herhaling."
               : exercisePreset === "plank"
               ? "Steun op je ellebogen en tenen, houd je lichaam in een rechte lijn van schouders tot enkels."
+              : exercisePreset === "shoulder-raises"
+              ? "Til je armen langzaam op tot schouderhoogte en laat ze weer zakken. Houd je bewegingen rustig en gecontroleerd."
+              : exercisePreset === "glute-bridges"
+              ? "Lig op je rug, til je heupen omhoog en laat ze weer zakken. Houd je lichaam recht en je beweging rustig."
+              : exercisePreset === "single-leg-stand"
+              ? "Til één knie op naar je borst, zet je voet terug neer en wissel daarna van been."
+              : exercisePreset === "lunges"
+              ? "Maak een grote reuzenstap naar voren, zak rustig een beetje door je knie en kom terug recht. Wissel daarna van been."
               : exerciseData.description ||
                 "Hef je linkerarm boven schouderhoogte en laat gecontroleerd zakken.",
           mode: isUploadedExercise ? "hold" : (exercisePreset === "plank" ? "hold" : "reps"),
@@ -229,9 +254,6 @@ export default function ExerciseScreen() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const currentExercise = exercisePlan[currentExerciseIndex];
   const motionRef = useRef({
-    jjPhase: "closed",
-    highKneePhase: "neutral",
-    stretchStarsPhase: "below",
     plankHoldSeconds: 0,
     plankLastAwardedSecond: 0,
     lastTimestamp: null,
@@ -243,6 +265,11 @@ export default function ExerciseScreen() {
     tone: "info",
     title: "Kijk goed naar het scherm",
     message: "Volg de opdracht en probeer je beweging rustig te maken.",
+  });
+  const feedbackRef = useRef({
+    key: "info|Kijk goed naar het scherm|Volg de opdracht en probeer je beweging rustig te maken.",
+    tone: "info",
+    updatedAt: 0,
   });
 
   // Flow statussen: 'detail' -> 'active' -> 'success' -> 'streak'
@@ -264,6 +291,8 @@ export default function ExerciseScreen() {
   const hasDemoVideo = isVideoFileUrl(exerciseData?.image_url);
   const activeInstruction = currentExercise?.instruction || exerciseData.description || "Volg de oefening rustig.";
   const showPoseDetectionUI = supportsPoseDetection && exercisePreset === "guided-sequence";
+  const activeDetectorPreset = isDefaultExercise ? currentExercise?.key : exercisePreset;
+  const isSingleLegStand = activeDetectorPreset === "single-leg-stand";
   
   // Timer gebaseerd op database duration
   const [timeLeft, setTimeLeft] = useState(configuredDurationSeconds);
@@ -401,14 +430,35 @@ export default function ExerciseScreen() {
   };
 
   const setFeedback = (tone, title, message) => {
+    const now = Date.now();
+    const key = `${tone}|${title}|${message}`;
+    const last = feedbackRef.current;
+
+    if (last.key === key) return;
+
+    if (now - last.updatedAt < 900) {
+      return;
+    }
+
+    if (tone !== "good" && last.tone === "good" && now - last.updatedAt < 1500) {
+      return;
+    }
+
+    feedbackRef.current = { key, tone, updatedAt: now };
     setLiveFeedback({ tone, title, message });
   };
 
   const getExerciseProgressLabel = () => {
     if (!currentExercise) return "";
 
-    if (isUploadedExercise || currentExercise.mode === "hold") {
+    if (isUploadedExercise) {
       return formatTime(Math.max(0, timeLeft));
+    }
+
+    if (currentExercise.mode === "hold") {
+      const target = currentExercise?.target || 1;
+      const heldSeconds = Math.floor((target * progress) / 100);
+      return `${heldSeconds}/${target}`;
     }
 
     return `${Math.round(((currentExercise?.target || 1) * progress) / 100)}/${currentExercise?.target || 1}`;
@@ -442,6 +492,12 @@ export default function ExerciseScreen() {
   useEffect(() => {
     if (step !== 'active' || !currentExercise) return;
 
+    feedbackRef.current = {
+      key: "",
+      tone: "info",
+      updatedAt: 0,
+    };
+
     setFeedback(
       'info',
       hasDemoVideo ? 'Kijk en doe mee' : 'Klaar?',
@@ -456,13 +512,13 @@ export default function ExerciseScreen() {
   // Initialize detector for the current preset if available
   useEffect(() => {
     if (!supportsPoseDetection) return;
-    const det = getDetector(exercisePreset);
+    const det = getDetector(activeDetectorPreset);
     detectorRef.current = det;
     if (det && det.init) {
       const initState = det.init();
       // ensure detectors know the target for hold-based exercises
       const target = currentExercise?.target || (exerciseData?.duration_minutes ? exerciseData.duration_minutes * 1 : undefined);
-      motionRef.current = { ...motionRef.current, ...initState, target };
+      motionRef.current = { ...initState, target };
     }
     // Try to create a worker for off-thread detection when supported
     try {
@@ -476,9 +532,15 @@ export default function ExerciseScreen() {
         if (msg.type === 'result') {
           const res = msg.result;
           if (!res) return;
-          if (typeof res.progressDelta === 'number' && res.progressDelta > 0) updateRepProgress(res.progressDelta);
+          const hasProgressDelta = typeof res.progressDelta === 'number' && res.progressDelta > 0;
+          if (hasProgressDelta) updateRepProgress(res.progressDelta);
           if (typeof res.setProgress === 'number') setProgress(res.setProgress);
-          if (res.feedback) setFeedback(res.feedback.tone, res.feedback.title, res.feedback.message);
+          if (res.feedback) {
+            if (hasProgressDelta) {
+              feedbackRef.current = { key: "", tone: res.feedback.tone, updatedAt: 0 };
+            }
+            setFeedback(res.feedback.tone, res.feedback.title, res.feedback.message);
+          }
           if (res.newState) motionRef.current = { ...motionRef.current, ...(res.newState || {}) };
         }
         if (msg.type === 'log') {
@@ -490,7 +552,7 @@ export default function ExerciseScreen() {
       // initialize worker detector
       const cfg = {};
       const target = currentExercise?.target || (exerciseData?.duration_minutes ? exerciseData.duration_minutes * 1 : undefined);
-      w.postMessage({ type: 'init', preset: exercisePreset, cfg, target });
+      w.postMessage({ type: 'init', preset: activeDetectorPreset, cfg, target });
     } catch (err) {
       workerRef.current = null;
     }
@@ -501,7 +563,7 @@ export default function ExerciseScreen() {
         workerRef.current = null;
       }
     };
-  }, [exercisePreset, supportsPoseDetection]);
+  }, [activeDetectorPreset, supportsPoseDetection, currentExercise?.target, exerciseData?.duration_minutes]);
 
   function checkMovement(landmarks) {
     if (!currentExercise) return;
@@ -510,7 +572,7 @@ export default function ExerciseScreen() {
     if (detectorRef.current && typeof detectorRef.current.update === 'function') {
       try {
         // Prefer worker if available — throttle posts to ~10fps
-        if (workerRef.current) {
+        if (workerRef.current && !['glute-bridges', 'plank', 'lunges'].includes(activeDetectorPreset)) {
           try {
             const now = Date.now();
             const last = workerRef.current._lastSent || 0;
@@ -526,9 +588,15 @@ export default function ExerciseScreen() {
         }
         const res = detectorRef.current.update(landmarks, motionRef.current);
         if (res) {
-            if (typeof res.progressDelta === 'number' && res.progressDelta > 0) updateRepProgress(res.progressDelta);
+            const hasProgressDelta = typeof res.progressDelta === 'number' && res.progressDelta > 0;
+            if (hasProgressDelta) updateRepProgress(res.progressDelta);
             if (typeof res.setProgress === 'number') setProgress(res.setProgress);
-            if (res.feedback) setFeedback(res.feedback.tone, res.feedback.title, res.feedback.message);
+            if (res.feedback) {
+              if (hasProgressDelta) {
+                feedbackRef.current = { key: "", tone: res.feedback.tone, updatedAt: 0 };
+              }
+              setFeedback(res.feedback.tone, res.feedback.title, res.feedback.message);
+            }
             motionRef.current = { ...motionRef.current, ...(res.newState || {}) };
             return;
           }
@@ -788,10 +856,12 @@ export default function ExerciseScreen() {
       {step === 'active' && (
         <div className="active-shell">
           <div className="active-topbar">
-            <div className="active-topbarCopy">
-              <p className="active-kicker">{getStepLabel()}</p>
               <h1 className="active-shellTitle">{currentExercise?.title}</h1>
-            </div>
+              <div className="active-actionRow">
+                <button className="pause-button pause-button--wide" onClick={() => setIsPaused(!isPaused)}>
+                  {isPaused ? "Doorgaan" : "Pauze"}
+                </button>
+              </div>
           </div>
 
           <div className="active-card active-card--coach">
@@ -847,21 +917,10 @@ export default function ExerciseScreen() {
                 </div>
               </div>
 
-              {/* <div className="active-coachCopy">
-                <p className="active-kicker">{getStepLabel()}</p>
-                <h1 className="active-title">{currentExercise?.title}</h1>
-                <p className="active-description">{activeInstruction}</p>
-                <div className="active-meta-row">
-                  <span className="active-meta-chip">{exerciseData.category || "Mobiliteit"}</span>
-                  <span className="active-meta-chip">{exerciseData.difficulty || "Makkelijk"}</span>
-                  <span className="active-meta-chip">{exerciseData.duration_minutes || 5} min</span>
-                </div>
-              </div> */}
-
-              <div className="active-actionRow">
-                <button className="pause-button pause-button--wide" onClick={() => setIsPaused(!isPaused)}>
-                  {isPaused ? "Doorgaan" : "Pauze"}
-                </button>
+              <div className={`active-liveFeedback active-liveFeedback--${liveFeedback.tone || "info"}`}>
+                {/* <span className="active-liveFeedbackLabel">Live feedback</span> */}
+                <strong>{liveFeedback.title}</strong>
+                <p>{liveFeedback.message}</p>
               </div>
             </aside>
           </div>
