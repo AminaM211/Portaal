@@ -28,33 +28,6 @@ Voor dit eindwerk onderzocht en implementeerde ik pose detection met MediaPipe. 
 
 Daarnaast gebruikt Nimbli Supabase als backend-as-a-service. Hierdoor kon ik authenticatie, databanktabellen, storage en realtime updates sneller integreren zonder een volledige backend vanaf nul te bouwen. De meerwaarde is dat de focus meer kon liggen op de gebruikersflow, oefenlogica en het kinesitherapieconcept.
 
-## Installatie
-
-Installeer de dependencies:
-
-```bash
-npm install
-```
-
-Maak lokaal een `.env` bestand aan met je Supabase configuratie:
-
-```bash
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
-```
-
-Start de development server:
-
-```bash
-npm run dev
-```
-
-Maak een productiebuild:
-
-```bash
-npm run build
-```
-
 ## Credentials
 
 API-keys en andere gevoelige gegevens staan niet rechtstreeks in de code. De Supabase configuratie wordt ingeladen via environment variables. Het lokale `.env` bestand staat in `.gitignore` en wordt dus niet mee gepusht naar GitHub.
