@@ -1,0 +1,316 @@
+.practiceRegister {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111111;
+}
+
+.practiceRegisterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 40px 94px 0;
+}
+
+.practiceRegisterLogoBtn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.practiceRegisterLogoBtn img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.practiceRegisterLogin {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+}
+
+.practiceRegisterTopBtn,
+.practiceRegisterPrimary {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.practiceRegisterTopBtn {
+  background: #ffffff;
+  color: #2bb39b;
+  border: 2px solid #2bb39b;
+  box-shadow: 0 4px 0 #1e7a6a;
+}
+
+.practiceRegisterPrimary {
+  border: 2px solid #2bb39b;
+  background: #2bb39b;
+  color: #ffffff;
+  box-shadow: 0 4px 0 #1e7a6a;
+}
+
+.practiceRegisterPrimary:disabled {
+  background: #9ed9d1;
+  border-color: #9ed9d1;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.practiceRegisterMain {
+  width: min(100% - 48px, 1120px);
+  margin: 0 auto;
+  padding: 52px 0 72px;
+}
+
+.practiceRegisterBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 18px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.practiceRegisterBack img {
+  width: 18px;
+}
+
+.practiceRegisterStep {
+  color: #5f5f5f;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.practiceRegisterProgress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 760px;
+  margin-bottom: 32px;
+}
+
+.practiceRegisterProgress span {
+  height: 14px;
+  border-radius: 999px;
+  background: #e4e7eb;
+}
+
+.practiceRegisterProgress span.is-active {
+  background: #73b2e5;
+}
+
+.practiceRegisterPanel {
+  width: 100%;
+  max-width: 980px;
+}
+
+.practiceRegisterPanel.narrow {
+  max-width: 560px;
+}
+
+.practiceRegisterPanel h1 {
+  margin: 0 0 28px;
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.practiceRegisterPanel h2 {
+  margin: 34px 0 18px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.practiceRegisterGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+
+.practiceRegisterGrid.address {
+  grid-template-columns: minmax(0, 1.5fr) 120px minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.practiceRegisterGrid.address label:last-child {
+  grid-column: span 2;
+}
+
+.practiceRegisterGrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.practiceRegisterGrid input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  padding: 12px;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-size: 16px;
+}
+
+.practiceRegisterGrid input:focus {
+  outline: none;
+  border-color: #111111;
+}
+
+.practicePlanGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+.practicePlanCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 40px;
+  border: 2px solid #e2e2e2;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  font-family: "Nunito", sans-serif;
+}
+
+.practicePlanCard.is-selected {
+  border-color: #2bb39b;
+  box-shadow: inset 0 0 0 1px #2bb39b;
+}
+
+.practicePlanTitle {
+  color: #2bb39b;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.practicePlanPrice {
+  display: block;
+  margin-bottom: 40px;
+  color: #666666;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.practicePlanPrice strong {
+  color: #111111;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.practicePlanCard ul {
+  margin: 0;
+  padding-left: 24px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.practicePlanCard li {
+  margin-bottom: 16px;
+}
+
+.practiceRegisterError {
+  max-width: 760px;
+  margin: 24px 0 0;
+  padding: 10px 14px;
+  border: 1px solid #f1c8c8;
+  border-radius: 4px;
+  background: #fff1f1;
+  color: #c14545;
+}
+
+.practiceRegisterActions {
+  display: flex;
+  margin-top: 32px;
+}
+
+@media (max-width: 900px) {
+  .practiceRegisterHeader {
+    padding: 28px 32px 0;
+  }
+
+  .practiceRegisterMain {
+    width: min(100% - 40px, 720px);
+    padding-top: 40px;
+  }
+
+  .practiceRegisterGrid,
+  .practiceRegisterGrid.address,
+  .practicePlanGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .practiceRegisterGrid.address label:last-child {
+    grid-column: auto;
+  }
+
+  .practicePlanGrid {
+    gap: 20px;
+  }
+
+  .practicePlanCard {
+    min-height: auto;
+    padding: 32px 28px;
+  }
+
+  .practicePlanTitle,
+  .practicePlanPrice {
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .practiceRegisterHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 22px 20px 0;
+  }
+
+  .practiceRegisterLogin {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .practiceRegisterMain {
+    width: calc(100% - 40px);
+    padding: 32px 0 48px;
+  }
+
+  .practiceRegisterPanel h1 {
+    font-size: 28px;
+  }
+
+  .practicePlanPrice,
+  .practicePlanCard ul {
+    font-size: 18px;
+  }
+
+  .practicePlanPrice strong {
+    font-size: 30px;
+  }
+}

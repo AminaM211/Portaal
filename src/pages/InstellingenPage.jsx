@@ -36,7 +36,7 @@ export default function InstellingenPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [roleLabel, setRoleLabel] = useState("");
+  const [planLabel, setPlanLabel] = useState("");
 
   const [showPasswordEdit, setShowPasswordEdit] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -65,7 +65,7 @@ export default function InstellingenPage() {
 
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
-        .select("id, full_name, role")
+        .select("id, full_name, role, plan")
         .eq("id", user.id)
         .single();
 
@@ -83,7 +83,7 @@ export default function InstellingenPage() {
       setFirstName(nameParts.firstName);
       setLastName(nameParts.lastName);
       setEmail(user.email || "");
-      setRoleLabel(profileData.role === "kinesist" ? "Kinesist" : profileData.role);
+      setPlanLabel(profileData.plan === "starter" ? "Starter" : profileData.plan === "team" ? "Team" : profileData.plan);
     } catch (error) {
       console.error(error);
       setErrorMessage("Instellingen laden is mislukt.");
@@ -295,8 +295,8 @@ export default function InstellingenPage() {
             </div>
 
             <div className="instellingenField">
-              <label>Rol</label>
-              <input type="text" value={roleLabel} disabled />
+              <label>Plan</label>
+              <input type="text" value={planLabel} disabled />
             </div>
 
             {errorMessage && <p className="kineError">{errorMessage}</p>}
@@ -328,7 +328,7 @@ export default function InstellingenPage() {
             className="btn-primary-large"
             onClick={() => navigate("/kinesist/instellingen/team-upgrade")}
           >
-            Upgrade naar Team
+            {profile?.plan === "team" ? "Abbonement wijzigen" : "Upgrade naar Team"}
           </button>
 
           <button

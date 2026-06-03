@@ -1,5 +1,6 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
+import PracticeRegistrationPage from "./pages/PracticeRegistrationPage";
 import ScrollToTop from './components/ScrollToTop';
 import KineDashboard from "./pages/KineDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
@@ -29,6 +30,7 @@ export default function App() {
       <ScrollToTop />
       <Routes>
       <Route path="/" element={<LoginPage />} />
+      <Route path="/kinesist/registreren" element={<PracticeRegistrationPage />} />
 
       <Route
         path="/kinesist/dashboard"

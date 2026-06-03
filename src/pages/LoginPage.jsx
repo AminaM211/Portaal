@@ -93,14 +93,13 @@ export default function LoginPage() {
 
         <div className="header-right">
           <span>Praktijk nog niet geregistreerd?</span>
-          <a
-            href="https://nimbli.be/onboarding.html"
+          <button
+            type="button"
             className="btn-primary"
-            target="_blank"
-            rel="noreferrer"
-            >
+            onClick={() => navigate("/kinesist/registreren")}
+          >
             Start gratis
-            </a>
+          </button>
         </div>
       </header>
 
