@@ -19,7 +19,6 @@ Een belangrijk onderdeel van de applicatie is de oefenmodus. Daar gebruikt Nimbl
 - React Router voor de navigatie tussen rollen en schermen.
 - Supabase voor authenticatie, database, storage en realtime updates.
 - MediaPipe Pose voor lichaamsherkenning via de webcam.
-- TensorFlow.js en WebGL backend als basis voor pose-gerelateerde detectie.
 - Custom exercise detectors voor het tellen en beoordelen van bewegingen.
 - Vercel-configuratie voor deployment.
 
