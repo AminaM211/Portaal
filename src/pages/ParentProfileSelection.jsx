@@ -38,7 +38,7 @@ export default function ParentProfileSelection() {
             onClick={() => navigate("/ouder/dashboard")}
           >
             <img src="/images/avatar.svg" alt="" />
-            <span>Ouderdashboard</span>
+            <span>Ouder</span>
           </button>
         </div>
       </main>
