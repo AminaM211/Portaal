@@ -458,7 +458,12 @@ export default function PatientExerciseAssignmentPage() {
         return;
       }
 
-      const { error } = await supabase.from("patient_exercises").insert(validRows);
+      const { error } = await supabase
+        .from("patient_exercises")
+        .upsert(validRows, {
+          onConflict: "patient_id,exercise_id,scheduled_date",
+          ignoreDuplicates: true,
+        });
       if (error) throw error;
 
       navigate(`/patient/${id}`);
